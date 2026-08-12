@@ -1323,4 +1323,98 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 }
 @media (prefers-reduced-transparency: reduce) {
   .ms-card, .map-panel { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--cove-800); }
+  .fkey, .leaflet-tooltip.ftip { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--cove-850); }
 }
+
+/* ---------- gas and oil fields map -------------------------------------- */
+
+.fmap-shell { height: 82vh; height: 82svh; min-height: 640px; max-height: 920px; }
+
+path.fdot { cursor: pointer; transition: fill-opacity 200ms var(--ease-state), stroke-width 200ms var(--ease-state); }
+.leaflet-marker-icon.foilpin { background: none; border: 0; }
+.foil {
+  display: block; width: 13px; height: 13px; margin: 3px; cursor: pointer;
+  background: rgba(229,121,63,.36); border: 2px solid var(--d-oil); transform: rotate(45deg);
+  transition: transform 240ms var(--ease-entrance), background 200ms var(--ease-state);
+}
+.foilpin:hover .foil { transform: rotate(45deg) scale(1.3); background: rgba(229,121,63,.62); }
+
+.fkey {
+  position: absolute; z-index: 402; left: var(--pad); bottom: 20px;
+  max-width: min(300px, calc(100% - var(--pad) * 2));
+  padding: clamp(11px, 1.5vw, 19px) clamp(13px, 1.7vw, 21px) clamp(12px, 1.6vw, 20px);
+  background: rgba(16,14,11,.85); border: 1px solid var(--cove-500); border-radius: 14px;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 18px 44px rgba(0,0,0,.42);
+  transition: opacity 170ms var(--ease-state), transform 170ms var(--ease-state);
+}
+/* the tooltip always wins: the legend steps aside whenever a card would
+   otherwise land on top of it */
+.fkey.yield { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.fkey h5 { margin: 0 0 clamp(9px, 1.1vw, 14px); font-family: var(--mono); font-size: clamp(9px, .78vw, 10.5px); letter-spacing: .14em; text-transform: uppercase; color: var(--text-tertiary); font-weight: 400; }
+.fkl { display: grid; gap: clamp(7px, .85vw, 11px); list-style: none; margin: 0; padding: 0; }
+.fkl li { display: flex; align-items: center; gap: clamp(7px, .8vw, 10px); font-size: clamp(11px, 1vw, 13.5px); line-height: 1.25; color: var(--text-secondary); }
+.fkl i { width: clamp(10px, .95vw, 14px); height: clamp(10px, .95vw, 14px); flex: none; border-radius: 50%; background: color-mix(in srgb, var(--c) 34%, transparent); border: 1.5px solid var(--c); }
+.fkl i.ring { background: none; border-style: dashed; }
+.fkl i.dia { width: clamp(9px, .82vw, 12px); height: clamp(9px, .82vw, 12px); border-radius: 0; transform: rotate(45deg); }
+@media (max-width: 720px) { .fkey { left: 14px; bottom: 14px; border-radius: 12px; } }
+@media (max-height: 620px) {
+  .fkey { max-width: min(430px, calc(100% - var(--pad) * 2)); }
+  .fkl { grid-template-columns: 1fr 1fr; gap: 7px 16px; }
+}
+
+.leaflet-tooltip.ftip {
+  background: rgba(22,19,16,.95); border: 1px solid var(--cove-500); border-radius: 11px;
+  box-shadow: 0 14px 32px rgba(0,0,0,.55); padding: 11px 14px 12px; white-space: nowrap;
+  font-family: var(--sans); color: var(--text-secondary);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.leaflet-tooltip.ftip::before { display: none; }
+.ftip .tn { display: block; font-family: var(--serif); font-size: 15.5px; line-height: 1.15; color: var(--paper); }
+.ftip .ts { display: inline-block; margin-top: 8px; padding: 3px 9px 2px; border-radius: 999px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); border: 1px solid color-mix(in srgb, var(--c) 45%, transparent); }
+.ftip .tv { display: block; margin-top: 9px; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12px; letter-spacing: .02em; color: var(--paper); }
+.ftip .th { display: block; margin-top: 9px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-tertiary); }
+
+.fpop .leaflet-popup-content-wrapper { border-radius: 14px; }
+.fpop .leaflet-popup-content { margin: 14px 16px 15px; font-family: var(--sans); font-size: 13px; }
+.fpc .fname { display: block; font-family: var(--serif); font-size: 18px; line-height: 1.15; letter-spacing: -0.012em; color: var(--paper); padding-right: 18px; }
+.fpc .fmeta { display: block; margin-top: 5px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase; color: var(--text-tertiary); }
+.fchip {
+  display: inline-block; margin-top: 9px; padding: 4px 10px 3px; border-radius: 999px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+}
+.fwho { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--cove-620); display: grid; gap: 6px; }
+.fwho div { display: flex; gap: 12px; font-size: 12.5px; line-height: 1.4; }
+.fwho dt, .fwho .k { flex: none; width: 84px; padding-top: 2px; font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); }
+.fwho .val { color: var(--text-secondary); }
+.fres { margin-top: 12px; border-top: 1px solid var(--cove-620); }
+.fres .fr { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 5px 0; border-bottom: 1px solid var(--cove-700); }
+.fres .fr span { font-size: 12.5px; color: var(--text-secondary); }
+.fpop .fres .fr b { display: inline; margin: 0; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 12.5px; font-weight: 400; color: var(--paper); white-space: nowrap; }
+.fpop .fres .fr.hi b { color: var(--accent-lift); }
+.fest { font-style: normal; font-family: var(--mono); font-size: 9.5px; letter-spacing: .04em; color: var(--text-tertiary); margin-left: 6px; }
+.fbar { position: relative; height: 8px; margin-top: 12px; border-radius: 999px; background: rgba(249,138,128,.20); overflow: hidden; }
+.fbar i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--text-tertiary); }
+.fbl { display: flex; justify-content: space-between; gap: 12px; margin-top: 7px; font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); }
+.fpop .fbl b { display: inline; margin: 0; font-size: 9.5px; font-weight: 400; color: var(--accent-lift); }
+.fnote { margin: 12px 0 0; padding-top: 11px; border-top: 1px solid var(--cove-620); font-family: var(--serif); font-size: 12.5px; line-height: 1.45; color: var(--text-secondary); }
+
+/* ---------- back to top -------------------------------------------------- */
+
+.totop {
+  position: fixed; right: 18px; bottom: 18px; z-index: 1500;
+  width: 46px; height: 46px; display: grid; place-items: center; padding: 0; cursor: pointer;
+  border-radius: 50%; border: 1px solid var(--cove-500); background: rgba(27,23,18,.86);
+  color: var(--text-secondary); box-shadow: 0 10px 26px rgba(0,0,0,.45);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  opacity: 0; transform: translateY(10px) scale(.94); pointer-events: none;
+  transition: opacity 260ms var(--ease-state), transform 260ms var(--ease-entrance),
+              color 160ms var(--ease-state), border-color 160ms var(--ease-state);
+}
+.totop.on { opacity: 1; transform: none; pointer-events: auto; }
+.totop:hover { color: var(--paper); border-color: var(--text-tertiary); }
+.totop svg { display: block; width: 17px; height: 17px; transition: transform 220ms var(--ease-entrance); }
+.totop:hover svg { transform: translateY(-2px); }
+@media (min-width: 768px) { .totop { right: 26px; bottom: 26px; width: 50px; height: 50px; } }

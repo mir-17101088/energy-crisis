@@ -1269,6 +1269,180 @@
     block.appendChild(alt);
   }
 
+  /* ------------------------------------ gas and oil fields, February 2025 */
+
+  var F_ST = {
+    prod: { c: '#4FD6C4', l: 'Producing' },
+    near: { c: '#FFD98C', l: 'Producing, near depletion' },
+    susp: { c: '#A79C88', l: 'Suspended' },
+    dep:  { c: '#F2665F', l: 'Depleted, abandoned' },
+    disc: { c: '#6BBDF2', l: 'Discovered, not producing' },
+    oil:  { c: '#E5793F', l: 'Oil field, abandoned' }
+  };
+
+  var FIELDS = [
+    { n: 'Titas', ll: [23.95, 91.10], st: 'prod', dist: 'Brahmanbaria', up: 'Brahmanbaria Sadar', dy: '1962', db: 'Pakistan Shell Oil Company', py: '1968', giip: 9039, rec: 7582, cum: 5553.6, rem: 2028.4, fy: 129.05, note: 'Largest gas field by reserve, and the second-largest producer.' },
+    { n: 'Habiganj', ll: [24.19, 91.42], st: 'near', dist: 'Habiganj', up: 'Madhabpur (Shahjibazar)', dy: '1963', db: 'Pakistan Shell Oil Company', py: '1968', giip: 3981, rec: 2787, cum: 2779.1, rem: 7.9, fy: 38.47, note: 'The reported remaining figure rests on a 2010-vintage estimate, yet the field still produces about 38 Bcf a year. The reserve base is being reassessed with 3D seismic.' },
+    { n: 'Bibiyana', ll: [24.55, 91.68], st: 'prod', dist: 'Habiganj', up: 'Nabiganj', dy: '1998', db: 'Unocal and Occidental, now Chevron', py: '2007', giip: 8383, rec: 5755.4, cum: 6206.3, rem: 1320, est: 1, fy: 347.47, note: 'The top national producer, about half of all output. Petrobangla puts recoverable reserves at 7,666 Bcf; roughly 1.3 Tcf realistically remains.' },
+    { n: 'Jalalabad', ll: [24.83, 91.83], st: 'prod', dist: 'Sylhet', up: 'Dakshin Surma', dy: '1989', db: 'Scimitar Oil, now Chevron', py: '1999', giip: 2716, rec: 1429.3, cum: 1690.6, rem: 650, est: 1, fy: 52.03, note: 'Cumulative output has passed the old recoverable estimate. Recent reporting puts what is left below about 700 Bcf.' },
+    { n: 'Kailashtila', ll: [24.80, 91.98], st: 'prod', dist: 'Sylhet', up: 'Golapganj', dy: '1962', db: 'Pakistan Shell Oil Company', py: '1983', giip: 3463, rec: 2880, cum: 813, rem: 2067, fy: 14.89, note: 'A wet-gas field rich in condensate, with over 2 Tcf still recoverable.' },
+    { n: 'Rashidpur', ll: [24.40, 91.62], st: 'prod', dist: 'Habiganj', up: 'Bahubal', dy: '1960', db: 'Pakistan Shell Oil Company', py: '1983', giip: 3887, rec: 3134, cum: 734.5, rem: 2399.5, fy: 25.17, note: 'One of the largest remaining balances in the country, about 2.4 Tcf.' },
+    { n: 'Bakhrabad', ll: [23.52, 90.97], st: 'prod', dist: 'Cumilla', up: 'Muradnagar', dy: '1969', db: 'Shell Oil Company', py: '1984', giip: 1825, rec: 1387, cum: 890.4, rem: 496.6, fy: 10.24, note: 'Pressure fell rapidly after the 1990s peak.' },
+    { n: 'Narsingdi', ll: [24.00, 90.75], st: 'prod', dist: 'Narsingdi', up: 'Shibpur', dy: '1990', db: 'Petrobangla (BGFCL)', py: '1996', giip: 405, rec: 345, cum: 257.5, rem: 87.5, fy: 8.19 },
+    { n: 'Meghna', ll: [23.75, 90.78], st: 'prod', dist: 'Brahmanbaria', up: 'Bancharampur', dy: '1990', db: 'Petrobangla (BGFCL)', py: '1997', giip: 122, rec: 101, cum: 82.8, rem: 18.2, fy: 1.62 },
+    { n: 'Sylhet', ll: [24.96, 92.02], st: 'prod', dist: 'Sylhet', up: 'Golapganj (Haripur)', dy: '1955', db: 'Pakistan Petroleum Ltd', py: '1961', giip: 580, rec: 408, cum: 225.9, rem: 182.1, fy: 3.73, note: "Bangladesh's first gas discovery, in 1955. The same geological structure holds the Haripur oil pool." },
+    { n: 'Beanibazar', ll: [24.82, 92.17], st: 'prod', dist: 'Sylhet', up: 'Beanibazar', dy: '1981', db: 'Petrobangla', py: '2004 (approx.)', giip: 225, rec: 137, cum: 118.6, rem: 18.4, fy: 5.35, note: 'Wet gas, high in condensate.' },
+    { n: 'Fenchuganj', ll: [24.68, 91.93], st: 'prod', dist: 'Sylhet', up: 'Fenchuganj', dy: '1988', db: 'Petrobangla', py: '2004 (approx.)', giip: 483, rec: 329, cum: 179.3, rem: 149.7, fy: 3.09, note: 'Holds the deepest well in Bangladesh, about 4,977 metres.' },
+    { n: 'Moulvibazar', ll: [24.31, 91.77], st: 'prod', dist: 'Moulvibazar', up: 'Barlekha, near Sreemangal', dy: '1997', db: 'Occidental, now Chevron', py: '2005', giip: 494, rec: 428, cum: 357.3, rem: 70.7, fy: 5.55, note: 'Site of the 1997 Magurchhara blowout.' },
+    { n: 'Shahbazpur', ll: [22.42, 90.75], st: 'prod', dist: 'Bhola', up: 'Borhanuddin', dy: '1995', db: 'BAPEX', py: '2009', giip: 415, rec: 261, cum: 186.6, rem: 74.4, fy: 24.83, note: 'The main field on Bhola island. It supplies the island, and is not yet on the national grid.' },
+    { n: 'Saldanadi', ll: [23.66, 90.93], st: 'prod', dist: 'Cumilla', up: 'Muradnagar', dy: '1996', db: 'Petrobangla (BAPEX)', py: '1998', giip: 393, rec: 275, cum: 99.7, rem: 175.3, fy: 1.14 },
+    { n: 'Srikail', ll: [23.62, 90.99], st: 'prod', dist: 'Cumilla', up: 'Muradnagar (Block 9)', dy: '2004, re-established 2012', db: 'BAPEX', py: '2012', giip: 230, rec: 161, cum: 156, rem: 5, fy: 7.59, note: 'Nearly exhausted on current figures.' },
+    { n: 'Bangura', ll: [23.57, 91.02], st: 'prod', dist: 'Cumilla', up: 'Muradnagar (Block 9)', dy: '2004', db: 'Tullow', py: '2006', giip: 730, rec: 621, cum: 570.3, rem: 50.7, fy: 13.37, note: 'Operated by Tullow.' },
+    { n: 'Begumganj', ll: [22.95, 91.12], st: 'prod', dist: 'Noakhali', up: 'Begumganj', dy: '1977', db: 'Petrobangla', py: '2016 (approx.)', giip: 47, rec: 33, cum: 17.4, rem: 15.6, fy: 2.81, note: 'A small field revived through the Begumganj-3 well.' },
+    { n: 'Sundalpur', ll: [22.88, 91.28], st: 'prod', dist: 'Noakhali', up: 'Companiganj', dy: '2011 (approx.)', db: 'BAPEX', py: '2013', giip: 62.2, rec: 50.2, cum: 26.3, rem: 23.9, fy: 1.19 },
+    { n: 'Semutang', ll: [22.87, 91.85], st: 'prod', dist: 'Khagrachhari', up: 'Manikchhari', dy: '1969', db: 'OGDC (Pakistan)', py: '2015 (approx.)', giip: 654, rec: 318, cum: 14.9, rem: 303.1, fy: 0.29, note: 'The only field in the Chittagong Hill Tracts. Long undeveloped, with about 303 Bcf still recoverable.' },
+    { n: 'Chhatak', ll: [25.03, 91.66], st: 'susp', dist: 'Sunamganj', up: 'Chhatak', dy: '1959', db: 'Pakistan Petroleum Ltd', py: '1960, suspended 1985', giip: 677, rec: 474, cum: 25.8, rem: 448.2, fy: 0, note: 'Suspended in 1985 after water flooded the reservoir. About 448 Bcf remains on the books.' },
+    { n: 'Kamta', ll: [24.00, 90.40], st: 'susp', dist: 'Gazipur', up: 'Gazipur (approx.)', dy: '1982', db: 'Petrobangla', py: '1985, suspended 1991', giip: 72, rec: 50, cum: 21.1, rem: 28.9, fy: 0, note: 'Suspended in 1991 after water influx.' },
+    { n: 'Feni', ll: [23.03, 91.42], st: 'susp', dist: 'Feni', up: 'Feni Sadar', dy: '1981', db: 'Petrobangla', py: '1994, suspended 1998', giip: 185, rec: 130, cum: 63, rem: 67, fy: 0, note: 'Suspended in 1998.' },
+    { n: 'Rupganj', ll: [23.75, 90.55], st: 'susp', dist: 'Narayanganj', up: 'Rupganj', dy: '2011 (approx.)', db: 'BAPEX', py: 'Test production only', giip: 48, rec: 33.6, cum: 0.7, rem: 32.9, fy: 0, note: 'Only about 0.7 Bcf was ever produced. Effectively idle.' },
+    { n: 'Sangu', ll: [21.95, 91.62], st: 'dep', off: 1, dist: 'Bay of Bengal', up: 'Offshore Block 16, about 50 km south west of Chattogram', dy: '1996', db: 'Cairn Energy, later Santos', py: '1998, abandoned about 2013', giip: 976, rec: 771, cum: 489.5, rem: 281.5, fy: 0, note: "The only offshore field ever to have produced here, and now spent. The book figure overstates what is really left." },
+    { n: 'Kutubdia', ll: [21.88, 91.70], st: 'disc', off: 1, dist: 'Bay of Bengal', up: 'Offshore, off Kutubdia island', dy: '1977', db: 'Union Oil Company (USA)', py: 'Never produced', giip: 65, rec: 46, cum: 0, rem: 46, fy: 0, note: 'A small offshore discovery that was never developed.' },
+    { n: 'Bhola North', ll: [22.55, 90.72], st: 'disc', dist: 'Bhola', up: 'Borhanuddin and Daulatkhan', dy: '2018', db: 'BAPEX', py: 'Not in production', rec: 435, cum: 0, rem: 435, est: 1, note: 'About 435 Bcf, waiting on the Bhola to Barishal pipeline. Not in the Hydrocarbon Unit field table.' },
+    { n: 'Ilisha', ll: [22.75, 90.63], st: 'disc', dist: 'Bhola', up: 'Bhola Sadar (Ilisha)', dy: '2023', db: 'BAPEX', py: 'Not in production', rec: 200, cum: 0, rem: 200, est: 1, note: "The country's 29th gas field, found in May 2023. Idle, awaiting a grid connection." },
+    { n: 'Zakiganj', ll: [24.90, 92.36], st: 'disc', dist: 'Sylhet', up: 'Zakiganj', dy: '2021', db: 'BAPEX', py: 'Not in production', rec: 52, cum: 0, rem: 52, est: 1, note: 'The 28th gas field, found in August 2021. No pipeline has been built to it.' },
+    { n: 'Haripur', ll: [24.94, 92.04], st: 'oil', dist: 'Sylhet', up: 'Golapganj (Haripur)', dy: '1986', db: 'Petrobangla, Sylhet-7 well', py: '1987, suspended July 1994', oip: 'About 10 million barrels', prod: '560,869 barrels', note: "Bangladesh's only oil field. It shares the Sylhet structure with the gas field beside it. Figures are in barrels, not Bcf." }
+  ];
+
+  function fBcf(v) {
+    if (v == null) return null;
+    var s = v >= 100 ? Math.round(v).toLocaleString('en-US') : String(Math.round(v * 10) / 10);
+    return s + ' Bcf' + (v >= 1000 ? ' (' + (v / 1000).toFixed(1) + ' Tcf)' : '');
+  }
+  function fRad(rem) { return 4.4 + Math.sqrt(Math.max(rem || 0, 1)) * 0.40; }
+  function fRow(k, v) { return '<div><span class="k">' + k + '</span><span class="val">' + v + '</span></div>'; }
+  function fLine(k, v, cls, est) {
+    if (v == null) return '';
+    return '<div class="fr' + (cls ? ' ' + cls : '') + '"><span>' + k + '</span><b>' + v +
+      (est ? '<em class="fest">&asymp; est.</em>' : '') + '</b></div>';
+  }
+
+  function fTip(f) {
+    var st = F_ST[f.st];
+    var v = f.st === 'oil' ? '560,869 barrels produced'
+      : fBcf(f.rem) + ' remaining' + (f.est ? ' (est.)' : '');
+    return '<span class="tn">' + f.n + '</span>' +
+      '<span class="ts" style="--c:' + st.c + '">' + st.l + '</span>' +
+      '<span class="tv">' + v + '</span>' +
+      '<span class="th">Click for the full record</span>';
+  }
+
+  function fPopup(f) {
+    var st = F_ST[f.st];
+    var h = '<div class="fpc"><span class="fname">' + f.n + '</span>' +
+      '<span class="fmeta">' + (f.st === 'oil' ? 'Crude oil' : 'Natural gas') + ' &middot; ' +
+      (f.off ? 'Offshore' : 'Onshore') + '</span>' +
+      '<span class="fchip" style="--c:' + st.c + '">' + st.l + '</span>' +
+      '<div class="fwho">' + fRow('Where', f.up + (f.off ? '' : ', ' + f.dist + ' district')) +
+      fRow('Found', f.dy + ', by ' + f.db) + fRow('Produced', f.py) + '</div>';
+
+    if (f.st === 'oil') {
+      h += '<div class="fres">' + fLine('Oil in place', f.oip) +
+        fLine('Produced, 1987 to 1994', f.prod, 'hi') + '</div>';
+    } else {
+      h += '<div class="fres">' +
+        fLine('Total gas in place', fBcf(f.giip)) +
+        fLine('Recoverable', fBcf(f.rec)) +
+        fLine('Already produced', fBcf(f.cum)) +
+        fLine('Still remaining', fBcf(f.rem), 'hi', f.est) + '</div>';
+      var tot = (f.cum || 0) + (f.rem || 0);
+      var pct = tot ? Math.round((f.cum || 0) / tot * 100) : 0;
+      h += '<div class="fbar"><i style="width:' + pct + '%"></i></div>' +
+        '<div class="fbl"><span>' + pct + '% produced</span><span><b>' + (100 - pct) + '% still there</b></span></div>';
+    }
+    if (f.note) h += '<p class="fnote">' + f.note + '</p>';
+    return h + '</div>';
+  }
+
+  var FPOP = {
+    className: 'fpop', maxWidth: 320, minWidth: 272, closeButton: true,
+    autoPanPaddingTopLeft: [24, 18], autoPanPaddingBottomRight: [24, 24]
+  };
+
+  function mapFields() {
+    /* the leash has to be much larger than the fitted view: the fit is
+       height-constrained, so the visible longitude span already runs wider
+       than the country. a tight maxBounds would clamp every popup autoPan
+       back to zero and crop the card against the shell. */
+    var m = baseMap('fmap', { zoomSnap: 0.25, minZoom: 6, maxBoundsViscosity: 0.5 });
+    var bb = L.latLngBounds([[20.55, 88.00], [26.75, 92.80]]);
+    var wide = window.matchMedia('(min-width: 1024px)').matches;
+    m.fitBounds(bb, { padding: wide ? [24, 24] : [16, 16] });
+    m.setMaxBounds(bb.pad(1.6));
+    label(m, [21.20, 90.55], 'BAY OF BENGAL', null);
+
+    FIELDS.slice().sort(function (a, b) { return (b.rem || 0) - (a.rem || 0); }).forEach(function (f) {
+      var st = F_ST[f.st], mk, r = fRad(f.rem), fillOn, fillOff;
+      if (f.st === 'oil') {
+        mk = L.marker(f.ll, {
+          icon: L.divIcon({ className: 'foilpin', html: '<i class="foil"></i>', iconSize: [19, 19], iconAnchor: [9.5, 9.5] }),
+          riseOnHover: true, keyboard: false
+        });
+      } else {
+        fillOff = f.st === 'disc' ? 0.07 : 0.30;
+        fillOn = f.st === 'disc' ? 0.24 : 0.55;
+        mk = L.circleMarker(f.ll, {
+          radius: r, color: st.c, weight: f.st === 'disc' ? 1.6 : 1.3,
+          fillColor: st.c, fillOpacity: fillOff, className: 'fdot',
+          dashArray: f.st === 'disc' ? '3 3' : null
+        });
+        mk.on('mouseover', function () { mk.setStyle({ fillOpacity: fillOn, weight: 2.4 }); mk.bringToFront(); });
+        mk.on('mouseout', function () { mk.setStyle({ fillOpacity: fillOff, weight: f.st === 'disc' ? 1.6 : 1.3 }); });
+      }
+      mk.addTo(m);
+      mk.bindTooltip(fTip(f), {
+        className: 'ftip', direction: 'top', opacity: 1,
+        offset: [0, f.st === 'oil' ? -12 : -(r + 5)]
+      });
+      mk.bindPopup(fPopup(f), FPOP);
+    });
+
+    /* tooltips take precedence over the legend, and never get cropped by the
+       top edge of the shell: flip the card below its marker if it would be. */
+    var shellEl = q('#fields-block .map-shell'), keyEl = q('#fields-block .fkey');
+    m.on('tooltipopen', function (e) {
+      var tt = e.tooltip, el = tt._container;
+      if (!el || !shellEl) return;
+      var sh = shellEl.getBoundingClientRect(), r = el.getBoundingClientRect();
+      if (r.top < sh.top + 8 && tt.options.direction === 'top') {
+        tt.options.direction = 'bottom';
+        tt.options.offset = [0, -tt.options.offset[1]];
+        tt.update();
+        r = el.getBoundingClientRect();
+      }
+      if (!keyEl) return;
+      var k = keyEl.getBoundingClientRect();
+      keyEl.classList.toggle('yield',
+        r.left < k.right + 10 && r.right > k.left - 10 && r.top < k.bottom + 10 && r.bottom > k.top - 10);
+    });
+    m.on('tooltipclose', function (e) {
+      var tt = e.tooltip;
+      if (tt.options.direction === 'bottom') {
+        tt.options.direction = 'top';
+        tt.options.offset = [0, -tt.options.offset[1]];
+      }
+      if (keyEl) keyEl.classList.remove('yield');
+    });
+
+    var alt = document.createElement('div');
+    alt.className = 'vh';
+    alt.innerHTML = '<p>Map of the 29 gas fields and one oil field of Bangladesh, with remaining reserves as of February 2025.</p><ul>' +
+      FIELDS.map(function (f) {
+        return '<li>' + f.n + ', ' + f.dist + '. ' + F_ST[f.st].l + '. ' +
+          (f.st === 'oil' ? 'About 10 million barrels in place, 560,869 barrels produced.' : fBcf(f.rem) + ' remaining.') + '</li>';
+      }).join('') + '</ul>';
+    q('#fields-block').appendChild(alt);
+  }
+
   function lazyMap(blockId, fn) {
     var block = q('#' + blockId);
     if (!block) return;
@@ -1284,6 +1458,7 @@
 
   function startMaps() {
     if (typeof L === 'undefined') return;
+    lazyMap('fields-block', mapFields);
     lazyMap('map1-block', mapHormuz);
     lazyMap('map2-block', mapMoheshkhali);
     lazyMap('map3-block', mapImpact);
@@ -1393,6 +1568,26 @@
       if (best) set(best);
     }, { rootMargin: '-49.8% 0px -49.8% 0px', threshold: 0 });
     nodes.forEach(function (n) { io.observe(n); });
+  })();
+
+  /* ------------------------------------------------------- back to top */
+
+  (function () {
+    var btn = q('#totop');
+    if (!btn) return;
+    var on = false, tick = 0;
+    function upd() {
+      tick = 0;
+      var want = window.pageYOffset > window.innerHeight * 1.15;
+      if (want !== on) { on = want; btn.classList.toggle('on', on); }
+    }
+    window.addEventListener('scroll', function () {
+      if (!tick) tick = requestAnimationFrame(upd);
+    }, { passive: true });
+    btn.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+    });
+    upd();
   })();
 
   /* -------------------------------------------------------------- boot */
