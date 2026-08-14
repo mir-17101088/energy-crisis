@@ -23,7 +23,7 @@
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="assets/css/main.css">
-<link rel="preload" as="image" href="assets/img/hero-1400.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="assets/img/hero-tall.jpg" fetchpriority="high">
 </head>
 <body>
 
@@ -37,41 +37,41 @@
 <div class="progress" id="progress" aria-hidden="true"></div>
 
 <!-- ============================ HERO ============================ -->
-<div class="hero-shell">
-  <section class="hero" aria-labelledby="h1">
+<header class="opening">
+  <div class="hero-canvas" aria-hidden="true">
+   <div class="hero-frame">
     <div class="hero-media">
-      <img src="assets/img/hero-1400.jpg" width="1400" height="788" fetchpriority="high" decoding="async"
-           alt="Two liquefied natural gas carriers moored off a low coastline at dusk, a gas flare burning from a tower between them.">
+      <img src="assets/img/hero-tall.jpg" width="1800" height="2700" fetchpriority="high" decoding="async"
+           alt="Two liquefied natural gas carriers moored at a jetty at dusk, a gas flare burning from a tower on the deck, storm cloud above and a sunset over distant hills.">
     </div>
 
-    <div class="hero-top">
-      <p class="eyebrow hero-kicker">Bangladesh<br>April to August 2026</p>
-    </div>
+    <div class="hero-out"></div>
+   </div>
+  </div>
 
+  <section class="hero" aria-labelledby="h1">
     <div class="hero-body">
       <span class="hero-chip">Visual Report</span>
       <h1 id="h1">The Grid That Ran Out of Everything at Once</h1>
       <p class="stand">A war closed a strait. Then a fire on a moored ship took the lights out. How it connected.</p>
     </div>
   </section>
-</div>
+
+  <section class="hero-lede wrap prose standfirst">
+    <p class="sf-lede rv">A war closed a strait. The strait emptied a pipeline. The pipeline failed on a ship moored off Moheshkhali. By August load shedding was running past 3,000 megawatts and the country was meeting 57 percent of its gas demand.</p>
+    <p class="sf-tail rv">Each step followed from the one before it.</p>
+  </section>
+</header>
 
 <a class="hero-logo" href="https://www.thedailystar.net" aria-label="The Daily Star"><img src="assets/img/logo.svg" alt="The Daily Star" width="260" height="52"></a>
 
 <main class="page" id="start">
 
-<!-- ============================ STANDFIRST ============================ -->
-<section class="scene wrap prose" style="padding-block:calc(var(--rh) * .85) var(--rh)">
-  <p class="rv" style="font-family:var(--serif);font-size:clamp(21px,4vw,30px);line-height:1.42;color:var(--text-primary);letter-spacing:-0.014em">
-    A war closed a strait. The strait emptied a pipeline. The pipeline failed on a ship moored off Moheshkhali. By August load shedding was running past 3,000 megawatts and the country was meeting 57 percent of its gas demand. This is how it connected.
-  </p>
-</section>
-
 <!-- ============================ THE FIELDS ============================ -->
 <section id="fields" aria-labelledby="fldh">
-  <div class="wrap chart" style="padding-bottom:calc(var(--rh) * .5)">
+  <div class="wrap chart fhead" style="padding-bottom:calc(var(--rh) * .5)">
     <h3 class="sh rv" id="fldh">Where the gas comes from</h3>
-    <p class="lede rv" style="max-width:56ch">Bangladesh reportedly has atleast 29 gas fields and one oil field, with reserves as of February 2025. Twenty of the gas fields were still producing. Nearly all of them sit in a narrow band along the eastern border, and a single field in Habiganj supplies about half of everything the country pumps.</p>
+    <p class="lede rv">Bangladesh reportedly has atleast 29 gas fields and one oil field, with reserves as of February 2025. Twenty of the gas fields were still producing. Most of them sit in a narrow band along the eastern border, and a single field in Habiganj called Bibiyana supplies about half of everything the country pumps.</p>
   </div>
 
   <div class="map-full" id="fields-block">
@@ -95,9 +95,12 @@
     </div>
   </div>
 
-  <div class="wrap chart" style="padding-top:calc(var(--rh) * .4)">
+  <div class="wrap chart" style="padding-top:14px">
     <p class="fsrc rv">Locations are approximate: each field is plotted to its district or upazila, not its wellhead. Figures marked ≈ est. are estimates rather than reported balances. Reserves and cumulative production to February 2025. Hydrocarbon Unit and Petrobangla, with field reporting.</p>
   </div>
+
+  <!-- related coverage: fields -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="fields"></div></div>
 </section>
 
 <!-- ============================ CHAPTER 1 ============================ -->
@@ -173,11 +176,17 @@
     </div>
   </section>
 
+  <!-- related coverage: qatar -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="qatar"></div></div>
+
   <div class="scene scene-tight wrap chart">
-    <div class="inference rv">
-      <p>The spot market is not a safety net. In 2022, after Russia invaded Ukraine, spot LNG reached about $60 per MMBtu against a normal $10 to $12, and Bangladesh was priced out for months. The August 2026 cargo cost $21.55. That is the warning, not the relief.</p>
+    <div class="inference wide rv">
+      <p>The spot market is not a safety net. Spot market prices are highly volatile, have no upper ceiling, and impacted by global bidding wars. Developing nations like Bangladesh must outbid wealthier economies to secure cargo. While normal baseline prices range from $10 to $12 per MMBtu, geopolitical shocks can make the prices skyrocket. In 2022, after Russia invaded Ukraine, spot LNG reached about $60. To compare, the August 2026 cargo cost $21.55. That is the warning, not the relief.</p>
     </div>
   </div>
+
+  <!-- related coverage: spot -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="spot"></div></div>
 
   <!-- 1.3 sticky split -------------------------------------------------- -->
   <div class="wrap split scene sticky-split" id="ss-prod">
@@ -222,10 +231,13 @@
     </div>
   </div>
 
+  <!-- related coverage: mix -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="mix"></div></div>
+
   <!-- 1.4 absorber ------------------------------------------------------ -->
   <div class="scene wrap chart">
     <h3 class="sh rv">The state paid the difference for a while</h3>
-    <p class="lede rv">Global diesel rose 152 percent. Bangladeshi diesel rose 15 percent. That gap was not a discount. It was a bill.</p>
+    <p class="lede rv">Global diesel prices rose 152 percent. Bangladeshi diesel rose 15 percent. That gap was not a discount. It was a bill.</p>
 
     <div class="absorber rv" id="absorber" style="margin-top:34px">
       <div class="abs-row g">
@@ -245,14 +257,17 @@
       <div class="stat"><span class="v">Tk 78cr</span><span class="l">BPC loss per day, June</span></div>
     </div>
   </div>
+
+  <!-- related coverage: absorber -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="absorber"></div></div>
 </section>
 
 <!-- ============================ CHAPTER 2 ============================ -->
 <section class="chapter" id="ch2" aria-labelledby="ch2h">
   <div class="wrap split chapter-open bg-band band-disruption" style="--scrim:.20">
-    <h2 id="ch2h" class="rv">Anatomy of a Disruption</h2>
+    <h2 id="ch2h" class="rv">The Recent Disruption</h2>
     <p class="sub rv">21 July 2026</p>
-    <p class="opener rv">Everything above was pressure building. On a Tuesday afternoon in July, a fire broke out on a ship, and the pressure found its exit.</p>
+    <p class="opener rv">Everything above was pressure building. On July 21, a fire broke out on a ship, and the pressure found its exit.</p>
   </div>
 
   <!-- map 2 ------------------------------------------------------------- -->
@@ -380,7 +395,7 @@
       <div class="ss-step" data-step="5" data-state="grid">
         <div class="card">
           <span class="stepnum">The grid takes the hit</span>
-          <p class="b">Power plants had been getting about 900 million cubic feet a day. They dropped to 650. Gas generation fell from 5,200 megawatts to 3,500. The board started burning oil instead.</p>
+          <p class="b">Power plants had been getting about 900 million cubic feet a day. They dropped to 650. Gas generation fell from 5,200 megawatts to 3,500. The Power Development Board started burning oil instead.</p>
         </div>
       </div>
       <div class="ss-step" data-step="6" data-state="cost">
@@ -395,21 +410,23 @@
     </div>
   </div>
 
+
+  <!-- related coverage: fsru -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="fsru"></div></div>
+
   <!-- shortfall chart -------------------------------------------------- -->
   <div class="scene wrap chart">
-    <h3 class="sh rv">Reported shortfalls in early August</h3>
-    <p class="lede rv">Each bar is a day the grid operator's shortfall figure was published. A tick with no bar is a day no figure was reported, not a day without load shedding.</p>
+    <h3 class="sh rv">Average load shedding, 1 to 12 August</h3>
+    <p class="lede rv">Each bar is the average load shedding for that day, in megawatts an hour, as reported by the grid operator. Every day from 1 to 12 August has a reported figure.</p>
     <div class="frame rv" style="margin-top:30px">
       <div class="plot" id="chart-grid" style="aspect-ratio:88/43"></div>
-      <div class="chartkey">
-        <span class="ck"><i class="sw"></i>Reported figure</span>
-        <span class="ck"><i class="sw appx"></i>Given as about, over, or a floor</span>
-        <span class="ck"><i class="sw tick"></i>No figure reported</span>
-      </div>
-      <p class="fsrc">National power shortfall, megawatts. Power Grid Company of Bangladesh data</p>
+      <p class="fsrc">Average load shedding per hour, megawatts. Power Grid Company of Bangladesh data</p>
     </div>
     <p class="note rv" style="margin-top:22px">Held out of the chart: the roughly 3,000 MW lost on 28 June. That was capacity off the grid from a boiler tube leak and a coal ship that could not unload in rough seas, three weeks before the terminal failed.</p>
   </div>
+
+  <!-- related coverage: shortfall -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="shortfall"></div></div>
 
   <!-- 2.7 recurrence ---------------------------------------------------- -->
   <div class="scene wrap chart">
@@ -467,15 +484,19 @@
 
   <!-- causal chain ------------------------------------------------------ -->
   <div class="scene wrap split">
-    <h3 class="sh rv">How it connected</h3>
-    <p class="lede rv" style="max-width:56ch">One chain runs from a war in February to a dark house in August. Each box is a step the record establishes, and each arrow is the step it forced next.</p>
-    <div class="chain-scroll rv" id="chain-wrap" style="margin-top:34px">
-      <div id="chain" style="aspect-ratio:1120/580"></div>
+    <div class="tbreak rv">
+      <h3>How it connected</h3>
+      <p>One chain runs from a war in February to a dark house in August. Each box is a step the record establishes, and each arrow is the step it forced next.</p>
     </div>
-    <p class="chain-hint">Scroll the diagram sideways to follow the chain.</p>
-    <div class="chain-key">
-      <div><svg viewBox="0 0 34 8" aria-hidden="true"><line x1="0" y1="4" x2="34" y2="4" stroke="#918878" stroke-width="1.5"></line></svg><span>One step forcing the next</span></div>
-      <div><svg viewBox="0 0 34 8" aria-hidden="true"><rect x="0" y="0" width="34" height="8" fill="none" stroke="#F2665F" stroke-width="1.5"></rect></svg><span>The failure and the number it produced</span></div>
+    <div class="chain-box rv">
+      <div class="chain-scroll" id="chain-wrap">
+        <div id="chain" style="aspect-ratio:1120/580"></div>
+      </div>
+      <p class="chain-hint">Scroll the diagram sideways to follow the chain.</p>
+      <div class="chain-key">
+        <div><svg viewBox="0 0 34 8" aria-hidden="true"><line x1="0" y1="4" x2="34" y2="4" stroke="#918878" stroke-width="1.5"></line></svg><span>One step forcing the next</span></div>
+        <div><svg viewBox="0 0 34 8" aria-hidden="true"><rect x="0" y="0" width="34" height="8" fill="none" stroke="#F2665F" stroke-width="1.5"></rect></svg><span>The failure and the number it produced</span></div>
+      </div>
     </div>
     <noscript>
       <ol style="margin-top:24px;line-height:1.7">
@@ -490,9 +511,8 @@
 
 <!-- ============================ CHAPTER 3 ============================ -->
 <section class="chapter" id="ch3" aria-labelledby="ch3h">
-  <div class="wrap split chapter-open bg-band band-pressure" style="--scrim:.32">
+  <div class="wrap split chapter-open solo bg-band band-pressure" style="--scrim:.32">
     <h2 id="ch3h" class="rv">The Economic Pressure Cooker</h2>
-    <p class="opener rv">Gas does not arrive as a quantity. It arrives as a pressure. Below a certain pressure, a factory is not slow. It is stopped.</p>
   </div>
 
   <!-- 3.1 pressure ladder ----------------------------------------------- -->
@@ -537,7 +557,7 @@
       </div>
     </div>
 
-    <div class="inference rv" style="margin-top:40px">
+    <div class="inference mid rv" style="margin-top:40px">
       <p>The exporters' stated fear was not the cost. It was delivery dates and buyer confidence. Cost is recoverable next quarter. A buyer who reroutes an order to Vietnam may not come back.</p>
     </div>
   </div>
@@ -568,15 +588,22 @@
     </div>
   </div>
 
-  <!-- 3.4 queue --------------------------------------------------------- -->
-  <div class="scene scene-tight wrap chart bg-band band-queue" style="--scrim:.36">
-    <h3 class="sh rv">Transport and the queue</h3>
-    <p class="lede rv">CNG stations run on pipeline pressure. When pressure fell to nearly zero, the queues stopped moving. One driver in Tejgaon waited sixteen hours from four in the morning.</p>
-    <div class="queue rv" id="queue" style="margin-top:30px">
-      <div class="abs-lbl"><span>One driver's day, Tejgaon</span><b>16 hours queuing</b></div>
-      <div class="qbar"><i class="seg work" aria-hidden="true"></i><i class="seg wait" aria-hidden="true"></i></div>
-      <div class="qticks"><span>04:00</span><span>12:00</span><span>20:00</span><span>24:00</span></div>
-      <p class="qnote">After sixteen hours he got Tk 120 of gas, because the pressure was too low to fill the tank. Then he rejoined the queue.</p>
+  <!-- 3.3b where three of those plants sit ------------------------------- -->
+  <div class="map-full" id="map4-block">
+    <div class="map-shell short">
+      <div id="map4" style="position:absolute;inset:0"></div>
+    </div>
+    <div class="map-inset">
+      <div class="map-panel rv">
+        <p class="mp-lead">Three of the state-run fertiliser factories are in Chattogram.</p>
+        <p>Chattogram generated nearly 3,000 megawatts at peak and could not keep its own lights on. Local plants feed the national grid. The region then waits to be allocated power back from it.</p>
+        <div class="mp-rows">
+          <div><b>2,987 MW</b><span>Supplied to the national grid at peak</span></div>
+          <div><b>1,529 MW</b><span>Allocated back to the region</span></div>
+          <div><b>1,621 MW</b><span>Local peak demand</span></div>
+        </div>
+        <p class="mp-note">A gas deficit of about 100 MMcfd in the Karnaphuli franchise sits underneath it. The distributor curtails supply to sectors named by government while trying to keep at least one of the city's two fertiliser plants running.</p>
+      </div>
     </div>
   </div>
 
@@ -592,30 +619,12 @@
 
     <p class="note rv" style="margin-top:22px">Fuel prices rose on 18 April even as Brent fell 9 percent to $90.</p>
 
-    <div class="inference rv" style="margin-top:34px">
+    <div class="inference mid rv" style="margin-top:34px">
       <p>The 18 April hike is the tell. Crude was falling. The government raised prices anyway, mid month, breaking its own monthly adjustment rule. It was the first mid month change since the automatic mechanism began in 2024. The trigger was not the world price. It was the accumulated loss on the state's own books, and the point at which it could no longer be carried.</p>
     </div>
 
   </div>
 
-  <!-- 3.6 chattogram paradox -------------------------------------------- -->
-  <div class="map-full" id="map4-block">
-    <div class="map-shell short">
-      <div id="map4" style="position:absolute;inset:0"></div>
-    </div>
-    <div class="map-inset">
-      <div class="map-panel rv">
-        <h3>Chattogram, the paradox</h3>
-        <p>Chattogram generated nearly 3,000 megawatts at peak and could not keep its own lights on. Local plants feed the national grid. The region then waits to be allocated power back from it.</p>
-        <div class="mp-rows">
-          <div><b>2,987 MW</b><span>Supplied to the national grid at peak</span></div>
-          <div><b>1,529 MW</b><span>Allocated back to the region</span></div>
-          <div><b>1,621 MW</b><span>Local peak demand</span></div>
-        </div>
-        <p class="mp-note">A gas deficit of about 100 MMcfd in the Karnaphuli franchise sits underneath it. The distributor curtails supply to sectors named by government while trying to keep at least one of the city's two fertiliser plants running.</p>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- ============================ CHAPTER 4 ============================ -->
@@ -625,54 +634,33 @@
     <p class="opener rv">Load shedding is a scheduling word. What it means is a five year old who cannot sleep.</p>
   </div>
 
-  <div class="scene wrap prose">
-    <div class="quote rv-f">
-      <blockquote class="toll-quote">My little son cries through the night. I have no choice but to sit beside him and fan him manually for hours.</blockquote>
-      <cite><b>Shuvechchha Ghosh</b><span>Resident, Askar Dighir Par, Chattogram</span></cite>
-    </div>
-    <p class="rv-f" style="margin-top:40px;font-size:clamp(17px,2.4vw,19px);line-height:1.6">Seven or eight outages a day, dawn to midnight. 33 degrees, 69 percent humidity. The forecast officer noted people only feel comfortable below 50 percent.</p>
-  </div>
-
   <!-- 4.2 outage hours + map ------------------------------------------- -->
   <div class="scene wrap chart">
     <h3 class="sh rv">The outages were not shared evenly</h3>
     <p class="lede rv">Dhaka got the largest total shortfall. Rural districts got the longest hours. In parts of Bagmara, electricity was gone for about sixteen hours a day.</p>
     <div class="strip rv" id="strip" style="margin-top:32px"></div>
     <p class="note rv" style="margin-top:18px">Only locations with a reported figure are shown. Gaps are gaps, not zeroes. Hatched bars are a different measure: share of demand met, not hours lost.</p>
-  </div>
 
-  <div class="map-full" id="map3-block">
-    <div class="map-shell">
-      <div id="map3" style="position:absolute;inset:0"></div>
-      <div class="map-legend">
-        <h5>Point size</h5>
-        <p style="margin:0 0 10px;font-size:12.5px;line-height:1.45">Radius encodes reported outage hours a day.</p>
-        <div class="lg"><span class="dot" aria-hidden="true"></span><span>Outage hours reported</span></div>
-        <div class="lg"><span class="dot ring" aria-hidden="true"></span><span>Share of demand met, a different measure</span></div>
-      </div>
-      <p class="map-face">Locations where an outage figure was reported. Select a point for its figure. Absence of a marker means no figure was reported, not that supply was normal.</p>
-      <noscript><p style="position:absolute;inset:auto 20px 20px;z-index:403;background:#02071F;padding:16px;border:1px solid #16255C">Point map of Bangladesh. Bagmara about 16 hours a day. Kapasia, Sreepur, Kaliganj and Kaliakair 10 to 12 hours. Pabna and Gopalganj 8 to 10 hours. Fulpur over 7 hours. Khulna 3 to 5 hours. Natore PBS-2 receiving 35 percent of demand. Mouchak and Bannara allocated 32 MW against 70 MW needed.</p></noscript>
+    <div class="places rv">
+      <article class="place" data-screen-label="Gandaria">
+        <span class="pl">Dhaka, Gandaria</span>
+        <p>In Dhaka, piped gas ran out before ten in the morning. Families cooked on rice cookers and paid for gas and electricity both.</p>
+      </article>
+      <article class="place" data-screen-label="Batiaghata">
+        <span class="pl">Batiaghata, Khulna</span>
+        <p>In Batiaghata, more than 500 shrimp farms watched their aerators stop. Oxygen falls. The shrimp begin to die. Small farmers cannot afford a generator for hours a day.</p>
+      </article>
+      <article class="place" data-screen-label="Cumilla">
+        <span class="pl">Cumilla</span>
+        <p>In Cumilla, draining a fish pond takes one night. It took three.</p>
+      </article>
+      <article class="place" data-screen-label="Kaliakair">
+        <span class="pl">Kaliakair, Gazipur</span>
+        <p>In Kaliakair, residents surrounded the electricity office and blocked the Dhaka to Tangail highway. They went home after being promised improvement.</p>
+      </article>
     </div>
   </div>
 
-  <!-- 4.3 four places, on the map --------------------------------------- -->
-  <div class="map-scroll" id="map5-block">
-    <div class="ms-sticky"><div id="map5"></div></div>
-    <div class="ms-steps">
-      <section class="ms-step" data-mstep="0" data-screen-label="Gandaria">
-        <div class="ms-card"><span class="pl">Dhaka, Gandaria</span><p>In Dhaka, piped gas ran out before ten in the morning. Families cooked on rice cookers and paid for gas and electricity both.</p></div>
-      </section>
-      <section class="ms-step" data-mstep="1" data-screen-label="Batiaghata">
-        <div class="ms-card"><span class="pl">Batiaghata, Khulna</span><p>In Batiaghata, more than 500 shrimp farms watched their aerators stop. Oxygen falls. The shrimp begin to die. Small farmers cannot afford a generator for hours a day.</p></div>
-      </section>
-      <section class="ms-step" data-mstep="2" data-screen-label="Cumilla">
-        <div class="ms-card"><span class="pl">Cumilla</span><p>In Cumilla, draining a fish pond takes one night. It took three.</p></div>
-      </section>
-      <section class="ms-step" data-mstep="3" data-screen-label="Kaliakair">
-        <div class="ms-card"><span class="pl">Kaliakair, Gazipur</span><p>In Kaliakair, residents surrounded the electricity office and blocked the Dhaka to Tangail highway. They went home after being promised improvement.</p></div>
-      </section>
-    </div>
-  </div>
 </section>
 
 <!-- ============================ CHAPTER 5 ============================ -->
@@ -708,35 +696,16 @@
     <p class="lede rv">A day later the regulator withdrew the increase for 1.62 crore lifeline consumers. It also noted that the lost revenue would have to be covered by additional government subsidy.</p>
     <div class="inference rv" style="margin-top:28px">
       <p>The rollback did not remove the cost. It returned it to the subsidy account the tariff rise was meant to relieve. Even after the increase, the power board still needs about Tk 41,000 crore a year.</p>
+      <p>More import capacity is therefore more subsidy liability. Imported LNG costs about Tk 65 a cubic metre and sells to industry at Tk 30. Unless tariffs roughly double, every cubic metre of new capacity enlarges the fiscal hole it was built to fix.</p>
     </div>
   </div>
 
   <!-- 5.3 options + scale frame ---------------------------------------- -->
   <div class="scene wrap chart">
-    <h3 class="sh rv">Four ways out, weighed</h3>
-    <p class="lede rv" style="max-width:56ch">Every option is drawn against the same gap: 1,630 MMcfd, the distance between demand and supply after 21 July.</p>
+    <h3 class="sh rv" style="max-width:30ch">Evaluating Four Solutions Against a 1,630 MMcfd Deficit</h3>
+    <p class="lede rv" style="max-width:66ch">To solve Bangladesh’s energy crunch, any strategy must confront a single stark reality: a daily gas shortfall of 1,630 million cubic feet per day (MMcfd). This is the deficit left in the wake of the July 21 terminal fire at Moheshkhali, which dropped national supply to 2,170 MMcfd against a demand of 3,800 MMcfd. Below, we weigh four proposed pathways against the scale of that gap.</p>
 
     <div class="ways rv" id="ways">
-      <div class="wy-top">
-        <div class="wy-donut">
-          <svg viewBox="0 0 220 220" role="img" aria-label="Donut chart of the 1,630 MMcfd gap: the third FSRU would close 36 percent, Titas-31 under 1 percent, and 63 percent stays open.">
-            <g class="dt-g">
-              <circle class="dt-tr" cx="110" cy="110" r="86"></circle>
-              <circle class="dt-sg a" cx="110" cy="110" r="86" style="--len:190.9;--off:0;--dl:120ms"></circle>
-              <circle class="dt-sg b" cx="110" cy="110" r="86" style="--len:3.5;--off:-193.9;--dl:560ms"></circle>
-              <circle class="dt-sg c" cx="110" cy="110" r="86" style="--len:338.4;--off:-198.9;--dl:760ms"></circle>
-            </g>
-          </svg>
-          <div class="dt-mid"><b>1,630</b><span>MMcfd gap</span></div>
-        </div>
-
-        <div class="wy-key">
-          <div class="wy-kr" style="--dl:300ms"><i class="a"></i><em>Third FSRU, Kutubjom<small>Arrives in 2 to 3 years</small></em><b>585<s>36%</s></b></div>
-          <div class="wy-kr" style="--dl:640ms"><i class="b"></i><em>Titas-31 deep well<small>210 days</small></em><b>15<s>0.9%</s></b></div>
-          <div class="wy-kr" style="--dl:840ms"><i class="c"></i><em>Still open<small>Nothing announced closes it</small></em><b>1,030<s>63%</s></b></div>
-        </div>
-      </div>
-
       <div class="wy-grid">
         <div class="wy-c q" style="--dl:0ms">
           <span class="wy-cn">Third FSRU, Kutubjom</span>
@@ -765,33 +734,30 @@
       </div>
       <p class="wy-foot">The one option that closes a third of the gap is also the slowest. Where no capacity was reported, nothing is drawn rather than estimated.</p>
     </div>
-
-    <div class="inference rv" style="margin-top:32px">
-      <p>This is not an argument against drilling. It is an argument about pace. At the scale now being drilled, domestic exploration cannot close a gap this size within this decade.</p>
-    </div>
   </div>
 
   <!-- 5.4 expert split ------------------------------------------------- -->
   <div class="scene wrap chart">
-    <h3 class="sh rv">The expert split</h3>
-    <p class="lede rv">Two positions, presented as positions.</p>
-    <div class="positions rv" style="margin-top:30px">
-      <div class="pos">
+    <div class="positions rv">
+      <div class="pos faced">
         <blockquote>Another FSRU could be justified as a short-term measure because Bangladesh cannot increase domestic gas production quickly enough to address its immediate supply shortage.</blockquote>
-        <cite><b>Prof M Tamim</b><span>Vice-Chancellor, Independent University Bangladesh</span></cite>
+        <cite>
+          <span class="face"><img src="assets/img/portrait-tamim.png" alt="Prof M Tamim" width="235" height="236" loading="lazy" decoding="async"></span>
+          <span class="who"><b>Prof M Tamim</b><span>Vice-Chancellor, Independent University Bangladesh</span></span>
+        </cite>
       </div>
-      <div class="pos">
+      <div class="pos faced">
         <blockquote>It is not only FSRU installation. We will need to import the LNG at volatile cost for years.</blockquote>
-        <cite><b>Shafiqul Alam</b><span>Lead Bangladesh energy analyst, IEEFA</span></cite>
+        <cite>
+          <span class="face"><img src="assets/img/portrait-shafiqul.png" alt="Shafiqul Alam" width="245" height="238" loading="lazy" decoding="async"></span>
+          <span class="who"><b>Shafiqul Alam</b><span>Lead Bangladesh energy analyst, IEEFA</span></span>
+        </cite>
       </div>
     </div>
     <div class="statrow three rv" style="margin-top:34px">
       <div class="stat"><span class="v">Tk 65</span><span class="l">Cost of imported LNG per cubic metre</span></div>
       <div class="stat"><span class="v">Tk 30</span><span class="l">What industry pays</span></div>
       <div class="stat"><span class="v">Tk 31.50</span><span class="l">What captive power pays</span></div>
-    </div>
-    <div class="inference rv" style="margin-top:34px">
-      <p>More import capacity is therefore more subsidy liability. Imported LNG costs about Tk 65 a cubic metre and sells to industry at Tk 30. Unless tariffs roughly double, every cubic metre of new capacity enlarges the fiscal hole it was built to fix.</p>
     </div>
   </div>
 
@@ -882,7 +848,7 @@
       </div>
     </div>
 
-    <div class="inference hard rv" style="margin-top:38px">
+    <div class="inference hard mid rv" style="margin-top:38px">
       <p>The stated rationale is that private imports reduce the subsidy burden. That does not follow. The subsidy exists because fuel sells below import cost. A private importer held to the same regulated price needs the same support. One free to set its own price shifts the burden to consumers. Either way the cost does not vanish. It moves.</p>
     </div>
 
@@ -895,8 +861,40 @@
 
 <!-- ============================ CODA ============================ -->
 <section class="chapter" id="coda" aria-labelledby="codah">
-  <div class="wrap chart coda bg-band band-coda" style="--scrim:.32">
-    <h2 id="codah" class="big rv">By 10 August one boiler was back. Supply had climbed to about 2,350 million cubic feet. Demand was still 3,800. The shortfall had not closed. It had narrowed.</h2>
+  <div class="wrap chart coda chapter-open bg-band band-coda" style="--scrim:.32">
+    <div class="rule rv" aria-hidden="true"></div>
+    <p class="sub rv">13 August 2026</p>
+    <h2 id="codah" class="big rv">The shortfall did not narrow. Then the second terminal went dry.</h2>
+    <p class="opener rv">A tanker had been waiting since Monday to come alongside. Bad weather in the Bay kept it off the berth. At about five in the afternoon, Summit's floating terminal ran out of gas.</p>
+  </div>
+
+  <div class="scene wrap chart">
+    <h3 class="sh rv">A quarter of the LNG the grid needs</h3>
+    <p class="lede rv" style="max-width:52ch">One terminal is still under repair. The other is empty. The Rural Electrification Board is getting 5,000 to 6,000 megawatts against the 8,000 to 9,000 it needs.</p>
+    <div class="statrow four rv" style="margin-top:36px">
+      <div class="stat"><span class="v">Below 300</span><span class="l">MMcfd of LNG reaching the grid. About 1,000 is normal with both terminals running</span></div>
+      <div class="stat"><span class="v">1,930</span><span class="l">MMcfd of gas supplied against demand of 3,800. Wednesday was 2,100</span></div>
+      <div class="stat"><span class="v">15,500</span><span class="l">MW of power at best, against demand above 17,000. The floor is 14,000</span></div>
+      <div class="stat"><span class="v">8 to 12</span><span class="l">Hours a day without power in parts of the countryside</span></div>
+    </div>
+  </div>
+
+  <div class="scene wrap chart">
+    <h3 class="sh rv">What it costs while they wait</h3>
+    <div class="roll rv" style="margin-top:34px">
+      <div class="rl"><b>80%</b><p>of textile, dyeing and printing mills in Narsingdi and Madhabdi have stopped. The zone puts the loss at Tk 400 to 500 crore a day.</p></div>
+      <div class="rl"><b>57</b><p>Meghna Group factories shut since the night of 10 August. BSRM has closed all ten of its major plants.</p></div>
+      <div class="rl"><b>390%</b><p>more diesel burned at Apex Footwear. Snowtex says its fuel costs are up 150 percent.</p></div>
+      <div class="rl"><b>30 of 33</b><p>CNG filling stations in Narayanganj have stopped refuelling vehicles.</p></div>
+      <div class="rl"><b>90 to 30</b><p>Tonnes of rice a day at a mill in Khajanagar, Kushtia, on five to six hours of power.</p></div>
+    </div>
+
+    <div class="quote rv" style="margin-top:clamp(48px,7vh,76px);max-width:34ch">
+      <blockquote>Now I can only count the days.</blockquote>
+      <cite><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></cite>
+    </div>
+    <p class="note rv" style="margin-top:24px;max-width:56ch">He was speaking of the engineers repairing the damaged Excelerate unit, at a Centre for Policy Dialogue discussion on 13 August, hours before the Summit terminal ran dry.</p>
+    <p class="fsrc rv" style="margin-top:18px">Figures for 13 August. Petrobangla, Power Grid Bangladesh, the Bangladesh Rural Electrification Board, Titas Gas and industry associations, reported by The Daily Star on 14 August 2026.</p>
   </div>
 </section>
 
@@ -918,14 +916,33 @@
   </div>
 </footer>
 
-<button class="totop" id="totop" type="button" aria-label="Back to top">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" aria-hidden="true" focusable="false"><path d="M12 19V5"/><path d="M5.5 11.5 12 5l6.5 6.5"/></svg>
-</button>
+<div class="dock">
+  <button class="totop" id="totop" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" aria-hidden="true" focusable="false"><path d="M12 19V5"/><path d="M5.5 11.5 12 5l6.5 6.5"/></svg>
+  </button>
 
-<div class="ribbon" id="ribbon" aria-hidden="true"></div>
+  <nav class="chapnav" id="chapnav" aria-label="Chapters">
+    <div class="cn-menu" id="cnMenu">
+      <p class="cn-hd">Contents</p>
+      <a class="cn-i" href="#fields"><span class="cn-t">Where the gas comes from</span></a>
+      <a class="cn-i" href="#ch1"><span class="cn-t">The Global Shockwave and the Domestic Trap</span></a>
+      <a class="cn-i" href="#ch2"><span class="cn-t">The Recent Disruption</span></a>
+      <a class="cn-i" href="#ch3"><span class="cn-t">The Economic Pressure Cooker</span></a>
+      <a class="cn-i" href="#ch4"><span class="cn-t">The Human Toll</span></a>
+      <a class="cn-i" href="#ch5"><span class="cn-t">Policy Crossroads and the Private Sector Gamble</span></a>
+      <a class="cn-i" href="#coda"><span class="cn-t">The Crisis Deepens</span></a>
+    </div>
+    <button class="cn-btn" id="cnBtn" type="button" aria-expanded="false" aria-controls="cnMenu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" aria-hidden="true" focusable="false"><path d="M4 7h16"/><path d="M4 12h11"/><path d="M4 17h7"/></svg>
+      <span class="cn-lbl">Chapters</span>
+    </button>
+  </nav>
+</div>
+
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous" defer></script>
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/articles.js" defer></script>
 </body>
 </html>

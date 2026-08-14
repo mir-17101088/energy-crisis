@@ -93,16 +93,18 @@
        The 28 June 3,000 MW figure is deliberately absent: it is capacity lost
        from the grid, a different metric with a different cause. */
     shortfall: [
-      { d: '2026-07-24', v: 500,  s: 'approx' },
       { d: '2026-08-01', v: 2174, s: 'reported' },
-      { d: '2026-08-02', v: 3000, s: 'approx' },
-      { d: '2026-08-03', v: 3000, s: 'approx' },
-      { d: '2026-08-04', v: 2000, s: 'approx' },
+      { d: '2026-08-02', v: 2353, s: 'reported' },
+      { d: '2026-08-03', v: 2700, s: 'reported' },
+      { d: '2026-08-04', v: 2052, s: 'reported' },
+      { d: '2026-08-05', v: 826,  s: 'reported' },
       { d: '2026-08-06', v: 335,  s: 'reported' },
       { d: '2026-08-07', v: 740,  s: 'reported' },
       { d: '2026-08-08', v: 2167, s: 'reported' },
-      { d: '2026-08-09', v: 3000, s: 'approx' },
-      { d: '2026-08-10', v: 3750, s: 'reported' }
+      { d: '2026-08-09', v: 2968, s: 'reported' },
+      { d: '2026-08-10', v: 2860, s: 'reported' },
+      { d: '2026-08-11', v: 2399, s: 'reported' },
+      { d: '2026-08-12', v: 2745, s: 'reported' }
     ],
 
     /* administered prices, March to August 2026. C-053 to C-060.
@@ -371,15 +373,15 @@
     var W = 880, H = 430, m = { t: 46, r: 16, b: 54, l: 58 };
     var K = scaleK(host, W, H), F = function (v) { return Math.round(v * K * 10) / 10; };
     var s = svg(W, H);
-    s.setAttribute('aria-label', 'Bar chart of national power shortfall by day in early August. 2,174 MW on 1 August, about 3,000 on 2 and 3 August, over 2,000 on 4 August, 335 on 6 August, 740 on 7 August, 2,167 on 8 August, about 3,000 on 9 August, 3,750 on 10 August. No figure was reported for 5 August.');
+    s.setAttribute('aria-label', 'Bar chart of average load shedding per hour, in megawatts, for each day from 1 to 12 August 2026. 2,174 then 2,353, 2,700, 2,052, 826, 335, 740, 2,167, 2,968, 2,860, 2,399 and 2,745. Every figure is a reported one.');
 
-    var DAY = 864e5, d0 = Date.parse('2026-08-01'), d1 = Date.parse('2026-08-10');
+    var DAY = 864e5, d0 = Date.parse('2026-08-01'), d1 = Date.parse('2026-08-12');
     var SF = DATA.shortfall.filter(function (d) { return Date.parse(d.d) >= d0; });
     var n = Math.round((d1 - d0) / DAY) + 1;
     var slot = (W - m.l - m.r) / n;
     var idx = function (d) { return Math.round((Date.parse(d) - d0) / DAY); };
     var cx = function (i) { return m.l + i * slot + slot / 2; };
-    var y = function (v) { return H - m.b - v / 4000 * (H - m.t - m.b); };
+    var y = function (v) { return H - m.b - v / 3200 * (H - m.t - m.b); };
     var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var EASE = 'cubic-bezier(.22,1,.36,1)';
 
@@ -390,7 +392,7 @@
     defs.appendChild(pat);
     s.appendChild(defs);
 
-    [0, 1000, 2000, 3000, 4000].forEach(function (v) {
+    [0, 1000, 2000, 3000].forEach(function (v) {
       s.appendChild(el('line', { x1: m.l, y1: y(v), x2: W - m.r, y2: y(v), stroke: v ? '#2C2620' : '#4A4137', 'stroke-width': 1 }));
       s.appendChild(el('text', { x: m.l - 10, y: y(v) + F(3.6), 'text-anchor': 'end', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, group(v)));
     });
@@ -401,17 +403,20 @@
     for (var i = 0; i < n; i++) {
       var dt = new Date(d0 + i * DAY);
       if (!have[i]) s.appendChild(el('line', { x1: cx(i), y1: H - m.b, x2: cx(i), y2: H - m.b - 7, stroke: '#4A4137', 'stroke-width': 1.5 }));
-      if (i % 3 === 0) s.appendChild(el('text', { x: cx(i), y: H - m.b + F(19), 'text-anchor': 'middle', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, dt.getUTCDate() + ' ' + MON[dt.getUTCMonth()]));
+      if (i % 2 === 0) s.appendChild(el('text', { x: cx(i), y: H - m.b + F(19), 'text-anchor': 'middle', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, dt.getUTCDate() + ' ' + MON[dt.getUTCMonth()]));
     }
 
     var bw = Math.min(slot * 0.5, 40);
+    /* twelve bars in one viewBox: the value type is capped to its own slot so
+       it can never collide with its neighbour on a phone */
+    var vfs = Math.min(F(11.5), slot * 0.94 / 3);
     SF.forEach(function (d, k) {
       var i2 = idx(d.d), top = y(d.v), appx = d.s !== 'reported', g = el('g');
       g.appendChild(el('rect', {
         x: cx(i2) - bw / 2, y: top, width: bw, height: (H - m.b) - top,
         fill: appx ? 'url(#appxhatch)' : '#E5793F', stroke: appx ? '#E5793F' : 'none', 'stroke-width': appx ? 1.2 : 0
       }));
-      g.appendChild(el('text', { x: cx(i2), y: top - F(10), 'text-anchor': 'middle', fill: '#F5F2EA', 'font-family': 'Geist Mono, monospace', 'font-size': F(11.5) }, group(d.v)));
+      g.appendChild(el('text', { x: cx(i2), y: top - F(10), 'text-anchor': 'middle', fill: '#F5F2EA', 'font-family': 'Geist Mono, monospace', 'font-size': vfs }, group(d.v)));
       if (!REDUCED) {
         g.style.opacity = 0;
         g.style.transform = 'translateY(14px)';
@@ -453,11 +458,24 @@
     var t0 = Date.parse('2026-03-01'), t1 = Date.parse('2026-08-12');
     var X = function (d) { return m.l + (Date.parse(d) - t0) / (t1 - t0) * (W - m.l - m.r); };
 
+    /* a label that would run off an edge flips its anchor and pins to the edge
+       instead of overflowing. viewBox units, so it holds at every width */
+    var fit = function (t, x, anchor, txt, fs) {
+      var w = String(txt).length * fs * 0.58, lo = 3, hi = W - 3, L, R;
+      if (anchor === 'middle') { L = x - w / 2; R = x + w / 2; }
+      else if (anchor === 'end') { L = x - w; R = x; }
+      else { L = x; R = x + w; }
+      if (L < lo) { t.setAttribute('text-anchor', 'start'); t.setAttribute('x', lo); }
+      else if (R > hi) { t.setAttribute('text-anchor', 'end'); t.setAttribute('x', hi); }
+      return t;
+    };
+
     ['2026-03-01', '2026-04-01', '2026-05-01', '2026-06-01', '2026-07-01', '2026-08-01'].forEach(function (d, di) {
       s.appendChild(el('line', { x1: X(d), y1: top - 12, x2: X(d), y2: H - 26, stroke: '#3B3329', 'stroke-width': 1, opacity: 0.7 }));
       if (NARROWL && di % 2) return;
-      s.appendChild(el('text', { x: X(d), y: top - 18, 'text-anchor': 'middle', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10) },
-        ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][(new Date(d)).getUTCMonth() - 2]));
+      var mn = ['Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'][(new Date(d)).getUTCMonth() - 2];
+      s.appendChild(fit(el('text', { x: X(d), y: top - 18, 'text-anchor': 'middle', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10) }, mn),
+        X(d), 'middle', mn, F(10)));
     });
 
     lanes.forEach(function (lane, li) {
@@ -491,20 +509,23 @@
         s.appendChild(el('circle', { cx: px, cy: py, r: 3.4, fill: lane.color }));
         var mk = lane.marks && lane.marks[p[0]];
         var lbl = (p[1] % 1 === 0 ? p[1] : p[1].toFixed(2));
-        var t = el('text', { x: px + 6, y: py - 6, fill: mk ? '#F98A80' : '#F5F2EA', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, (mk && !NARROWL) ? lbl + ' ' + mk : lbl);
+        var val = (mk && !NARROWL) ? lbl + ' ' + mk : String(lbl);
         // trailing labels read leftward so they cannot run off the right edge,
         // but never the first point, whose label would then leave the frame
-        if (i > 0 && (i === lane.pts.length - 2 || i === lane.pts.length - 1)) { t.setAttribute('text-anchor', 'end'); t.setAttribute('x', px - 6); }
-        s.appendChild(t);
+        var anc = 'start', tx = px + 6;
+        if (i > 0 && (i === lane.pts.length - 2 || i === lane.pts.length - 1)) { anc = 'end'; tx = px - 6; }
+        var t = el('text', { x: tx, y: py - 6, 'text-anchor': anc, fill: mk ? '#F98A80' : '#F5F2EA', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, val);
+        s.appendChild(fit(t, tx, anc, val, F(10.5)));
       });
     });
 
     // 18 April annotation
     var ax = X('2026-04-18');
     s.appendChild(el('line', { x1: ax, y1: top - 12, x2: ax, y2: H - 26, stroke: '#F2665F', 'stroke-width': 1.2, 'stroke-dasharray': '4 4' }));
-    var an = el('text', { x: ax + 6, y: H - 10, fill: '#F98A80', 'font-family': 'Geist Mono, monospace', 'font-size': F(10) }, NARROWL ? '18 Apr' : '18 Apr, Brent down 9% to $90');
-    if (NARROWL) { an.setAttribute('text-anchor', 'middle'); an.setAttribute('x', ax); }
-    s.appendChild(an);
+    var atx = NARROWL ? '18 Apr' : '18 Apr, Brent down 9% to $90';
+    var aanc = NARROWL ? 'middle' : 'start', aax = NARROWL ? ax : ax + 6;
+    var an = el('text', { x: aax, y: H - 10, 'text-anchor': aanc, fill: '#F98A80', 'font-family': 'Geist Mono, monospace', 'font-size': F(10) }, atx);
+    s.appendChild(fit(an, aax, aanc, atx, F(10)));
 
     host.appendChild(s);
     var io = new IntersectionObserver(function (es) {
@@ -524,7 +545,7 @@
     var MAX = 36;
     var pc = function (v) { return Math.max(0, Math.min(100, v / MAX * 100)); };
     var one = function (v) { return String(Math.round(v * 10) / 10); };
-    var num = function (a) { return a[0] === a[1] ? one(a[0]) : one(a[0]) + '\u2013' + one(a[1]); };
+    var num = function (a) { return a[0] === a[1] ? one(a[0]) : one(a[0]) + '-' + one(a[1]); };
 
     var ax = document.createElement('div');
     ax.className = 'psi-axis';
@@ -783,16 +804,15 @@
       io.observe(host);
     }
 
-    var tall = null;
+    var built = false;
+    /* one layout only: narrow screens scroll the diagram sideways, so the
+       reading order is the same at every width */
     function render() {
-      var avail = Math.round((wrap || host).clientWidth || 360);
-      var want = avail < 900;
-      if (want === tall) return;
-      tall = want;
+      if (built) return;
+      built = true;
       host.innerHTML = '';
-      host.style.aspectRatio = want ? 'auto' : '1120 / 580';
-      if (wrap) wrap.classList.toggle('vert', want);
-      var s = want ? buildTall(avail) : buildWide();
+      host.style.aspectRatio = 'auto';
+      var s = buildWide();
       s.removeAttribute('width');
       s.style.width = '100%';
       s.style.height = 'auto';
@@ -1154,38 +1174,6 @@
     q('#map2-block').appendChild(alt);
   }
 
-  function mapImpact() {
-    var m = baseMap('map3', { zoomSnap: 0.25 });
-    m.fitBounds(L.latLngBounds([[21.7, 88.3], [26.3, 92.4]]), { padding: [16, 16] });
-    var pts = [
-      { ll: [24.55, 88.83], n: 'Bagmara', h: 16, v: 'About 16 hours a day', c: 'C-069', s: '16 HOURS A DAY', lab: { dx: 4, dy: -46 } },
-      { ll: [24.13, 90.57], n: 'Kapasia', h: 11, v: '10 to 12 hours a day', c: 'C-070', mute: 1 },
-      { ll: [24.20, 90.47], n: 'Sreepur', h: 11, v: '10 to 12 hours a day', c: 'C-070', mute: 1 },
-      { ll: [23.92, 90.57], n: 'Kaliganj', h: 11, v: '10 to 12 hours a day', c: 'C-070', mute: 1 },
-      { ll: [24.07, 90.22], n: 'Kaliakair', h: 11, v: '10 to 12 hours a day', c: 'C-070', mute: 1 },
-      { ll: [24.00, 89.24], n: 'Pabna', h: 9, v: '8 to 10 hours a day', c: 'C-071', s: '8 TO 10 HOURS', lab: { side: 'left', dy: 34 } },
-      { ll: [23.0050, 89.8266], n: 'Gopalganj', h: 9, v: '8 to 10 hours a day', s: '8 TO 10 HOURS', lab: { dy: -22 } },
-      { ll: [24.98, 90.32], n: 'Fulpur', h: 7, v: 'Over 7 hours in a day', c: 'C-072', s: 'OVER 7 HOURS', lab: { dy: -38 } },
-      { ll: [22.82, 89.56], n: 'Khulna', h: 4, v: '3 to 5 hours a day', c: 'C-073', s: '3 TO 5 HOURS', lab: { dy: 10 } },
-      { ll: [24.41, 89.00], n: 'Natore PBS-2', ring: 1, v: '35% OF DEMAND MET', c: 'C-074', s: '35% OF DEMAND MET', lab: { side: 'left', dx: -14, dy: 30 } },
-      { ll: [24.15, 90.30], n: 'Mouchak and Bannara', ring: 1, v: '32 MW allocated against 70 MW needed', c: 'C-075', mute: 1 }
-    ];
-    pts.forEach(function (p) {
-      var r = p.ring ? 9 : (p.mute ? 4 + Math.sqrt(p.h) * 2.5 : 4 + Math.sqrt(p.h) * 3.2);
-      var mk = L.circleMarker(p.ll, p.ring
-        ? { radius: r, color: '#6BBDF2', weight: 2, fillOpacity: 0, dashArray: '3 3' }
-        : { radius: r, color: '#F2665F', weight: p.mute ? 1 : 1.5, fillColor: '#F2665F', fillOpacity: p.mute ? 0.18 : 0.32 }).addTo(m);
-      mk.bindPopup('<b>' + p.n + '</b><span class="pv">' + p.v + '</span>', POPUP);
-    });
-
-    var alt = document.createElement('div');
-    alt.className = 'vh';
-    alt.innerHTML = '<p>Point map of reported outage figures in Bangladesh.</p><ul>' +
-      pts.map(function (p) { return '<li>' + p.n + ': ' + p.v + '</li>'; }).join('') +
-      '</ul><p>Absence of a marker means no figure was reported, not that supply was normal.</p>';
-    q('#map3-block').appendChild(alt);
-  }
-
   function mapChattogram() {
     var m = baseMap('map4', {}, { maxZoom: 13, sat: 1 });
     var wide = window.matchMedia('(min-width: 1024px)').matches;
@@ -1205,112 +1193,48 @@
     q('#map4-block').appendChild(alt);
   }
 
-  function mapBeats() {
-    var block = q('#map5-block');
-    if (!block) return;
-    var m = baseMap('map5', {}, { maxZoom: 14 });
-    var STOPS = [
-      { ll: [23.7085, 90.4360], d: 0.030, r: 1600, n: 'Gandaria', s: 'DHAKA' },
-      { ll: [22.7000, 89.5200], d: 0.130, r: 5200, n: 'Batiaghata', s: 'KHULNA' },
-      { ll: [23.4600, 91.1800], d: 0.110, r: 4600, n: 'Cumilla', s: null },
-      { ll: [24.0700, 90.2200], d: 0.100, r: 4200, n: 'Kaliakair', s: 'GAZIPUR' }
-    ];
-    m.setView([23.55, 90.45], 7);
-    setTimeout(function () { m.invalidateSize(); }, 80);
-
-    var dots = STOPS.map(function (s2) {
-      return L.circleMarker(s2.ll, { radius: 7, color: '#F2665F', weight: 1.6, fillColor: '#F2665F', fillOpacity: 0.18 }).addTo(m);
-    });
-    var halo = L.circle(STOPS[0].ll, { radius: STOPS[0].r, color: '#F98A80', weight: 1.2, dashArray: '3 5', fillColor: '#F2665F', fillOpacity: 0.08 }).addTo(m);
-    STOPS.forEach(function (s2) { label(m, s2.ll, s2.n, s2.s, 'acc', { dy: -26 }); });
-
-    var wide = window.matchMedia('(min-width: 900px)').matches;
-    var steps = qa('#map5-block .ms-step');
-    var cur = -1;
-
-    function go(i) {
-      if (i === cur || !STOPS[i]) return;
-      cur = i;
-      steps.forEach(function (st, j) { st.setAttribute('aria-current', j === i ? 'true' : 'false'); });
-      var s2 = STOPS[i];
-      dots.forEach(function (dt, j) { dt.setStyle({ fillOpacity: j === i ? 0.42 : 0.10, opacity: j === i ? 1 : 0.35 }); });
-      halo.setLatLng(s2.ll);
-      halo.setRadius(s2.r);
-      var bb = L.latLngBounds([[s2.ll[0] - s2.d, s2.ll[1] - s2.d], [s2.ll[0] + s2.d, s2.ll[1] + s2.d]]);
-      var opt = wide
-        ? { paddingTopLeft: [Math.min(500, Math.round(window.innerWidth * 0.46)), 40], paddingBottomRight: [40, 40], maxZoom: 13 }
-        : { paddingTopLeft: [20, 24], paddingBottomRight: [20, Math.round(window.innerHeight * 0.36)], maxZoom: 13 };
-      if (REDUCED) { opt.animate = false; m.fitBounds(bb, opt); }
-      else { opt.duration = 1.05; m.flyToBounds(bb, opt); }
-    }
-
-    block.className += ' ms-live';
-    var pending = 0;
-    function pick() {
-      pending = 0;
-      var mid = window.innerHeight / 2, best = -1, bestD = 1e9;
-      steps.forEach(function (st, i) {
-        var r = st.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > window.innerHeight) return;
-        var d = Math.abs((r.top + r.bottom) / 2 - mid);
-        if (d < bestD) { bestD = d; best = i; }
-      });
-      if (best >= 0) go(best);
-    }
-    var io = new IntersectionObserver(function () {
-      if (!pending) pending = requestAnimationFrame(pick);
-    }, { rootMargin: '-40% 0px -40% 0px', threshold: 0 });
-    steps.forEach(function (st) { io.observe(st); });
-    pick();
-
-    var alt = document.createElement('p');
-    alt.className = 'vh';
-    alt.textContent = 'Map that moves between four places as the reader scrolls: Gandaria in Dhaka, Batiaghata in Khulna, Cumilla, and Kaliakair in Gazipur.';
-    block.appendChild(alt);
-  }
-
-  /* ------------------------------------ gas and oil fields, February 2025 */
-
+  /* the fields dataset: Hydrocarbon Unit and Petrobangla reserve and
+     production figures to February 2025, plotted to district or upazila */
   var F_ST = {
     prod: { c: '#4FD6C4', l: 'Producing' },
     near: { c: '#FFD98C', l: 'Producing, near depletion' },
     susp: { c: '#A79C88', l: 'Suspended' },
     dep:  { c: '#F2665F', l: 'Depleted, abandoned' },
     disc: { c: '#6BBDF2', l: 'Discovered, not producing' },
-    oil:  { c: '#E5793F', l: 'Oil field, abandoned' }
+    oil:  { c: '#E5793F', l: 'Oil field' }
   };
 
   var FIELDS = [
-    { n: 'Titas', ll: [23.95, 91.10], st: 'prod', dist: 'Brahmanbaria', up: 'Brahmanbaria Sadar', dy: '1962', db: 'Pakistan Shell Oil Company', py: '1968', giip: 9039, rec: 7582, cum: 5553.6, rem: 2028.4, fy: 129.05, note: 'Largest gas field by reserve, and the second-largest producer.' },
-    { n: 'Habiganj', ll: [24.19, 91.42], st: 'near', dist: 'Habiganj', up: 'Madhabpur (Shahjibazar)', dy: '1963', db: 'Pakistan Shell Oil Company', py: '1968', giip: 3981, rec: 2787, cum: 2779.1, rem: 7.9, fy: 38.47, note: 'The reported remaining figure rests on a 2010-vintage estimate, yet the field still produces about 38 Bcf a year. The reserve base is being reassessed with 3D seismic.' },
-    { n: 'Bibiyana', ll: [24.55, 91.68], st: 'prod', dist: 'Habiganj', up: 'Nabiganj', dy: '1998', db: 'Unocal and Occidental, now Chevron', py: '2007', giip: 8383, rec: 5755.4, cum: 6206.3, rem: 1320, est: 1, fy: 347.47, note: 'The top national producer, about half of all output. Petrobangla puts recoverable reserves at 7,666 Bcf; roughly 1.3 Tcf realistically remains.' },
-    { n: 'Jalalabad', ll: [24.83, 91.83], st: 'prod', dist: 'Sylhet', up: 'Dakshin Surma', dy: '1989', db: 'Scimitar Oil, now Chevron', py: '1999', giip: 2716, rec: 1429.3, cum: 1690.6, rem: 650, est: 1, fy: 52.03, note: 'Cumulative output has passed the old recoverable estimate. Recent reporting puts what is left below about 700 Bcf.' },
-    { n: 'Kailashtila', ll: [24.80, 91.98], st: 'prod', dist: 'Sylhet', up: 'Golapganj', dy: '1962', db: 'Pakistan Shell Oil Company', py: '1983', giip: 3463, rec: 2880, cum: 813, rem: 2067, fy: 14.89, note: 'A wet-gas field rich in condensate, with over 2 Tcf still recoverable.' },
-    { n: 'Rashidpur', ll: [24.40, 91.62], st: 'prod', dist: 'Habiganj', up: 'Bahubal', dy: '1960', db: 'Pakistan Shell Oil Company', py: '1983', giip: 3887, rec: 3134, cum: 734.5, rem: 2399.5, fy: 25.17, note: 'One of the largest remaining balances in the country, about 2.4 Tcf.' },
-    { n: 'Bakhrabad', ll: [23.52, 90.97], st: 'prod', dist: 'Cumilla', up: 'Muradnagar', dy: '1969', db: 'Shell Oil Company', py: '1984', giip: 1825, rec: 1387, cum: 890.4, rem: 496.6, fy: 10.24, note: 'Pressure fell rapidly after the 1990s peak.' },
-    { n: 'Narsingdi', ll: [24.00, 90.75], st: 'prod', dist: 'Narsingdi', up: 'Shibpur', dy: '1990', db: 'Petrobangla (BGFCL)', py: '1996', giip: 405, rec: 345, cum: 257.5, rem: 87.5, fy: 8.19 },
-    { n: 'Meghna', ll: [23.75, 90.78], st: 'prod', dist: 'Brahmanbaria', up: 'Bancharampur', dy: '1990', db: 'Petrobangla (BGFCL)', py: '1997', giip: 122, rec: 101, cum: 82.8, rem: 18.2, fy: 1.62 },
-    { n: 'Sylhet', ll: [24.96, 92.02], st: 'prod', dist: 'Sylhet', up: 'Golapganj (Haripur)', dy: '1955', db: 'Pakistan Petroleum Ltd', py: '1961', giip: 580, rec: 408, cum: 225.9, rem: 182.1, fy: 3.73, note: "Bangladesh's first gas discovery, in 1955. The same geological structure holds the Haripur oil pool." },
-    { n: 'Beanibazar', ll: [24.82, 92.17], st: 'prod', dist: 'Sylhet', up: 'Beanibazar', dy: '1981', db: 'Petrobangla', py: '2004 (approx.)', giip: 225, rec: 137, cum: 118.6, rem: 18.4, fy: 5.35, note: 'Wet gas, high in condensate.' },
-    { n: 'Fenchuganj', ll: [24.68, 91.93], st: 'prod', dist: 'Sylhet', up: 'Fenchuganj', dy: '1988', db: 'Petrobangla', py: '2004 (approx.)', giip: 483, rec: 329, cum: 179.3, rem: 149.7, fy: 3.09, note: 'Holds the deepest well in Bangladesh, about 4,977 metres.' },
-    { n: 'Moulvibazar', ll: [24.31, 91.77], st: 'prod', dist: 'Moulvibazar', up: 'Barlekha, near Sreemangal', dy: '1997', db: 'Occidental, now Chevron', py: '2005', giip: 494, rec: 428, cum: 357.3, rem: 70.7, fy: 5.55, note: 'Site of the 1997 Magurchhara blowout.' },
-    { n: 'Shahbazpur', ll: [22.42, 90.75], st: 'prod', dist: 'Bhola', up: 'Borhanuddin', dy: '1995', db: 'BAPEX', py: '2009', giip: 415, rec: 261, cum: 186.6, rem: 74.4, fy: 24.83, note: 'The main field on Bhola island. It supplies the island, and is not yet on the national grid.' },
-    { n: 'Saldanadi', ll: [23.66, 90.93], st: 'prod', dist: 'Cumilla', up: 'Muradnagar', dy: '1996', db: 'Petrobangla (BAPEX)', py: '1998', giip: 393, rec: 275, cum: 99.7, rem: 175.3, fy: 1.14 },
-    { n: 'Srikail', ll: [23.62, 90.99], st: 'prod', dist: 'Cumilla', up: 'Muradnagar (Block 9)', dy: '2004, re-established 2012', db: 'BAPEX', py: '2012', giip: 230, rec: 161, cum: 156, rem: 5, fy: 7.59, note: 'Nearly exhausted on current figures.' },
-    { n: 'Bangura', ll: [23.57, 91.02], st: 'prod', dist: 'Cumilla', up: 'Muradnagar (Block 9)', dy: '2004', db: 'Tullow', py: '2006', giip: 730, rec: 621, cum: 570.3, rem: 50.7, fy: 13.37, note: 'Operated by Tullow.' },
-    { n: 'Begumganj', ll: [22.95, 91.12], st: 'prod', dist: 'Noakhali', up: 'Begumganj', dy: '1977', db: 'Petrobangla', py: '2016 (approx.)', giip: 47, rec: 33, cum: 17.4, rem: 15.6, fy: 2.81, note: 'A small field revived through the Begumganj-3 well.' },
-    { n: 'Sundalpur', ll: [22.88, 91.28], st: 'prod', dist: 'Noakhali', up: 'Companiganj', dy: '2011 (approx.)', db: 'BAPEX', py: '2013', giip: 62.2, rec: 50.2, cum: 26.3, rem: 23.9, fy: 1.19 },
-    { n: 'Semutang', ll: [22.87, 91.85], st: 'prod', dist: 'Khagrachhari', up: 'Manikchhari', dy: '1969', db: 'OGDC (Pakistan)', py: '2015 (approx.)', giip: 654, rec: 318, cum: 14.9, rem: 303.1, fy: 0.29, note: 'The only field in the Chittagong Hill Tracts. Long undeveloped, with about 303 Bcf still recoverable.' },
-    { n: 'Chhatak', ll: [25.03, 91.66], st: 'susp', dist: 'Sunamganj', up: 'Chhatak', dy: '1959', db: 'Pakistan Petroleum Ltd', py: '1960, suspended 1985', giip: 677, rec: 474, cum: 25.8, rem: 448.2, fy: 0, note: 'Suspended in 1985 after water flooded the reservoir. About 448 Bcf remains on the books.' },
-    { n: 'Kamta', ll: [24.00, 90.40], st: 'susp', dist: 'Gazipur', up: 'Gazipur (approx.)', dy: '1982', db: 'Petrobangla', py: '1985, suspended 1991', giip: 72, rec: 50, cum: 21.1, rem: 28.9, fy: 0, note: 'Suspended in 1991 after water influx.' },
-    { n: 'Feni', ll: [23.03, 91.42], st: 'susp', dist: 'Feni', up: 'Feni Sadar', dy: '1981', db: 'Petrobangla', py: '1994, suspended 1998', giip: 185, rec: 130, cum: 63, rem: 67, fy: 0, note: 'Suspended in 1998.' },
-    { n: 'Rupganj', ll: [23.75, 90.55], st: 'susp', dist: 'Narayanganj', up: 'Rupganj', dy: '2011 (approx.)', db: 'BAPEX', py: 'Test production only', giip: 48, rec: 33.6, cum: 0.7, rem: 32.9, fy: 0, note: 'Only about 0.7 Bcf was ever produced. Effectively idle.' },
-    { n: 'Sangu', ll: [21.95, 91.62], st: 'dep', off: 1, dist: 'Bay of Bengal', up: 'Offshore Block 16, about 50 km south west of Chattogram', dy: '1996', db: 'Cairn Energy, later Santos', py: '1998, abandoned about 2013', giip: 976, rec: 771, cum: 489.5, rem: 281.5, fy: 0, note: "The only offshore field ever to have produced here, and now spent. The book figure overstates what is really left." },
-    { n: 'Kutubdia', ll: [21.88, 91.70], st: 'disc', off: 1, dist: 'Bay of Bengal', up: 'Offshore, off Kutubdia island', dy: '1977', db: 'Union Oil Company (USA)', py: 'Never produced', giip: 65, rec: 46, cum: 0, rem: 46, fy: 0, note: 'A small offshore discovery that was never developed.' },
-    { n: 'Bhola North', ll: [22.55, 90.72], st: 'disc', dist: 'Bhola', up: 'Borhanuddin and Daulatkhan', dy: '2018', db: 'BAPEX', py: 'Not in production', rec: 435, cum: 0, rem: 435, est: 1, note: 'About 435 Bcf, waiting on the Bhola to Barishal pipeline. Not in the Hydrocarbon Unit field table.' },
-    { n: 'Ilisha', ll: [22.75, 90.63], st: 'disc', dist: 'Bhola', up: 'Bhola Sadar (Ilisha)', dy: '2023', db: 'BAPEX', py: 'Not in production', rec: 200, cum: 0, rem: 200, est: 1, note: "The country's 29th gas field, found in May 2023. Idle, awaiting a grid connection." },
-    { n: 'Zakiganj', ll: [24.90, 92.36], st: 'disc', dist: 'Sylhet', up: 'Zakiganj', dy: '2021', db: 'BAPEX', py: 'Not in production', rec: 52, cum: 0, rem: 52, est: 1, note: 'The 28th gas field, found in August 2021. No pipeline has been built to it.' },
-    { n: 'Haripur', ll: [24.94, 92.04], st: 'oil', dist: 'Sylhet', up: 'Golapganj (Haripur)', dy: '1986', db: 'Petrobangla, Sylhet-7 well', py: '1987, suspended July 1994', oip: 'About 10 million barrels', prod: '560,869 barrels', note: "Bangladesh's only oil field. It shares the Sylhet structure with the gas field beside it. Figures are in barrels, not Bcf." }
+    { n: "Titas", dist: "Brahmanbaria", up: "Brahmanbaria Sadar", ll: [23.95, 91.1], st: "prod", dy: "1962", db: "Pakistan Shell Oil Company", py: "1968", giip: 9039, rec: 7582, cum: 5553.6, rem: 2028.4, note: "Largest gas field by reserve; 2nd-largest producer." },
+    { n: "Habiganj", dist: "Habiganj", up: "Madhabpur (Shahjibazar)", ll: [24.19, 91.42], st: "near", dy: "1963", db: "Pakistan Shell Oil Company", py: "1968", giip: 3981, rec: 2787, cum: 2779.1, rem: 7.9, note: "Reported remaining is only ~8 Bcf on the 2010-vintage estimate, yet the field still produces ~38 Bcf/yr - reserve base being reassessed via 3D seismic." },
+    { n: "Bibiyana", dist: "Habiganj", up: "Nabiganj", ll: [24.55, 91.68], st: "prod", dy: "1998", db: "Unocal/Occidental (now Chevron)", py: "2007", giip: 8383, rec: 5755.4, cum: 6206.3, rem: 1320, est: 1, note: "Top national producer (~50% of output). HCU table lists 0.0 remaining - a known artifact (cumulative exceeds the stale 2P estimate). Petrobangla 2P is 7,666 Bcf; ~1.3 Tcf realistically remains." },
+    { n: "Jalalabad", dist: "Sylhet", up: "Dakshin Surma", ll: [24.83, 91.83], st: "prod", dy: "1989", db: "Scimitar Oil (now Chevron)", py: "1999", giip: 2716, rec: 1429.3, cum: 1690.6, rem: 650, est: 1, note: "HCU table lists 0.0 remaining - artifact (cumulative exceeds stale 2P). Recent reporting puts remaining below ~700 Bcf." },
+    { n: "Kailashtila", dist: "Sylhet", up: "Golapganj", ll: [24.8, 91.98], st: "prod", dy: "1962", db: "Pakistan Shell Oil Company", py: "1983", giip: 3463, rec: 2880, cum: 813, rem: 2067, note: "High-condensate wet-gas field; over 2 Tcf recoverable remains." },
+    { n: "Rashidpur", dist: "Habiganj", up: "Bahubal", ll: [24.4, 91.62], st: "prod", dy: "1960", db: "Pakistan Shell Oil Company", py: "1983", giip: 3887, rec: 3134, cum: 734.5, rem: 2399.5, note: "One of the largest remaining balances (~2.4 Tcf)." },
+    { n: "Bakhrabad", dist: "Cumilla", up: "Muradnagar", ll: [23.52, 90.97], st: "prod", dy: "1969", db: "Shell Oil Company", py: "1984", giip: 1825, rec: 1387, cum: 890.4, rem: 496.6, note: "Rapid pressure decline after 1990s peak." },
+    { n: "Narsingdi", dist: "Narsingdi", up: "Shibpur", ll: [24, 90.75], st: "prod", dy: "1990", db: "Petrobangla (BGFCL)", py: "1996", giip: 405, rec: 345, cum: 257.5, rem: 87.5 },
+    { n: "Meghna", dist: "Brahmanbaria", up: "Bancharampur", ll: [23.75, 90.78], st: "prod", dy: "1990", db: "Petrobangla (BGFCL)", py: "1997", giip: 122, rec: 101, cum: 82.8, rem: 18.2 },
+    { n: "Sylhet (Haripur gas field)", dist: "Sylhet", up: "Golapganj (Haripur)", ll: [24.96, 92.02], st: "prod", dy: "1955", db: "Pakistan Petroleum Ltd", py: "1961", giip: 580, rec: 408, cum: 225.9, rem: 182.1, note: "Bangladesh's first gas discovery (1955). Same geological structure hosts the Haripur oil pool." },
+    { n: "Beanibazar", dist: "Sylhet", up: "Beanibazar", ll: [24.82, 92.17], st: "prod", dy: "1981", db: "Petrobangla", py: "2004 (approx.)", giip: 225, rec: 137, cum: 118.6, rem: 18.4, note: "Wet gas, high condensate." },
+    { n: "Fenchuganj", dist: "Sylhet", up: "Fenchuganj", ll: [24.68, 91.93], st: "prod", dy: "1988", db: "Petrobangla", py: "2004 (approx.)", giip: 483, rec: 329, cum: 179.3, rem: 149.7, note: "Deepest well in Bangladesh (~4,977 m)." },
+    { n: "Moulvibazar", dist: "Moulvibazar", up: "Barlekha (near Sreemangal)", ll: [24.31, 91.77], st: "prod", dy: "1997", db: "Occidental (now Chevron)", py: "2005", giip: 494, rec: 428, cum: 357.3, rem: 70.7, note: "Site of the 1997 Magurchhara blowout." },
+    { n: "Shahbazpur", dist: "Bhola", up: "Borhanuddin", ll: [22.42, 90.75], st: "prod", dy: "1995", db: "BAPEX", py: "2009", giip: 415, rec: 261, cum: 186.6, rem: 74.4, note: "Main Bhola-island field; supplies the island, not yet on the national grid." },
+    { n: "Saldanadi", dist: "Cumilla", up: "Muradnagar", ll: [23.66, 90.93], st: "prod", dy: "1996", db: "Petrobangla (BAPEX)", py: "1998", giip: 393, rec: 275, cum: 99.7, rem: 175.3 },
+    { n: "Srikail", dist: "Cumilla", up: "Muradnagar (Block 9)", ll: [23.62, 90.99], st: "prod", dy: "2004 (re-est. 2012)", db: "BAPEX", py: "2012", giip: 230, rec: 161, cum: 156, rem: 5, note: "Nearly exhausted on current figures." },
+    { n: "Bangura", dist: "Cumilla", up: "Muradnagar (Block 9)", ll: [23.57, 91.02], st: "prod", dy: "2004", db: "Tullow", py: "2006", giip: 730, rec: 621, cum: 570.3, rem: 50.7, note: "Operated by Tullow." },
+    { n: "Begumganj", dist: "Noakhali", up: "Begumganj", ll: [22.95, 91.12], st: "prod", dy: "1977", db: "Petrobangla", py: "2016 (approx.)", giip: 47, rec: 33, cum: 17.4, rem: 15.6, note: "Small field revived via the Begumganj-3 well." },
+    { n: "Sundalpur", dist: "Noakhali", up: "Companiganj", ll: [22.88, 91.28], st: "prod", dy: "2011 (approx.)", db: "BAPEX", py: "2013", giip: 62.2, rec: 50.2, cum: 26.3, rem: 23.9 },
+    { n: "Semutang", dist: "Khagrachhari", up: "Manikchhari", ll: [22.87, 91.85], st: "prod", dy: "1969", db: "OGDC (Pakistan)", py: "2015 (approx.)", giip: 654, rec: 318, cum: 14.9, rem: 303.1, note: "Only field in the Chittagong Hill Tracts; long undeveloped, ~303 Bcf still recoverable." },
+    { n: "Chhatak", dist: "Sunamganj", up: "Chhatak", ll: [25.03, 91.66], st: "susp", dy: "1959", db: "Pakistan Petroleum Ltd", py: "1960", giip: 677, rec: 474, cum: 25.8, rem: 448.2, note: "Suspended 1985 (water influx); ~448 Bcf remains on the books." },
+    { n: "Kamta", dist: "Gazipur", up: "Gazipur (approx.)", ll: [24, 90.4], st: "susp", dy: "1982", db: "Petrobangla", py: "1985 (approx.)", giip: 72, rec: 50, cum: 21.1, rem: 28.9, note: "Suspended 1991 (water influx)." },
+    { n: "Feni", dist: "Feni", up: "Feni Sadar", ll: [23.03, 91.42], st: "susp", dy: "1981", db: "Petrobangla", py: "1994 (approx.)", giip: 185, rec: 130, cum: 63, rem: 67, note: "Suspended 1998." },
+    { n: "Rupganj", dist: "Narayanganj", up: "Rupganj", ll: [23.75, 90.55], st: "susp", dy: "2011 (approx.)", db: "BAPEX", py: "Test only", giip: 48, rec: 33.6, cum: 0.7, rem: 32.9, note: "Only ~0.7 Bcf ever produced." },
+    { n: "Sangu", dist: "Bay of Bengal (~50 km SW of Chattogram)", up: "Offshore Block 16", off: 1, ll: [21.95, 91.62], st: "dep", dy: "1996", db: "Cairn Energy (later Santos)", py: "1998", giip: 976, rec: 771, cum: 489.5, rem: 281.5, note: "Bangladesh's only offshore field to have produced; now spent. Book figure overstates reality." },
+    { n: "Kutubdia", dist: "Bay of Bengal (off Kutubdia Island)", up: "Offshore", off: 1, ll: [21.88, 91.7], st: "disc", dy: "1977", db: "Union Oil Company (USA)", py: "Never produced", giip: 65, rec: 46, cum: 0, rem: 46, note: "Small offshore discovery; never developed." },
+    { n: "Bhola North", dist: "Bhola", up: "Borhanuddin / Daulatkhan", ll: [22.55, 90.72], st: "disc", dy: "2018", db: "BAPEX", py: "Not in production", giip: null, rec: 435, cum: 0, rem: 435, est: 1, note: "~435 Bcf reserve; awaiting the Bhola-Barishal pipeline. Not in the HCU field table." },
+    { n: "Ilisha", dist: "Bhola", up: "Bhola Sadar (Ilisha)", ll: [22.75, 90.63], st: "disc", dy: "2023", db: "BAPEX", py: "Not in production", giip: null, rec: 200, cum: 0, rem: 200, est: 1, note: "29th gas field (May 2023); ~200 Bcf; idle awaiting grid connection. Not in the HCU field table." },
+    { n: "Zakiganj", dist: "Sylhet", up: "Zakiganj", ll: [24.9, 92.36], st: "disc", dy: "2021", db: "BAPEX", py: "Not in production", giip: null, rec: 52, cum: 0, rem: 52, est: 1, note: "28th gas field (Aug 2021); ~52 Bcf; no pipeline built. Not in the HCU field table." },
+    { n: "Haripur (oilfield)", dist: "Sylhet", up: "Golapganj (Haripur)", ll: [24.94, 92.04], st: "oil", dy: "1986", db: "Petrobangla (Sylhet-7 well)", py: "1987", oip: "About 10 million barrels", prod: "560,869 barrels", note: "BANGLADESH'S ONLY OIL FIELD. Oil-in-place ~10 million barrels; produced 560,869 barrels of crude (1987 to 14 Jul 1994), then suspended. Reserve/production are in barrels, not Bcf. Shares the Sylhet/Haripur structure." }
   ];
 
   function fBcf(v) {
@@ -1376,8 +1300,37 @@
     var m = baseMap('fmap', { zoomSnap: 0.25, minZoom: 6, maxBoundsViscosity: 0.5 });
     var bb = L.latLngBounds([[20.55, 88.00], [26.75, 92.80]]);
     var wide = window.matchMedia('(min-width: 1024px)').matches;
+    /* the narrow map is drag-locked, so nothing may pan it: a field opens in a
+       bottom sheet instead of a popup, and the country stays centred */
+    var LOCKED = NARROW();
     m.fitBounds(bb, { padding: wide ? [24, 24] : [16, 16] });
     m.setMaxBounds(bb.pad(1.6));
+    if (LOCKED) m.setView(bb.getCenter(), m.getZoom(), { animate: false });
+
+    var sheet, sheetIn;
+    function closeSheet() {
+      if (!sheet) return;
+      sheet.classList.remove('open');
+      sheet.setAttribute('aria-hidden', 'true');
+    }
+    function openSheet(html) {
+      if (!sheet) {
+        sheet = document.createElement('div');
+        sheet.className = 'fsheet';
+        sheet.setAttribute('role', 'dialog');
+        sheet.setAttribute('aria-label', 'Gas field detail');
+        sheet.innerHTML = '<button class="fsheet-x" type="button" aria-label="Close">\u2715</button><div class="fsheet-in fpop"></div>';
+        document.body.appendChild(sheet);
+        sheetIn = q('.fsheet-in', sheet);
+        q('.fsheet-x', sheet).addEventListener('click', closeSheet);
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+      }
+      sheetIn.innerHTML = html;
+      sheet.removeAttribute('aria-hidden');
+      sheet.scrollTop = 0;
+      requestAnimationFrame(function () { sheet.classList.add('open'); });
+    }
+    if (LOCKED) m.on('click', closeSheet);
     label(m, [21.20, 90.55], 'BAY OF BENGAL', null);
 
     FIELDS.slice().sort(function (a, b) { return (b.rem || 0) - (a.rem || 0); }).forEach(function (f) {
@@ -1399,11 +1352,15 @@
         mk.on('mouseout', function () { mk.setStyle({ fillOpacity: fillOff, weight: f.st === 'disc' ? 1.6 : 1.3 }); });
       }
       mk.addTo(m);
-      mk.bindTooltip(fTip(f), {
-        className: 'ftip', direction: 'top', opacity: 1,
-        offset: [0, f.st === 'oil' ? -12 : -(r + 5)]
-      });
-      mk.bindPopup(fPopup(f), FPOP);
+      if (LOCKED) {
+        mk.on('click', function () { openSheet(fPopup(f)); });
+      } else {
+        mk.bindTooltip(fTip(f), {
+          className: 'ftip', direction: 'top', opacity: 1,
+          offset: [0, f.st === 'oil' ? -12 : -(r + 5)]
+        });
+        mk.bindPopup(fPopup(f), FPOP);
+      }
     });
 
     /* tooltips take precedence over the legend, and never get cropped by the
@@ -1461,15 +1418,13 @@
     lazyMap('fields-block', mapFields);
     lazyMap('map1-block', mapHormuz);
     lazyMap('map2-block', mapMoheshkhali);
-    lazyMap('map3-block', mapImpact);
     lazyMap('map4-block', mapChattogram);
-    lazyMap('map5-block', mapBeats);
   }
 
   /* ------------------------------------------------- persistent wordmark */
 
   (function () {
-    var shell = q('.hero-shell');
+    var shell = q('.opening');
     if (!shell) return;
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
@@ -1570,6 +1525,80 @@
     nodes.forEach(function (n) { io.observe(n); });
   })();
 
+  /* -------------------------------------------------------- chapters menu */
+
+  (function () {
+    var nav = q('#chapnav');
+    if (!nav) return;
+    var btn = q('#cnBtn'), menu = q('#cnMenu');
+    var items = qa('.cn-i', menu);
+    var targets = items.map(function (a) { return q(a.getAttribute('href')); });
+    var open = false, openedAt = 0;
+
+    function setOpen(v) {
+      if (v === open) return;
+      open = v;
+      openedAt = window.pageYOffset;
+      nav.classList.toggle('on', v);
+      btn.setAttribute('aria-expanded', v ? 'true' : 'false');
+    }
+
+    btn.addEventListener('click', function (e) {
+      setOpen(!open);
+      // opened from the keyboard: put the caret on the first chapter
+      if (open && e.detail === 0 && items[0]) items[0].focus();
+    });
+
+    document.addEventListener('pointerdown', function (e) {
+      if (open && !nav.contains(e.target)) setOpen(false);
+    }, true);
+
+    document.addEventListener('keydown', function (e) {
+      if (!open) return;
+      if (e.key === 'Escape' || e.key === 'Esc') { setOpen(false); btn.focus(); return; }
+      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+      var i = items.indexOf(document.activeElement);
+      if (i < 0 && document.activeElement !== btn) return;
+      e.preventDefault();
+      var n = items.length;
+      var to = i < 0 ? (e.key === 'ArrowDown' ? 0 : n - 1) : (i + (e.key === 'ArrowDown' ? 1 : n - 1)) % n;
+      items[to].focus();
+    });
+
+    items.forEach(function (a, i) {
+      a.addEventListener('click', function (e) {
+        var t = targets[i];
+        if (!t) return;
+        e.preventDefault();
+        setOpen(false);
+        btn.focus();
+        var y = t.getBoundingClientRect().top + window.pageYOffset - 6;
+        window.scrollTo({ top: Math.max(0, y), behavior: REDUCED ? 'auto' : 'smooth' });
+        if (window.history && history.replaceState) history.replaceState(null, '', a.getAttribute('href'));
+      });
+    });
+
+    var cur = -2, tick = 0;
+    function spy() {
+      tick = 0;
+      if (open && Math.abs(window.pageYOffset - openedAt) > 90) setOpen(false);
+      var line = window.innerHeight * 0.32, best = -1;
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i] && targets[i].getBoundingClientRect().top <= line) best = i;
+      }
+      if (best === cur) return;
+      cur = best;
+      items.forEach(function (a, i) {
+        if (i === best) a.setAttribute('aria-current', 'true');
+        else a.removeAttribute('aria-current');
+      });
+    }
+    function queue() { if (!tick) tick = requestAnimationFrame(spy); }
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue, { passive: true });
+    spy();
+  })();
+
   /* ------------------------------------------------------- back to top */
 
   (function () {
@@ -1591,6 +1620,18 @@
   })();
 
   /* -------------------------------------------------------------- boot */
+
+  /* the hint is a fact about the current viewport, not a caption: it exists
+     only while the diagram is actually wider than its scroller */
+  (function () {
+    var box = q('.chain-box'), sc = q('#chain-wrap');
+    if (!box || !sc) return;
+    function sync() { box.classList.toggle('can-scroll', sc.scrollWidth - sc.clientWidth > 8); }
+    sync();
+    window.addEventListener('resize', sync, { passive: true });
+    if ('ResizeObserver' in window) { new ResizeObserver(sync).observe(sc); }
+    setTimeout(sync, 400);
+  })();
 
   function boot() {
     watchReveals(document);
