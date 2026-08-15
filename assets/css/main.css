@@ -1869,9 +1869,9 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
 .gmeter.in .gm-f.pw { width: var(--sup2); }
 .gmeter.in .gm-gap { opacity: 1; }
 .gm-ft { display: flex; align-items: baseline; justify-content: space-between; gap: 14px 20px; flex-wrap: wrap; }
-.gm-key { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; color: var(--text-secondary); }
+.gm-key { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 18px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; color: var(--text-secondary); }
 .gm-key .sw { width: 9px; height: 9px; flex: none; }
-.gm-key .sw + .sw { margin-left: 10px; }
+.gm-key > span { white-space: nowrap; }
 .sw.lng { background: var(--d-lng); }
 .sw.dom { background: color-mix(in srgb, var(--d-gas) 72%, transparent); }
 .sw.pw { background: color-mix(in srgb, var(--d-hydro) 76%, transparent); }
@@ -1940,7 +1940,7 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
 .rc-hd { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 1px solid var(--cove-500); }
 .rc-ht { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--paper); }
 .rc-hu { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-tertiary); }
-.rc-set { list-style: none; margin: clamp(20px, 3vw, 30px) 0 0; padding: 0; display: grid; gap: clamp(12px, 1.4vw, 18px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.rc-set { list-style: none; margin: clamp(20px, 3vw, 30px) 0 0; padding: 0; display: grid; gap: clamp(26px, 2.6vw, 32px) clamp(12px, 1.4vw, 18px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 620px) { .rc-set { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (min-width: 1000px) { .rc-set { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
 .rc-i { display: flex; flex-direction: column; }
@@ -1981,4 +1981,46 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
 @media (prefers-reduced-motion: reduce) {
   .th-c, .rc-v { opacity: 1 !important; transform: none !important; }
   .gm-gap { opacity: 1 !important; }
+}
+
+
+/* the verdict slab: the one place in the piece where the page stops
+   reporting and states the finding. Framed, lit from behind, and set larger
+   than any body type so it reads as the end. */
+.verdict {
+  position: relative; isolation: isolate; overflow: hidden;
+  margin: clamp(40px, 6vw, 64px) auto 0; max-width: 880px;
+  padding: clamp(44px, 6.4vw, 76px) clamp(24px, 4.4vw, 60px) clamp(34px, 4.6vw, 50px);
+  border: 1px solid var(--cove-500);
+  background:
+    radial-gradient(120% 150% at 50% 0%, color-mix(in srgb, var(--accent) 13%, transparent) 0%, transparent 62%),
+    color-mix(in srgb, var(--cove-850) 92%, transparent);
+}
+.vd-r { position: absolute; top: 0; left: 50%; width: 0; height: 3px; background: var(--accent); transform: translateX(-50%); transition: width 720ms var(--ease-entrance) 120ms; }
+.verdict.in .vd-r { width: min(180px, 42%); }
+.vd-g {
+  position: absolute; z-index: -1; left: 50%; top: -46%; width: 84%; aspect-ratio: 1;
+  transform: translateX(-50%); border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 66%);
+  filter: blur(30px); transition: opacity 1100ms var(--ease-state) 200ms;
+}
+.verdict.in .vd-g { opacity: .85; }
+.verdict .fn-end {
+  max-width: 22ch; margin: 0 auto;
+  font-size: clamp(34px, 6.6vw, 62px); line-height: 1.06; letter-spacing: -0.03em;
+  color: var(--paper); text-wrap: balance;
+}
+.vd-m {
+  display: block; margin-top: clamp(26px, 3.4vw, 38px);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.vd-m::before, .vd-m::after {
+  content: ""; display: inline-block; vertical-align: middle;
+  width: clamp(18px, 4vw, 40px); height: 1px; background: var(--cove-500);
+  margin: 0 14px 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vd-g { opacity: .85 !important; }
+  .vd-r { width: min(180px, 42%) !important; }
 }
