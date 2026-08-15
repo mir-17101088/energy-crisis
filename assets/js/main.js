@@ -265,8 +265,12 @@
   (function () {
     var host = q('#chart-prod');
     if (!host) return;
-    var W = 680, H = 382, m = { t: 74, r: 118, b: 66, l: 96 };
+    var W = 680, H = 382;
     var K = scaleK(host, W, H), F = function (v) { return Math.round(v * K * 10) / 10; };
+    /* the side gutters hold the value and source labels, so they widen with the
+       type: on a phone the labels are twice the size and would leave the frame */
+    var TIGHT = K > 1.35;
+    var m = { t: 74, r: TIGHT ? 152 : 118, b: 66, l: TIGHT ? 130 : 96 };
     var s = svg(W, H);
 
     var A2 = { fy: 'FY2018-19', dom: 27.2, lng: 3.28 };
@@ -309,8 +313,8 @@
     function column(d, domTop, lngTop, side) {
       var g = el('g', {});
       var segs = [
-        { y: domTop, h: base - domTop, fill: '#4FD6C4', v: d.dom, name: 'Domestic fields' },
-        { y: lngTop, h: domTop - lngTop, fill: '#9B84E8', v: d.lng, name: 'Imported LNG' }
+        { y: domTop, h: base - domTop, fill: '#4FD6C4', v: d.dom, name: TIGHT ? 'Domestic' : 'Domestic fields' },
+        { y: lngTop, h: domTop - lngTop, fill: '#9B84E8', v: d.lng, name: TIGHT ? 'Imported' : 'Imported LNG' }
       ];
       segs.forEach(function (sg, i) {
         var r = el('rect', { x: d.x, y: sg.y, width: bw, height: sg.h, fill: sg.fill });
@@ -370,8 +374,10 @@
   (function () {
     var host = q('#chart-grid');
     if (!host) return;
-    var W = 880, H = 430, m = { t: 46, r: 16, b: 54, l: 58 };
+    var W = 880, H = 430;
     var K = scaleK(host, W, H), F = function (v) { return Math.round(v * K * 10) / 10; };
+    /* the axis labels grow with the type, so the left gutter has to as well */
+    var m = { t: 46, r: 16, b: 54, l: K > 1.35 ? 96 : 58 };
     var s = svg(W, H);
     s.setAttribute('aria-label', 'Bar chart of average load shedding per hour, in megawatts, for each day from 1 to 12 August 2026. 2,174 then 2,353, 2,700, 2,052, 826, 335, 740, 2,167, 2,968, 2,860, 2,399 and 2,745. Every figure is a reported one.');
 
@@ -843,7 +849,7 @@
     flow.style.transition = REDUCED ? 'none' : 'stroke-dashoffset 520ms cubic-bezier(.4,0,.2,1)';
     gsOil.removeAttribute('transform');
 
-    var costTxt = el('text', { x: 330, y: 26, class: 'vl', 'text-anchor': 'middle', fill: '#F98A80', 'font-family': 'Geist Mono, monospace', 'font-size': 12, opacity: 0 }, 'Tk 90cr a day on oil against Tk 31cr on gas');
+    var costTxt = el('text', { x: 330, y: 26, class: 'vl', 'text-anchor': 'middle', fill: '#F98A80', 'font-family': 'Geist Mono, monospace', 'font-size': STACKED() ? 19 : 12, opacity: 0 }, 'Tk 90cr a day on oil against Tk 31cr on gas');
     costTxt.style.transition = 'opacity 400ms ease-out';
     fsru.appendChild(costTxt);
 
@@ -1107,7 +1113,7 @@
     var steps = qa('#map1-steps .map-step');
     var faceEl = q('#map1-block .map-face');
     var faces = [
-      'Shipping lane drawn as a sea route through the Gulf of Oman, the Arabian Sea and the Bay of Bengal. It is not a straight line because ships cannot take one.',
+      'Shipping lane drawn as a sea route through the Gulf of Oman, the Arabian Sea and the Bay of Bengal.',
       'East of Hormuz the lane is drawn faint. Fourteen Ras Laffan cargoes cleared the strait after the war began. None of them arrived here.',
       'Aramco Trading Singapore supplied one replacement cargo, at $21.55 per MMBtu for delivery on 11 to 12 August.'
     ];

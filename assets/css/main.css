@@ -361,6 +361,11 @@ html.past-hero .hero-logo { transform: scale(.5); }
 }
 @media (min-width: 768px) { .panel { padding: 30px; } }
 
+/* a counter-argument stands apart: the whole box is drawn in the other colour */
+.panel.edged { border: 2px solid var(--d-hydro); background: color-mix(in srgb, var(--d-hydro) 6%, var(--cove-700)); }
+.panel.mid { max-width: 62ch; margin-inline: auto; text-align: center; }
+.panel.mid > p { margin-inline: auto; }
+
 /* editorial pull-out. carries the argument, not a label */
 .inference {
   position: relative; padding: 30px 0 34px;
@@ -411,16 +416,19 @@ html.past-hero .hero-logo { transform: scale(.5); }
 .positions { display: grid; gap: 34px 44px; }
 @media (min-width: 860px) { .positions { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 .positions .pos p { padding-top: 4px; }
-.pos.faced cite { display: flex; align-items: center; gap: clamp(13px, 1.6vw, 17px); }
-.pos.faced cite .face {
+.pos.faced cite, .quote.faced cite, .ss-step cite.faced { display: flex; align-items: center; gap: clamp(13px, 1.6vw, 17px); }
+.pos.faced cite .face, .quote.faced cite .face, .ss-step cite.faced .face {
   flex: none; width: clamp(56px, 7vw, 70px); aspect-ratio: 1; margin: 0; overflow: hidden;
   background: var(--cove-620); border: 1px solid var(--cove-500);
   box-shadow: inset 0 0 0 1px rgba(242,102,95,.20), 0 6px 18px rgba(0,0,0,.35);
 }
-.pos.faced cite .face img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 16%; filter: grayscale(.3) sepia(.14) contrast(1.04) brightness(.97); }
-.pos.faced cite .who { display: block; margin: 0; min-width: 0; font-family: var(--serif); font-size: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
-.pos.faced cite .who b { display: block; font-family: var(--serif); font-weight: 500; font-size: clamp(15.5px, 1.9vw, 17px); line-height: 1.25; color: var(--paper); letter-spacing: -0.005em; }
-.pos.faced cite .who span { display: block; margin-top: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: .11em; text-transform: uppercase; color: var(--text-tertiary); line-height: 1.45; }
+.pos.faced cite .face img, .quote.faced cite .face img, .ss-step cite.faced .face img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 50% 16%; filter: grayscale(.3) sepia(.14) contrast(1.04) brightness(.97); }
+.pos.faced cite .who, .quote.faced cite .who, .ss-step cite.faced .who { display: block; margin: 0; min-width: 0; font-family: var(--serif); font-size: inherit; letter-spacing: normal; text-transform: none; color: inherit; }
+.pos.faced cite .who b, .quote.faced cite .who b, .ss-step cite.faced .who b { display: block; font-family: var(--serif); font-weight: 500; font-size: clamp(15.5px, 1.9vw, 17px); line-height: 1.25; color: var(--paper); letter-spacing: -0.005em; }
+.pos.faced cite .who span, .quote.faced cite .who span, .ss-step cite.faced .who span { display: block; margin-top: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: .11em; text-transform: uppercase; color: var(--text-tertiary); line-height: 1.45; }
+.ss-step cite.faced .face { width: clamp(48px, 5vw, 58px); }
+.ss-step cite.faced .who b { font-size: 15px; }
+.ss-step cite.faced .who span { font-size: 10.5px; margin-top: 5px; }
 .positions .pos:not(:has(blockquote)) { padding-top: 50px; }
 .positions .pos:not(:has(blockquote))::before { content: none; }
 
@@ -622,8 +630,8 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
   /* the panel is sized by its diagram, not by a viewport fraction, so the
      drawing can never be squeezed below a readable scale */
   .ss-graphic {
-    position: sticky; top: 0; z-index: 2;
-    height: auto; min-height: 0; max-height: 46vh; overflow: hidden;
+    position: sticky; top: clamp(46px, 7vh, 62px); z-index: 2;
+    height: auto; min-height: 0; max-height: none; overflow: visible;
     padding: 12px var(--pad) 14px;
   }
   .ss-graphic::after { display: none; }
@@ -633,7 +641,7 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
   .ss-graphic p.mono { display: none; }
   .ss-graphic .frame { margin-top: 0; }
   .ss-graphic .plot { margin-top: 0; aspect-ratio: auto; }
-  .ss-graphic svg { width: 100%; height: auto; max-height: 38vh; }
+  .ss-graphic svg { width: 100%; height: auto; max-height: min(40vh, 64vw); }
   .ss-graphic .kstats { display: none; }
   .ss-graphic #chart-prod { aspect-ratio: auto; }
 
@@ -721,6 +729,16 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 .fsru text { font-family: var(--serif); }
 .fsru .lb { font-size: 11px; fill: var(--text-tertiary); letter-spacing: .04em; }
 .fsru .vl { font-family: var(--mono); font-size: 13px; fill: var(--paper); }
+/* the diagram is authored wide, so on a phone it draws at about half scale:
+   label type is set in viewBox units and has to grow back, with shorter
+   strings where the long ones would then collide */
+.fsru .n-only { display: none; }
+@media (max-width: 1023px) {
+  .fsru .w-only { display: none; }
+  .fsru .n-only { display: inline; }
+  .fsru .lb { font-size: 19px; letter-spacing: .02em; fill: var(--text-secondary); }
+  .fsru .vl { font-size: 20px; }
+}
 .fsru .step-el { opacity: 0; transition: opacity 500ms var(--ease-state), transform 560ms var(--ease-state); }
 .fsru .step-el.on { opacity: 1; }
 .fsru .carrier { transition: transform 620ms var(--ease-entrance); }
@@ -1040,12 +1058,12 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 .cargo[data-stage="1"] .cg-dots i:nth-child(1),
 .cargo[data-stage="2"] .cg-dots i:nth-child(-n+2),
 .cargo[data-stage="3"] .cg-dots i { background: var(--accent); }
-.cg-steps { position: relative; z-index: 1; padding-bottom: 58vh; }
-.cg-step { height: 62vh; }
+.cg-steps { position: relative; z-index: 1; padding-bottom: 48vh; }
+.cg-step { height: 44vh; }
 @media (max-width: 720px) {
   .cg-card { padding: 20px 20px 22px; }
-  .cg-steps { padding-bottom: 50vh; }
-  .cg-step { height: 66vh; }
+  .cg-steps { padding-bottom: 44vh; }
+  .cg-step { height: 48vh; }
 }
 
 /* ---------- the four day policy ---------------------------------------- */
@@ -1663,8 +1681,16 @@ path.fdot { cursor: pointer; transition: fill-opacity 200ms var(--ease-state), s
   content: ""; display: block; width: 34px; height: 2px; background: var(--accent);
   margin: 0 auto clamp(18px, 2.6vh, 28px);
 }
-.fhead h3.sh { max-width: 26ch; margin-inline: auto; }
-.fhead .lede { max-width: 60ch; margin-inline: auto; }
+/* the opening section head carries the same weight as a chapter opener */
+.fhead h3.sh {
+  font-weight: 400; font-size: clamp(29px, 5.6vw, 46px); line-height: 1.1;
+  letter-spacing: -0.02em; max-width: 20ch; margin-inline: auto;
+}
+.fhead .lede {
+  max-width: 58ch; margin-inline: auto;
+  font-family: var(--serif); font-size: clamp(18px, 2.5vw, 22px); line-height: 1.5;
+  color: var(--text-primary);
+}
 
 /* a pull-out that carries the whole argument sits centred */
 .inference.mid p { max-width: 46ch; margin-inline: auto; text-align: center; }

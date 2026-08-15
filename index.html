@@ -120,7 +120,7 @@
         <div class="lg"><span class="dot" aria-hidden="true"></span><span>Chokepoint</span></div>
         <div class="lg"><span class="dot ring" aria-hidden="true"></span><span>Spot cargo origin</span></div>
       </div>
-      <p class="map-face">Shipping lane drawn as a sea route through the Gulf of Oman, the Arabian Sea and the Bay of Bengal. It is not a straight line because ships cannot take one.</p>
+      <p class="map-face">Shipping lane drawn as a sea route through the Gulf of Oman, the Arabian Sea and the Bay of Bengal.</p>
       <noscript><p style="position:absolute;inset:auto 20px 20px;z-index:403;background:#02071F;padding:16px;border:1px solid #16255C">Map of the LNG route: Ras Laffan in Qatar, out through the Strait of Hormuz, across the Arabian Sea, south of Sri Lanka, into the Bay of Bengal, ending at Moheshkhali off Cox's Bazar, Bangladesh.</p></noscript>
     </div>
     <div class="map-steps" id="map1-steps" role="group" aria-label="Map steps">
@@ -301,7 +301,8 @@
             <rect x="216" y="142" width="30" height="16" fill="#08163F" stroke="#9AA7C0"></rect>
             <rect x="256" y="136" width="22" height="22" fill="#08163F" stroke="#9AA7C0"></rect>
             <rect x="292" y="146" width="46" height="12" fill="#08163F" stroke="#9AA7C0"></rect>
-            <text class="lb" x="196" y="212">FSRU, REGASIFICATION</text>
+            <text class="lb w-only" x="196" y="212">FSRU, REGASIFICATION</text>
+            <text class="lb n-only" x="196" y="212">FSRU</text>
           </g>
 
           <!-- carrier -->
@@ -327,12 +328,14 @@
           <g clip-path="url(#pipeClip)">
             <path id="pipeFlow" class="pipe-fill" d="M262 196 L262 232 L520 232" fill="none" stroke="#4FD6C4" stroke-width="5" stroke-linecap="square"></path>
           </g>
-          <text class="lb" x="286" y="248">450 MMCFD</text>
+          <text class="lb w-only" x="286" y="248">450 MMCFD</text>
+          <text class="lb n-only" x="286" y="256">450 MMCFD</text>
 
           <!-- grid -->
           <g>
             <rect x="520" y="212" width="126" height="40" fill="#08163F" stroke="#9AA7C0"></rect>
-            <text class="vl" x="534" y="238">NATIONAL GRID</text>
+            <text class="vl w-only" x="534" y="238">NATIONAL GRID</text>
+            <text class="vl n-only" x="532" y="240">GRID</text>
           </g>
           <g id="gridsplit" class="step-el">
             <rect x="520" y="196" width="126" height="8" fill="#4FD6C4" id="gsGas"></rect>
@@ -369,7 +372,10 @@
         <div class="card">
           <span class="stepnum">The near miss</span>
           <blockquote>Luckily, the LNG ship moved away. Otherwise, it would have been a massive accident.</blockquote>
-          <cite><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></cite>
+          <cite class="faced">
+            <span class="face"><img src="assets/img/portrait-tuku.png" alt="Iqbal Hassan Mahmood Tuku" width="210" height="245" loading="lazy" decoding="async"></span>
+            <span class="who"><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></span>
+          </cite>
         </div>
       </div>
       <div class="ss-step" data-step="2" data-state="valve">
@@ -417,7 +423,7 @@
   <!-- shortfall chart -------------------------------------------------- -->
   <div class="scene wrap chart">
     <h3 class="sh rv">Average load shedding, 1 to 12 August</h3>
-    <p class="lede rv">Each bar is the average load shedding for that day, in megawatts an hour, as reported by the grid operator. Every day from 1 to 12 August has a reported figure.</p>
+    <p class="lede rv">Each bar is the average load shedding for that day, in megawatts an hour, as reported by the grid operator.</p>
     <div class="frame rv" style="margin-top:30px">
       <div class="plot" id="chart-grid" style="aspect-ratio:88/43"></div>
       <p class="fsrc">Average load shedding per hour, megawatts. Power Grid Company of Bangladesh data</p>
@@ -680,9 +686,12 @@
     </div>
 
     <div class="positions rv" style="margin-top:40px">
-      <div class="pos">
+      <div class="pos faced">
         <blockquote>We didn't conduct any assessment of the impact on the economy while setting the new prices, but it would definitely increase the people's expenditure.</blockquote>
-        <cite><b>Jalal Ahmed</b><span>Chairman, Bangladesh Energy Regulatory Commission</span></cite>
+        <cite>
+          <span class="face"><img src="assets/img/portrait-jalal.png" alt="Jalal Ahmed" width="367" height="378" loading="lazy" decoding="async"></span>
+          <span class="who"><b>Jalal Ahmed</b><span>Chairman, Bangladesh Energy Regulatory Commission</span></span>
+        </cite>
       </div>
       <div class="pos">
         <p style="font-size:16.5px;line-height:1.6;color:var(--text-secondary);margin:0">The regulator is allowed 60 days to decide. It took 30. Asked about the speed, the chairman said the decision was made quickly with the national budget in mind.</p>
@@ -838,13 +847,19 @@
     </div>
 
     <div class="positions rv" style="margin-top:38px">
-      <div class="pos">
+      <div class="pos faced">
         <blockquote>The BPC was initially given two days to provide its opinion and was subsequently asked to prepare a broader guideline within four days.</blockquote>
-        <cite><b>M Shamsul Alam</b><span>Energy adviser, Consumers Association of Bangladesh</span></cite>
+        <cite>
+          <span class="face"><img src="assets/img/portrait-shamsul.png" alt="M Shamsul Alam" width="214" height="210" loading="lazy" decoding="async"></span>
+          <span class="who"><b>M Shamsul Alam</b><span>Energy adviser, Consumers Association of Bangladesh</span></span>
+        </cite>
       </div>
-      <div class="pos">
+      <div class="pos faced">
         <blockquote>We want private companies to bring fuel alongside us so that there is fair competition. We want to get out of the monopoly.</blockquote>
-        <cite><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></cite>
+        <cite>
+          <span class="face"><img src="assets/img/portrait-tuku.png" alt="Iqbal Hassan Mahmood Tuku" width="210" height="245" loading="lazy" decoding="async"></span>
+          <span class="who"><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></span>
+        </cite>
       </div>
     </div>
 
@@ -852,7 +867,7 @@
       <p>The stated rationale is that private imports reduce the subsidy burden. That does not follow. The subsidy exists because fuel sells below import cost. A private importer held to the same regulated price needs the same support. One free to set its own price shifts the burden to consumers. Either way the cost does not vanish. It moves.</p>
     </div>
 
-    <div class="panel rv" style="margin-top:22px;border-left:3px solid var(--d-hydro)">
+    <div class="panel rv edged mid" style="margin-top:22px">
       <p class="mono" style="font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--d-hydro);margin-bottom:12px">The counter-argument</p>
       <p style="font-size:16.5px;line-height:1.55;color:var(--text-primary);margin:0">A single state buyer is a single point of failure in procurement, exactly as a single terminal is in supply. Competition could improve resilience even where it does not cut cost.</p>
     </div>
@@ -889,9 +904,12 @@
       <div class="rl"><b>90 to 30</b><p>Tonnes of rice a day at a mill in Khajanagar, Kushtia, on five to six hours of power.</p></div>
     </div>
 
-    <div class="quote rv" style="margin-top:clamp(48px,7vh,76px);max-width:34ch">
+    <div class="quote faced rv" style="margin-top:clamp(48px,7vh,76px);max-width:34ch">
       <blockquote>Now I can only count the days.</blockquote>
-      <cite><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></cite>
+      <cite>
+        <span class="face"><img src="assets/img/portrait-tuku.png" alt="Iqbal Hassan Mahmood Tuku" width="210" height="245" loading="lazy" decoding="async"></span>
+        <span class="who"><b>Iqbal Hassan Mahmood Tuku</b><span>Power, Energy and Mineral Resources Minister</span></span>
+      </cite>
     </div>
     <p class="note rv" style="margin-top:24px;max-width:56ch">He was speaking of the engineers repairing the damaged Excelerate unit, at a Centre for Policy Dialogue discussion on 13 August, hours before the Summit terminal ran dry.</p>
     <p class="fsrc rv" style="margin-top:18px">Figures for 13 August. Petrobangla, Power Grid Bangladesh, the Bangladesh Rural Electrification Board, Titas Gas and industry associations, reported by The Daily Star on 14 August 2026.</p>
