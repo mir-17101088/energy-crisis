@@ -122,7 +122,7 @@
   function card(a, i) {
     return '<a class="rd" href="' + esc(a.href) + '" target="_blank" rel="noopener noreferrer" style="--i:' + i + '">'
       +   '<span class="rd-im">'
-      +     '<img src="' + esc(a.img) + '" alt="" loading="lazy" decoding="async">'
+      +     '<picture><source type="image/webp" srcset="' + esc(a.img.replace(/\.(jpe?g|png)$/i, '.webp')) + '"><img src="' + esc(a.img) + '" alt="" loading="lazy" decoding="async"></picture>'
       +   '</span>'
       +   '<span class="rd-tx">'
       +     '<span class="rd-k">' + SOURCE + '</span>'
