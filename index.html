@@ -125,34 +125,40 @@
     <p class="opener rv">Two things happened to Bangladesh in 2026. One was sudden and foreign. The other had been arriving slowly for seven years.</p>
   </div>
 
-  <!-- 1.1 full bleed map ------------------------------------------------ -->
-  <div class="map-full" id="map1-block">
-    <div class="map-shell">
-      <div id="map1" style="position:absolute;inset:0"></div>
-      <div class="map-legend">
-        <h5>The route</h5>
-        <p style="margin:0 0 10px;font-size:12.5px;line-height:1.45">Ras Laffan to Moheshkhali is about 5,600 km of sea, and every kilometre of it depends on one 39 km wide strait.</p>
-        <div class="lg"><span class="dot" aria-hidden="true"></span><span>Chokepoint</span></div>
-        <div class="lg"><span class="dot ring" aria-hidden="true"></span><span>Spot cargo origin</span></div>
+  <!-- 1.1 pinned route map: the cards ride over the map ---------------- -->
+  <section class="map-scroll" id="map1-block" aria-label="The route from Ras Laffan to Moheshkhali">
+    <div class="ms-stick">
+      <div class="map-shell pinned">
+        <div id="map1" style="position:absolute;inset:0"></div>
+        <div class="map-legend">
+          <h5>The route</h5>
+          <p style="margin:0 0 10px;font-size:12.5px;line-height:1.45">Ras Laffan to Moheshkhali is about 5,600 km of sea, and every kilometre of it depends on one 39 km wide strait.</p>
+          <div class="lg"><span class="dot" aria-hidden="true"></span><span>Chokepoint</span></div>
+          <div class="lg"><span class="dot ring" aria-hidden="true"></span><span>Spot cargo origin</span></div>
+        </div>
+        <noscript><p style="position:absolute;inset:auto 20px 20px;z-index:403;background:#02071F;padding:16px;border:1px solid #16255C">Map of the LNG route: Ras Laffan in Qatar, out through the Strait of Hormuz, across the Arabian Sea, south of Sri Lanka, into the Bay of Bengal, ending at Moheshkhali off Cox's Bazar, Bangladesh.</p></noscript>
       </div>
-      <p class="map-face">Shipping lane drawn as a sea route through the Gulf of Oman, the Arabian Sea and the Bay of Bengal.</p>
-      <noscript><p style="position:absolute;inset:auto 20px 20px;z-index:403;background:#02071F;padding:16px;border:1px solid #16255C">Map of the LNG route: Ras Laffan in Qatar, out through the Strait of Hormuz, across the Arabian Sea, south of Sri Lanka, into the Bay of Bengal, ending at Moheshkhali off Cox's Bazar, Bangladesh.</p></noscript>
+      <div class="ms-cards">
+        <article class="map-step" data-mstep="0" aria-current="true">
+          <span class="t">The channel</span>
+          <span class="b">On 28 February the US and Israel went to war with Iran. Iran took hold of the Strait of Hormuz, the channel that carries about one fifth of the world's LNG. Bangladesh buys most of its gas through that channel.</span>
+        </article>
+        <article class="map-step" data-mstep="1">
+          <span class="t">The break</span>
+          <span class="b">Iran declared the strait closed on 18 April, hours after opening it. 20 to 23 percent of Bangladesh's imported fuel oil transits Hormuz. 100 percent of its imported crude does.</span>
+        </article>
+        <article class="map-step" data-mstep="2">
+          <span class="t">Where the gas came from instead</span>
+          <span class="b">Nineteen cargoes arrived from Qatar before the war. Thirty five spot cargoes have been bought since March, from wherever they could be found.</span>
+        </article>
+      </div>
     </div>
-    <div class="map-steps" id="map1-steps" role="group" aria-label="Map steps">
-      <button class="map-step" type="button" data-mstep="0" aria-current="true">
-        <span class="t">The channel</span>
-        <span class="b">On 28 February the US and Israel went to war with Iran. Iran took hold of the Strait of Hormuz, the channel that carries about one fifth of the world's LNG. Bangladesh buys most of its gas through that channel.</span>
-      </button>
-      <button class="map-step" type="button" data-mstep="1">
-        <span class="t">The break</span>
-        <span class="b">Iran declared the strait closed on 18 April, hours after opening it. 20 to 23 percent of Bangladesh's imported fuel oil transits Hormuz. 100 percent of its imported crude does.</span>
-      </button>
-      <button class="map-step" type="button" data-mstep="2">
-        <span class="t">Where the gas came from instead</span>
-        <span class="b">Nineteen cargoes arrived from Qatar before the war. Thirty five spot cargoes have been bought since March, from wherever they could be found.</span>
-      </button>
+    <div class="ms-track" aria-hidden="true">
+      <div class="ms-step" data-mstep="0"></div>
+      <div class="ms-step" data-mstep="1"></div>
+      <div class="ms-step" data-mstep="2"></div>
     </div>
-  </div>
+  </section>
 
   <!-- 1.2 cargo tally, pinned ------------------------------------------- -->
   <section class="cargo" id="cargo" data-stage="1" aria-label="Cargoes received, by source">
@@ -316,8 +322,6 @@
             <rect x="216" y="142" width="30" height="16" fill="#08163F" stroke="#9AA7C0"></rect>
             <rect x="256" y="136" width="22" height="22" fill="#08163F" stroke="#9AA7C0"></rect>
             <rect x="292" y="146" width="46" height="12" fill="#08163F" stroke="#9AA7C0"></rect>
-            <text class="lb w-only" x="196" y="212">FSRU, REGASIFICATION</text>
-            <text class="lb n-only" x="196" y="212">FSRU</text>
           </g>
 
           <!-- carrier -->
@@ -327,7 +331,6 @@
             <circle cx="452" cy="158" r="11" fill="#08163F" stroke="#8792AE"></circle>
             <circle cx="482" cy="158" r="11" fill="#08163F" stroke="#8792AE"></circle>
             <circle cx="512" cy="158" r="11" fill="#08163F" stroke="#8792AE"></circle>
-            <text class="lb" x="410" y="212">LNG CARRIER</text>
           </g>
 
           <!-- ignition -->
@@ -335,16 +338,16 @@
             <circle class="ig-ring" cx="386" cy="164" r="9" fill="none" stroke="#F0666B" stroke-width="2"></circle>
             <circle cx="386" cy="164" r="4.5" fill="#F0666B"></circle>
             <line x1="386" y1="150" x2="386" y2="118" stroke="#F0666B" stroke-width="1"></line>
-            <text class="lb" x="378" y="110" fill="#F58085">FIRE, 21 JULY</text>
+            <text class="lb acc" x="378" y="110">FIRE, 21 JULY</text>
           </g>
 
           <!-- pipe -->
-          <path d="M262 196 L262 232 L520 232" fill="none" stroke="#16255C" stroke-width="9" stroke-linecap="square"></path>
+          <path d="M358 188 L358 232 L520 232" fill="none" stroke="#16255C" stroke-width="9" stroke-linecap="square"></path>
           <g clip-path="url(#pipeClip)">
-            <path id="pipeFlow" class="pipe-fill" d="M262 196 L262 232 L520 232" fill="none" stroke="#4FD6C4" stroke-width="5" stroke-linecap="square"></path>
+            <path id="pipeFlow" class="pipe-fill" d="M358 188 L358 232 L520 232" fill="none" stroke="#4FD6C4" stroke-width="5" stroke-linecap="square"></path>
           </g>
-          <text class="lb w-only" x="286" y="248">450 MMCFD</text>
-          <text class="lb n-only" x="286" y="256">450 MMCFD</text>
+          <text class="lb w-only" x="376" y="248">450 MMCFD</text>
+          <text class="lb n-only" x="376" y="256">450 MMCFD</text>
 
           <!-- grid -->
           <g>
@@ -356,6 +359,12 @@
             <rect x="520" y="196" width="126" height="8" fill="#4FD6C4" id="gsGas"></rect>
             <rect x="520" y="196" width="0" height="8" fill="#E5793F" id="gsOil" transform="translate(126,0)"></rect>
           </g>
+
+          <!-- labels last, so the pipe and the hulls never cut through them -->
+          <text class="lb w-only" x="196" y="212">FSRU, REGASIFICATION</text>
+          <text class="lb n-only" x="196" y="212">FSRU</text>
+          <text class="lb w-only" x="410" y="212">LNG CARRIER</text>
+          <text class="lb n-only" x="410" y="212">CARRIER</text>
         </svg>
 
         <div class="kstats">
@@ -660,9 +669,27 @@
 
 <!-- ============================ CHAPTER 4 ============================ -->
 <section class="chapter" id="ch4" aria-labelledby="ch4h">
-  <div class="wrap split chapter-open">
+  <div class="wrap split chapter-open toll bg-band band-toll">
     <h2 id="ch4h" class="rv">The Human Toll</h2>
     <p class="opener rv">Load shedding is a scheduling word. What it means is a five year old who cannot sleep.</p>
+  </div>
+
+  <!-- 4.1 album -------------------------------------------------------- -->
+  <div class="album-bleed">
+    <div class="album rv" id="album">
+        <button class="al-f wide" type="button" data-cap="FILE PHOTO: REUTERS">
+          <img style="object-position:44% 56%" src="assets/img/toll-2.jpg" width="1330" height="797" loading="lazy" decoding="async" alt="Shopkeepers and customers in a hardware shop lit by two candles during a blackout.">
+        </button>
+        <button class="al-f tall" type="button" data-cap="Star File Photo">
+          <img style="object-position:52% 46%" src="assets/img/toll-1.jpg" width="742" height="523" loading="lazy" decoding="async" alt="Three children reading schoolbooks on the floor by the light of a single candle.">
+        </button>
+        <button class="al-f tall" type="button" data-cap="Star File Photo">
+          <img style="object-position:46% 50%" src="assets/img/toll-3.jpg" width="449" height="292" loading="lazy" decoding="async" alt="A boy reading a book by candlelight.">
+        </button>
+        <button class="al-f wide" type="button" data-cap="Photo: Orchid Chakma">
+          <img style="object-position:50% 44%" src="assets/img/toll-4.jpg" width="1160" height="765" loading="lazy" decoding="async" alt="A student reading a textbook by the torch on his phone.">
+        </button>
+    </div>
   </div>
 
   <!-- 4.2 outage hours + map ------------------------------------------- -->
@@ -939,6 +966,61 @@
     <p class="note rv" style="margin-top:24px;max-width:56ch">He was speaking of the engineers repairing the damaged Excelerate unit, at a Centre for Policy Dialogue discussion on 13 August, hours before the Summit terminal ran dry.</p>
     <p class="fsrc rv" style="margin-top:18px">Figures for 13 August. Petrobangla, Power Grid Bangladesh, the Bangladesh Rural Electrification Board, Titas Gas and industry associations, reported by The Daily Star on 14 August 2026.</p>
   </div>
+
+  <!-- 15 August: the handover ------------------------------------------- -->
+  <div class="scene wrap chart">
+    <div class="upd-hd rv">
+      <span class="upd-d">15 August 2026</span>
+      <h3 class="sh">One terminal came back. The other went down two hours earlier.</h3>
+    </div>
+    <p class="lede rv" style="max-width:56ch">Summit's terminal began feeding the grid again on Friday evening. By then Excelerate's Excellence had tripped on another technical fault, and the shortage held.</p>
+
+    <div class="ways rv" id="hand">
+      <div class="wy-grid two">
+        <div class="wy-c q" style="--dl:0ms">
+          <span class="wy-cn">Summit terminal</span>
+          <b class="wy-cv">Back on<em>about 500 MMcfd of capacity</em></b>
+          <span class="wy-cp">110 MMcfd at first, rising to about 550 by 2:00am</span>
+          <span class="wy-ct"><em>What happened</em>Out of gas from 5:00pm Thursday. The tanker BW Lesmes offloaded its cargo on Friday, and the terminal started feeding the national grid again that evening.</span>
+        </div>
+        <div class="wy-c x" style="--dl:110ms">
+          <span class="wy-cn">Excelerate terminal, the Excellence</span>
+          <b class="wy-cv">Offline<em>about 600 MMcfd of capacity</em></b>
+          <span class="wy-cp">Still offline at 10:30pm</span>
+          <span class="wy-ct"><em>What happened</em>Offline since the fire on 21 July. It resumed at half capacity on 6 August, then tripped again at about 4:00pm on Friday. Supply was expected back later that night.</span>
+        </div>
+      </div>
+      <p class="wy-foot">The two floating terminals are the country's only LNG import facilities, with a combined regasification capacity of about 1,100 MMcfd.</p>
+    </div>
+  </div>
+
+  <div class="scene scene-tight wrap chart">
+    <h3 class="sh rv">The ship that was turned away</h3>
+    <p class="lede rv" style="max-width:58ch">A Saudi Aramco cargo was due on Wednesday aboard the Al Hamra. Neither terminal accepted the vessel.</p>
+    <div class="statrow three rv" style="margin-top:32px">
+      <div class="stat"><span class="v">1997</span><span class="l">Year the Al Hamra was built. It is a Moss type carrier holding about 1.35 lakh cubic metres</span></div>
+      <div class="stat"><span class="v">Not disclosed</span><span class="l">The technical and insurance requirements the vessel failed to meet</span></div>
+      <div class="stat"><span class="v">Another ship</span><span class="l">Petrobangla has asked Aramco for a replacement, which the purchase agreement allows</span></div>
+    </div>
+    <div class="positions rv" style="margin-top:34px">
+      <div class="pos">
+        <blockquote>We had nothing to do with that. We tried to negotiate, but as there was a risk of another disruption, the terminal authorities did not accept it.</blockquote>
+        <cite><span class="who"><b>A Petrobangla official</b><span>Speaking on condition of anonymity</span></span></cite>
+      </div>
+      <div class="pos">
+        <p style="font-size:16.5px;line-height:1.6;color:var(--text-secondary);margin:0">Petrobangla describes a dispute between the terminal authorities and the tanker authorities. Asked why the problem had not been surfaced earlier, the official said the supplier normally selects the tanker.</p>
+      </div>
+    </div>
+    <p class="note rv" style="margin-top:22px;max-width:60ch">The vessel's age and its containment system do not by themselves establish the reason for the rejection. Petrobangla's acting chairman, Md Abdul Mannan, told journalists a replacement had been requested.</p>
+
+    <div class="inference wide rv" style="margin-top:34px">
+      <p>If Summit returns to near full capacity, gas availability rises substantially. With the fault on the Excellence unresolved, the deficit stays where it was. Power generation, industry and CNG stations are still short, and household pressure remains very low.</p>
+    </div>
+    <p class="fsrc rv" style="margin-top:18px">Times as reported on the night of 14 August. Petrobangla officials and a Summit statement, reported by The Daily Star on 15 August 2026.</p>
+  </div>
+
+  <!-- related coverage: latest -->
+  <div class="wrap chart reads-blk"><div class="reads" data-reads="latest"></div></div>
 </section>
 
 </main>
@@ -982,6 +1064,16 @@
   </nav>
 </div>
 
+</div>
+
+<div class="pv" id="lb" role="dialog" aria-modal="true" aria-label="Photograph" hidden>
+  <button class="pv-x" id="lbX" type="button" aria-label="Close the photograph">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="square" aria-hidden="true" focusable="false"><path d="M5 5l14 14"/><path d="M19 5 5 19"/></svg>
+  </button>
+  <figure class="pv-fig">
+    <img id="lbImg" alt="">
+    <figcaption id="lbCap"></figcaption>
+  </figure>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous" defer></script>

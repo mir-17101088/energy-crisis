@@ -333,6 +333,14 @@ html.past-hero .hero-logo { transform: scale(.5); }
 .band-pressure   { --bg: url(../img/bg-pressure.jpg); }
 .band-crossroads { --bg: url(../img/bg-crossroads.jpg); }
 .band-coda       { --bg: url(../img/bg-coda-2.jpg); --scrim: .44; }
+/* the human toll band is an illustration, almost all of it black: it carries
+   its own shade, so the band drops the radial pool and only darkens the top
+   third, where the type sits */
+.band-toll       { --bg: url(../img/bg-toll.jpg); }
+.chapter-open.toll { min-height: clamp(430px, 74vh, 700px); padding-bottom: calc(var(--rh) * 1.15); }
+@media (max-width: 700px) {
+  .chapter-open.toll { min-height: clamp(430px, 72vh, 620px); padding-bottom: calc(var(--rh) * 1.5); }
+}
 .bg-band::before {
   content: ""; position: absolute; z-index: -1; top: 0; bottom: 0;
   left: 50%; width: 100vw; transform: translateX(-50%);
@@ -347,12 +355,87 @@ html.past-hero .hero-logo { transform: scale(.5); }
   -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
   mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
 }
+/* after .bg-band::before on purpose: it replaces that layer stack */
+.bg-band.band-toll::before {
+  background-image:
+    linear-gradient(180deg, rgba(10,9,8,.92) 0%, rgba(10,9,8,.84) 42%, rgba(10,9,8,.76) 70%, rgba(10,9,8,.66) 88%, rgba(10,9,8,.30) 100%),
+    var(--bg);
+  background-size: cover, cover;
+  background-position: center top, 50% 100%;
+  filter: none;
+}
+/* the type runs over the lit half of the illustration: a second, tighter pool
+   of shade sits under it, so the flame never crosses the standfirst */
+.bg-band.band-toll::after {
+  content: ""; position: absolute; z-index: -1; top: 0; bottom: 0;
+  left: 50%; width: 100vw; transform: translateX(-50%); pointer-events: none;
+  background: radial-gradient(72% 62% at 50% 34%, rgba(10,9,8,.62) 0%, rgba(10,9,8,.40) 52%, rgba(10,9,8,0) 86%);
+}
 .bg-band > h2, .bg-band > h3, .bg-band > p, .bg-band > .lede, .bg-band > .note {
   text-shadow: 0 1px 2px rgba(10,9,8,.95), 0 2px 10px rgba(10,9,8,.8);
 }
 .bg-band > .lede, .bg-band > p { color: var(--text-primary); }
 .bg-band > h2, .bg-band > h3 { color: #FFFDF8; }
 .bg-band.scene-tight { padding-block: calc(var(--rh) * .82); }
+
+/* ---------- album ------------------------------------------------------- */
+
+.album-bleed { position: relative; width: 100%; padding-block: clamp(26px, 4.5vh, 56px); }
+.album { display: grid; gap: 0; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: clamp(180px, 25vw, 400px); }
+.al-f {
+  position: relative; display: block; padding: 0; border: 0;
+  background: var(--cove-800); cursor: pointer; overflow: hidden;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 560ms var(--ease-entrance), transform 560ms var(--ease-entrance), border-color 220ms var(--ease-state);
+  transition-delay: var(--dl, 0ms);
+}
+.album.in .al-f { opacity: 1; transform: none; }
+.al-f:nth-child(2) { --dl: 90ms; }
+.al-f:nth-child(3) { --dl: 180ms; }
+.al-f:nth-child(4) { --dl: 270ms; }
+.al-f img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  filter: saturate(.96) contrast(1.03);
+  transition: transform 620ms var(--ease-entrance), filter 300ms var(--ease-state);
+}
+.al-f:hover img { transform: scale(1.03); filter: saturate(1) contrast(1.05) brightness(1.06); }
+.al-f:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+.al-f.wide { grid-column: span 4; }
+.al-f.tall { grid-column: span 2; }
+@media (max-width: 640px) {
+  .album { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: clamp(140px, 40vw, 240px); }
+  .al-f.wide { grid-column: span 2; }
+  .al-f.tall { grid-column: span 1; }
+}
+
+/* the frame opens full screen, with the credit under it */
+.pv {
+  position: fixed; inset: 0; z-index: 900; display: grid; place-items: center;
+  padding: clamp(16px, 4vw, 56px);
+  background: rgba(6,5,4,.93);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity 260ms var(--ease-state);
+}
+.pv.on { opacity: 1; }
+.pv-fig { margin: 0; display: grid; justify-items: center; gap: 14px; max-width: 100%; }
+.pv-fig img {
+  display: block; max-width: 100%; max-height: 78vh; width: auto; height: auto;
+  border: 1px solid var(--cove-500); background: var(--cove-900);
+  transform: scale(.985); transition: transform 320ms var(--ease-entrance);
+}
+.pv.on .pv-fig img { transform: none; }
+.pv-fig figcaption {
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-tertiary); text-align: center;
+}
+.pv-x {
+  position: absolute; top: clamp(12px, 2.4vw, 26px); right: clamp(12px, 2.4vw, 26px);
+  width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer;
+  background: rgba(16,14,11,.8); border: 1px solid var(--cove-500); color: var(--paper);
+  transition: border-color 200ms var(--ease-state), color 200ms var(--ease-state);
+}
+.pv-x:hover { border-color: var(--accent); color: var(--accent-lift); }
+.pv-x svg { width: 20px; height: 20px; }
 
 /* ---------- panels, blocks --------------------------------------------- */
 
@@ -534,12 +617,6 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
    is dimmed to hold the annotation contrast the rest of the report uses */
 .map-sat .leaflet-tile-pane { filter: saturate(.7) brightness(.6) contrast(1.06); }
 
-.map-face {
-  position: absolute; z-index: 402; left: var(--pad); bottom: 22px;
-  max-width: 380px; font-size: 13px; line-height: 1.45; color: var(--text-secondary);
-  background: rgba(16,14,11,.82); border: 1px solid var(--cove-500); border-left: 3px solid var(--accent);
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 14px 16px;
-}
 .map-legend {
   position: absolute; z-index: 402; right: var(--pad); top: 22px;
   background: rgba(16,14,11,.82); border: 1px solid var(--cove-500);
@@ -552,22 +629,46 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 .map-legend .dot.ring { background: none; border: 2px solid var(--d-hydro); }
 @media (max-width: 720px) {
   .map-legend { display: none; }
-  .map-face { left: 16px; right: 16px; max-width: none; bottom: 16px; font-size: 12.5px; }
 }
 
-.map-steps { display: grid; gap: 1px; background: var(--cove-500); border-bottom: 1px solid var(--cove-500); }
-@media (min-width: 860px) { .map-steps { grid-template-columns: repeat(3, 1fr); } }
-.map-step {
-  background: var(--cove-800); padding: 22px var(--pad) 26px; cursor: pointer; text-align: left;
-  border: 0; font: inherit; color: inherit; position: relative;
-  transition: background 220ms var(--ease-state);
+/* the route map is pinned and the three cards ride over it: one reading line
+   at the viewport centre picks the stage, so it steps forward and back */
+.map-scroll { position: relative; }
+.ms-stick { position: sticky; top: 0; z-index: 2; height: 100dvh; overflow: hidden; background: var(--cove-900); }
+.map-shell.pinned { height: 100%; min-height: 0; border: 0; }
+.ms-cards {
+  position: absolute; z-index: 1200; left: var(--pad); bottom: 30px;
+  width: min(430px, calc(100% - var(--pad) * 2));
 }
-.map-step::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); opacity: 0; transition: opacity 200ms var(--ease-state); }
-.map-step[aria-current="true"] { background: var(--cove-700); }
-.map-step[aria-current="true"]::before { opacity: 1; }
-.map-step .t { display: block; font-size: 16px; color: var(--paper); font-weight: 500; margin-bottom: 8px; }
-.map-step .b { display: block; font-size: 14px; line-height: 1.5; color: var(--text-secondary); }
-.map-step[aria-current="true"] .b { color: var(--text-primary); }
+.map-step {
+  position: absolute; left: 0; right: 0; bottom: 0; display: block; text-align: left;
+  background: rgba(16,14,11,.88); border: 1px solid var(--cove-500);
+  backdrop-filter: blur(9px); -webkit-backdrop-filter: blur(9px);
+  padding: 16px 20px 19px;
+  opacity: 0; transform: translateY(16px); pointer-events: none;
+  transition: opacity 400ms var(--ease-state), transform 560ms var(--ease-entrance);
+}
+.map-step[aria-current="true"] { opacity: 1; transform: none; }
+.map-step .t {
+  display: block; font-family: var(--serif); font-weight: 500;
+  font-size: clamp(19px, 2.4vw, 23px); line-height: 1.2; letter-spacing: -0.012em;
+  color: var(--paper); margin-bottom: 9px;
+}
+.map-step .b { display: block; font-size: 14.5px; line-height: 1.55; color: var(--text-secondary); }
+.ms-track { position: relative; z-index: 1; margin-top: -52vh; padding-bottom: 42vh; }
+.ms-step { height: 44vh; }
+@media (max-width: 720px) {
+  .ms-cards { left: 14px; right: 14px; bottom: 26px; width: auto; }
+  .map-step { padding: 13px 15px 15px; }
+  .map-step .b { font-size: 13.5px; line-height: 1.5; }
+  .ms-track { margin-top: -54vh; padding-bottom: 40vh; }
+  .ms-step { height: 48vh; }
+}
+@media (max-height: 620px) and (max-width: 1000px) {
+  .map-step { padding: 11px 14px 13px; }
+  .map-step .t { font-size: 17px; margin-bottom: 7px; }
+  .map-step .b { font-size: 12.5px; line-height: 1.45; }
+}
 
 /* ---------- ch1 tally --------------------------------------------------- */
 
@@ -730,8 +831,14 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 }
 
 .fsru text { font-family: var(--serif); }
-.fsru .lb { font-size: 11px; fill: var(--text-tertiary); letter-spacing: .04em; }
-.fsru .vl { font-family: var(--mono); font-size: 13px; fill: var(--paper); }
+/* the labels sit over water, hulls and the pipe: a dark halo on the glyphs is
+   what keeps every one of them readable at both scales */
+.fsru .lb {
+  font-size: 11.5px; fill: var(--text-secondary); letter-spacing: .05em;
+  filter: drop-shadow(0 0 2px #040D33) drop-shadow(0 1px 2px rgba(4,13,51,.9));
+}
+.fsru .lb.acc { fill: #F58085; }
+.fsru .vl { font-family: var(--mono); font-size: 13px; fill: var(--paper); filter: drop-shadow(0 1px 2px rgba(4,13,51,.9)); }
 /* the diagram is authored wide, so on a phone it draws at about half scale:
    label type is set in viewBox units and has to grow back, with shorter
    strings where the long ones would then collide */
@@ -961,6 +1068,7 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 .wy-grid { display: grid; gap: 1px; background: var(--cove-500); border: 1px solid var(--cove-500); margin-top: 26px; }
 @media (min-width: 700px) { .wy-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1000px) { .wy-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (min-width: 700px) { .wy-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .wy-c {
   background: var(--cove-700); padding: 17px 17px 19px; display: flex; flex-direction: column; gap: 9px;
   opacity: 0; transform: translateY(16px);
@@ -971,6 +1079,7 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 .wy-c.q { border-top: 2px solid var(--d-lng); }
 .wy-c.q2 { border-top: 2px solid var(--d-gas); }
 .wy-c.u { border-top: 2px solid var(--cove-500); }
+.wy-c.x { border-top: 2px solid var(--accent); }
 .wy-cn { font-size: 15px; line-height: 1.3; color: var(--paper); font-weight: 500; }
 .wy-cv { font-family: var(--mono); font-weight: 400; font-size: clamp(28px, 4.4vw, 38px); line-height: 1; letter-spacing: -0.035em; color: var(--paper); }
 .wy-cv em { font-style: normal; font-size: 11px; letter-spacing: .09em; color: var(--text-tertiary); margin-left: 7px; }
@@ -1138,6 +1247,14 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 @media (min-width: 620px) { .statrow.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .statrow.four { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
+/* a dated beat inside the coda: the date carries the update, not a label */
+.upd-hd { display: grid; gap: 12px; }
+.upd-d {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--accent); padding-bottom: 12px; border-bottom: 1px solid var(--cove-500);
+}
+.upd-hd .sh { margin: 0; }
+
 /* closing roll: the count of what is shut, one rule per figure */
 .roll { display: grid; gap: clamp(22px, 3vw, 32px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 248px), 1fr)); }
 .roll .rl { border-top: 1px solid var(--accent); padding-top: 14px; }
@@ -1209,6 +1326,8 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
   .ag-ev, .ag-int, .ag-r, .wy-c { opacity: 1 !important; transform: none !important; }
   .wy-rail i { transform: none !important; }
   .cg-card { transition-duration: 1ms !important; }
+  .map-step { transform: none !important; }
+  .al-f, .pv-fig img { transform: none !important; }
   .cg-field i { transition-delay: 0ms !important; }
   .ss-step .card { opacity: 1 !important; }
   .fsru .step-el { opacity: 1 !important; }
@@ -1217,13 +1336,13 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .panel, .ss-graphic, .map-face, .map-legend, .ck-card, .hero-chip, .cg-card, .cn-menu, .cn-btn { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .panel, .ss-graphic, .map-legend, .ck-card, .hero-chip, .cg-card, .cn-menu, .cn-btn { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
   .cn-menu { background: var(--cove-850); }
   .cn-btn { background: var(--cove-800); }
   .cg-card { background: var(--cove-700); }
   .panel, .ss-graphic, .ck-card { background: var(--cove-700); }
   .hero-chip { background: rgba(10,9,8,.72); }
-  .map-face, .map-legend { background: var(--cove-900); }
+  .map-legend { background: var(--cove-900); }
 }
 
 @media (prefers-contrast: more) {
@@ -1365,38 +1484,8 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
   }
 }
 
-/* ---------- scroll driven map ----------------------------------------- */
-
-.map-scroll { position: relative; background: var(--cove-900); border-top: 1px solid var(--cove-500); border-bottom: 1px solid var(--cove-500); }
-.ms-sticky { position: sticky; top: 0; height: 100vh; height: 100svh; z-index: 1; overflow: hidden; }
-.ms-sticky > div { position: absolute; inset: 0; }
-.ms-sticky::after {
-  content: ""; position: absolute; inset: 0; z-index: 401; pointer-events: none;
-  background: linear-gradient(180deg, rgba(16,14,11,.5) 0%, rgba(16,14,11,0) 20%, rgba(16,14,11,0) 78%, rgba(16,14,11,.5) 100%);
-}
-.ms-steps { position: relative; z-index: 2; margin-top: -100vh; margin-top: -100svh; pointer-events: none; }
-.ms-step { min-height: 85vh; min-height: 85svh; display: flex; align-items: center; padding: 0 var(--pad); }
-.ms-step:last-child { min-height: 105vh; min-height: 105svh; }
-.ms-card {
-  pointer-events: auto; width: min(420px, 100%);
-  background: rgba(16,14,11,.9); border: 1px solid var(--cove-500);
-  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
-  padding: 24px 24px 26px;
-}
-.ms-live .ms-card { opacity: .3; transition: opacity 420ms var(--ease-state); }
-.ms-live .ms-step[aria-current="true"] .ms-card { opacity: 1; }
-.ms-card .pl { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-lift); margin-bottom: 14px; }
-.ms-card p { margin: 0; font-family: var(--serif); font-size: clamp(19px, 2.5vw, 25px); line-height: 1.4; color: var(--text-primary); text-wrap: pretty; }
-@media (max-width: 899px) {
-  .ms-sticky { height: 76vh; height: 76svh; }
-  .ms-steps { margin-top: -76vh; margin-top: -76svh; }
-  .ms-step { min-height: 72vh; min-height: 72svh; align-items: flex-end; padding-bottom: 22px; }
-  .ms-step:last-child { min-height: 88vh; min-height: 88svh; }
-  .ms-card { width: 100%; padding: 20px 20px 22px; }
-  .ms-card p { font-size: 18.5px; }
-}
 @media (prefers-reduced-transparency: reduce) {
-  .ms-card, .map-panel { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--cove-800); }
+  .map-panel { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--cove-800); }
   .fkey, .leaflet-tooltip.ftip { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; background: var(--cove-850); }
 }
 
@@ -1482,6 +1571,9 @@ path.fdot { cursor: pointer; transition: fill-opacity 200ms var(--ease-state), s
   display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
 }
 @media (min-width: 768px) { .dock { right: 26px; bottom: 26px; } }
+/* the field sheet opens in the same corner: the dock stands down while it is up */
+.dock { transition: opacity 220ms var(--ease-state), transform 260ms var(--ease-entrance); }
+body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-events: none; }
 
 .chapnav { position: relative; }
 .cn-btn {
@@ -1705,7 +1797,7 @@ path.fdot { cursor: pointer; transition: fill-opacity 200ms var(--ease-state), s
 /* ---------- field sheet, narrow screens -------------------------------- */
 
 .fsheet {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1300;
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 1600;
   max-height: min(70vh, 560px); overflow-y: auto; -webkit-overflow-scrolling: touch;
   background: rgba(22,19,16,.97); border-top: 2px solid var(--accent);
   box-shadow: 0 -18px 46px rgba(0,0,0,.62);

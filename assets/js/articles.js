@@ -92,6 +92,20 @@
           img: 'assets/img/news/article_51.jpg',
           href: 'https://www.thedailystar.net/news/environment/natural-resources/energy/news/lingering-lng-crisis-may-drag-power-cut-woes-4246531' }
       ]
+    },
+
+    /* Coda, after the 15 August update */
+    latest: {
+      label: 'The latest',
+      items: [
+        { t: 'Summit LNG back online; Excelerate FSRU now offline',
+          img: 'assets/img/news/article_52.jpg',
+          href: 'https://www.thedailystar.net/news/bangladesh/news/summit-lng-back-online-excelerate-fsru-now-offline-4247861' },
+        { t: 'LNG supply worsens, chokes power output',
+          s: 'Bad weather puts Summit FSRU offline; minister says little can be done right now',
+          img: 'assets/img/news/article_53.jpg',
+          href: 'https://www.thedailystar.net/news/bangladesh/news/lng-supply-worsens-chokes-power-output-4247451' }
+      ]
     }
 
   };

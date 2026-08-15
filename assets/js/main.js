@@ -1110,46 +1110,54 @@
     label(m, [14.0, 63.5], 'ARABIAN SEA', null);
 
     var aramco = null;
-    var steps = qa('#map1-steps .map-step');
-    var faceEl = q('#map1-block .map-face');
-    var faces = [
-      'Shipping lane drawn as a sea route through the Gulf of Oman, the Arabian Sea and the Bay of Bengal.',
-      'East of Hormuz the lane is drawn faint. Fourteen Ras Laffan cargoes cleared the strait after the war began. None of them arrived here.',
-      'Aramco Trading Singapore supplied one replacement cargo, at $21.55 per MMBtu for delivery on 11 to 12 August.'
+    var root = q('#map1-block');
+    var cards = qa('.ms-cards .map-step', root);
+
+    var VIEW = [
+      bounds,
+      L.latLngBounds([[19.0, 50.0], [30.0, 68.0]]),
+      L.latLngBounds([[-3.0, 48.0], [30.5, 108.0]])
     ];
 
+    /* on a narrow screen the card lies over the map, so the fit has to reserve
+       the card's own height or the route lands underneath it */
+    function fit(b, cardEl) {
+      var v = 24, o = { duration: REDUCED ? 0 : 0.7 };
+      var hgt = cardEl ? Math.round(cardEl.getBoundingClientRect().height) : 0;
+      if (window.matchMedia('(max-width: 720px)').matches && hgt) {
+        o.paddingTopLeft = L.point(v, v);
+        o.paddingBottomRight = L.point(v, hgt + 34);
+      } else {
+        o.padding = L.point(v, v);
+      }
+      m.flyToBounds(b, o);
+    }
+
     function go(i) {
-      steps.forEach(function (b, j) { b.setAttribute('aria-current', j === i ? 'true' : 'false'); });
-      if (faceEl) faceEl.textContent = faces[i];
+      root.setAttribute('data-mstep', i);
+      for (var k = 0; k < cards.length; k++) {
+        cards[k].setAttribute('aria-current', k === i ? 'true' : 'false');
+      }
       pEast.setStyle({ opacity: i >= 1 ? 0.15 : 0.95 });
       hormuz.setStyle({ fillOpacity: i >= 1 ? 0.75 : 0.25, radius: i >= 1 ? 10 : 8 });
-      if (i === 2) {
-        if (!aramco) {
-          aramco = L.layerGroup([
-            L.circleMarker([1.29, 103.85], { radius: 7, color: '#6BBDF2', weight: 2, fillOpacity: 0 })
-          ]).addTo(m);
-          label(m, [1.29, 103.85], 'Aramco Trading Singapore', '$21.55 PER MMBTU, 11-12 AUG');
-        }
-        m.flyToBounds(L.latLngBounds([[-3.0, 48.0], [30.5, 108.0]]), { padding: [24, 24], duration: REDUCED ? 0 : 0.7 });
-      } else if (i === 1) {
-        m.flyToBounds(L.latLngBounds([[19.0, 50.0], [30.0, 68.0]]), { padding: [24, 24], duration: REDUCED ? 0 : 0.7 });
-      } else {
-        m.flyToBounds(bounds, { padding: [24, 24], duration: REDUCED ? 0 : 0.7 });
+      if (i === 2 && !aramco) {
+        aramco = L.layerGroup([
+          L.circleMarker([1.29, 103.85], { radius: 7, color: '#6BBDF2', weight: 2, fillOpacity: 0 })
+        ]).addTo(m);
+        label(m, [1.29, 103.85], 'Aramco Trading Singapore', '$21.55 PER MMBTU, 11-12 AUG');
       }
+      fit(VIEW[i] || bounds, cards[i]);
     }
-    steps.forEach(function (b, i) { b.addEventListener('click', function () { go(i); }); });
 
-    if (!REDUCED) {
-      var active = -1;
-      var io = new IntersectionObserver(function (es) {
-        es.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          var i = parseInt(e.target.getAttribute('data-mstep'), 10);
-          if (i !== active) { active = i; go(i); }
-        });
-      }, { rootMargin: '-40% 0px -40% 0px', threshold: 0 });
-      steps.forEach(function (b) { io.observe(b); });
-    }
+    /* the stage is picked off the viewport centre on every scroll event, so
+       scrolling back up walks the sequence in reverse */
+    trackSteps(qa('.ms-track .ms-step', root), function (el, i) { go(i); }, function () { return 0.5; });
+
+    var rsz = null;
+    window.addEventListener('resize', function () {
+      clearTimeout(rsz);
+      rsz = setTimeout(function () { m.invalidateSize(); }, 180);
+    }, { passive: true });
 
     var alt = document.createElement('p');
     alt.className = 'vh';
@@ -1603,6 +1611,40 @@
     window.addEventListener('scroll', queue, { passive: true });
     window.addEventListener('resize', queue, { passive: true });
     spy();
+  })();
+
+  /* ------------------------------------------------------------- album */
+
+  (function () {
+    var frames = qa('#album .al-f'), lb = q('#lb');
+    if (!frames.length || !lb) return;
+    var img = q('#lbImg'), cap = q('#lbCap'), x = q('#lbX'), last = null;
+
+    function open(btn) {
+      var src = q('img', btn);
+      img.src = src.getAttribute('src');
+      img.alt = src.getAttribute('alt') || '';
+      cap.textContent = btn.getAttribute('data-cap') || '';
+      last = btn;
+      lb.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      requestAnimationFrame(function () { lb.classList.add('on'); x.focus(); });
+    }
+    function close() {
+      lb.classList.remove('on');
+      document.documentElement.style.overflow = '';
+      var done = function () { lb.hidden = true; img.removeAttribute('src'); };
+      if (REDUCED) done(); else setTimeout(done, 260);
+      if (last) last.focus();
+    }
+    frames.forEach(function (b) { b.addEventListener('click', function () { open(b); }); });
+    x.addEventListener('click', close);
+    lb.addEventListener('click', function (e) { if (e.target === lb || e.target.tagName === 'FIGURE') close(); });
+    document.addEventListener('keydown', function (e) {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key === 'Tab') { e.preventDefault(); x.focus(); }
+    });
   })();
 
   /* ------------------------------------------------------- back to top */
