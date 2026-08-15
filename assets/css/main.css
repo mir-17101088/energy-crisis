@@ -1837,3 +1837,148 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
 #coda { --text-secondary: #DFD7C7; --text-tertiary: #BBB09C; }
 .coda .big, .coda .opener, .coda .sub { text-shadow: 0 2px 20px rgba(10,9,8,.82), 0 0 44px rgba(10,9,8,.6); }
 .coda .opener { color: var(--paper); }
+
+
+/* ---------- closing chapter ---------------------------------------------
+   Three beats and a verdict. The deficit gauge is drawn twice, once at the
+   trough and once at the scheduled recovery, so the closing bar can be read
+   against the opening one. The track is always demand; the fill is supply. */
+
+.gmeter { margin-top: clamp(30px, 4.2vw, 40px); display: grid; gap: clamp(22px, 3vw, 30px); }
+.gm-r { display: grid; gap: 10px; }
+.gm-hd { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.gm-n { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--paper); }
+.gm-u { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-tertiary); }
+.gm-tr {
+  position: relative; height: clamp(26px, 3.4vw, 34px);
+  background: var(--cove-800); border: 1px solid var(--cove-500); overflow: hidden;
+}
+.gm-f { position: absolute; top: 0; bottom: 0; left: 0; width: 0; transition: width 940ms var(--ease-entrance); }
+.gm-f.dom { background: color-mix(in srgb, var(--d-gas) 72%, transparent); }
+.gm-f.lng { background: var(--d-lng); z-index: 2; transition-delay: 140ms; }
+.gm-f.pw2 { background: color-mix(in srgb, var(--d-hydro) 32%, transparent); }
+.gm-f.pw  { background: color-mix(in srgb, var(--d-hydro) 76%, transparent); z-index: 2; transition-delay: 140ms; }
+.gm-gap {
+  position: absolute; top: 0; bottom: 0; right: 0; left: var(--sup);
+  border-left: 1px solid var(--accent);
+  background: repeating-linear-gradient(-45deg, rgba(242,102,95,.22) 0 2px, rgba(242,102,95,0) 2px 8px);
+  opacity: 0; transition: opacity 460ms var(--ease-state) 760ms;
+}
+.gmeter.in .gm-f.dom, .gmeter.in .gm-f.pw2 { width: var(--sup); }
+.gmeter.in .gm-f.lng { width: var(--lng); }
+.gmeter.in .gm-f.pw { width: var(--sup2); }
+.gmeter.in .gm-gap { opacity: 1; }
+.gm-ft { display: flex; align-items: baseline; justify-content: space-between; gap: 14px 20px; flex-wrap: wrap; }
+.gm-key { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; color: var(--text-secondary); }
+.gm-key .sw { width: 9px; height: 9px; flex: none; }
+.gm-key .sw + .sw { margin-left: 10px; }
+.sw.lng { background: var(--d-lng); }
+.sw.dom { background: color-mix(in srgb, var(--d-gas) 72%, transparent); }
+.sw.pw { background: color-mix(in srgb, var(--d-hydro) 76%, transparent); }
+.gm-sh { font-family: var(--mono); font-size: 11px; letter-spacing: .05em; color: var(--accent-lift); margin-left: auto; }
+.gm-nts { display: grid; gap: 10px 30px; margin-top: 4px; }
+@media (min-width: 760px) { .gm-nts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* the two terminals, side by side, each with its own run of failures */
+.thand { display: grid; gap: 1px; background: var(--cove-500); border: 1px solid var(--cove-500); margin-top: clamp(28px, 4vw, 36px); }
+@media (min-width: 760px) { .thand { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.th-c {
+  background: var(--cove-700); padding: clamp(18px, 2.4vw, 25px);
+  display: flex; flex-direction: column; gap: 15px; border-top: 2px solid var(--cove-500);
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 560ms var(--ease-entrance), transform 560ms var(--ease-entrance);
+}
+.th-c:nth-child(2) { transition-delay: 110ms; }
+.thand.in .th-c { opacity: 1; transform: none; }
+.th-c.on { border-top-color: var(--d-gas); }
+.th-c.half { border-top-color: var(--d-diesel); }
+.th-hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.th-nm { font-size: 15.5px; line-height: 1.3; font-weight: 500; color: var(--paper); }
+.th-st {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  padding: 5px 11px 4px; border: 1px solid currentColor; border-radius: 999px; white-space: nowrap;
+}
+.th-c.on .th-st { color: var(--d-gas); }
+.th-c.half .th-st { color: var(--d-diesel); }
+.th-cap { display: flex; align-items: baseline; gap: 12px; }
+.th-cap b {
+  font-family: var(--mono); font-weight: 400; font-variant-numeric: tabular-nums;
+  font-size: clamp(34px, 5vw, 46px); line-height: 1; letter-spacing: -0.035em; color: var(--paper);
+}
+.th-cap span { font-size: 13.5px; line-height: 1.35; color: var(--text-tertiary); max-width: 20ch; }
+.th-ev { list-style: none; margin: 2px 0 0; padding: 0 0 0 18px; position: relative; display: grid; gap: 14px; }
+.th-ev::before { content: ""; position: absolute; left: 3px; top: 7px; bottom: 9px; width: 1px; background: var(--cove-500); }
+.th-ev li { position: relative; }
+.th-ev li::before {
+  content: ""; position: absolute; left: -18px; top: 4px; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--cove-620); border: 1px solid var(--cove-500);
+}
+.th-ev li.now::before { background: var(--accent); border-color: var(--accent); }
+.th-ev time { display: block; font-family: var(--mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-tertiary); }
+.th-c.on .th-ev li.now time, .th-c.half .th-ev li.now time { color: var(--accent-lift); }
+.th-ev p { margin: 5px 0 0; font-size: 14.5px; line-height: 1.45; color: var(--text-secondary); }
+
+/* the rejected cargo sits apart from the two terminals it was refused by */
+.rjct {
+  margin-top: clamp(24px, 3.2vw, 32px); padding: clamp(18px, 2.6vw, 27px);
+  border: 1px solid var(--cove-500); background: color-mix(in srgb, var(--cove-800) 86%, transparent);
+  display: grid; gap: clamp(18px, 2.6vw, 30px);
+}
+@media (min-width: 880px) { .rjct { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); } }
+.rj-k { display: block; margin-bottom: 13px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.rj-l p { margin: 0; font-size: 16px; line-height: 1.58; color: var(--text-secondary); }
+.rj-q { margin: 0; }
+@media (min-width: 880px) { .rj-q { padding-left: clamp(20px, 2.4vw, 30px); border-left: 1px solid var(--cove-500); } }
+.rj-q p { margin: 0; font-family: var(--serif); font-style: italic; font-size: clamp(18px, 2.4vw, 21px); line-height: 1.42; color: var(--text-primary); }
+.rj-q cite { display: block; margin-top: 15px; font-style: normal; }
+.rj-q cite b { display: block; font-family: var(--serif); font-weight: 500; font-size: 15px; color: var(--paper); }
+.rj-q cite span { display: block; margin-top: 5px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .11em; text-transform: uppercase; color: var(--text-tertiary); }
+
+/* the climb back, one column per event rather than per day: the spacing is
+   the sequence, not the calendar */
+.recov { margin-top: clamp(30px, 4.2vw, 40px); }
+.rc-hd { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 14px; border-bottom: 1px solid var(--cove-500); }
+.rc-ht { font-family: var(--mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--paper); }
+.rc-hu { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-tertiary); }
+.rc-set { list-style: none; margin: clamp(20px, 3vw, 30px) 0 0; padding: 0; display: grid; gap: clamp(12px, 1.4vw, 18px); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 620px) { .rc-set { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .rc-set { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+.rc-i { display: flex; flex-direction: column; }
+.rc-p { position: relative; display: block; height: clamp(132px, 17vw, 186px); border-bottom: 1px solid var(--cove-500); }
+.rc-b {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--d-lng) 94%, transparent) 0%, color-mix(in srgb, var(--d-lng) 48%, transparent) 100%);
+  transition: height 820ms var(--ease-entrance); transition-delay: var(--dl, 0ms);
+}
+.recov.in .rc-b { height: var(--h); }
+.rc-i.low .rc-b { background: linear-gradient(180deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 48%, transparent) 100%); }
+.rc-i.exp .rc-b { background: none; border: 1px dashed var(--d-lng); border-bottom: 0; }
+.rc-v {
+  position: absolute; left: 0; right: 0; bottom: calc(var(--h) + 8px);
+  font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: clamp(11px, 1.3vw, 13px);
+  letter-spacing: -0.01em; color: var(--paper); opacity: 0;
+  transition: opacity 420ms var(--ease-state); transition-delay: calc(var(--dl, 0ms) + 400ms);
+}
+.recov.in .rc-v { opacity: 1; }
+.rc-i.low .rc-v { color: var(--accent-lift); }
+.rc-i.exp .rc-v { color: var(--d-lng); }
+.rc-d { margin-top: 11px; font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--paper); }
+.rc-t { margin-top: 5px; font-size: 12.5px; line-height: 1.35; color: var(--text-tertiary); }
+
+/* the verdict */
+.finis { text-align: center; }
+.fn-rule { width: 64px; height: 3px; background: var(--accent); margin: 0 auto clamp(20px, 2.6vh, 28px); }
+.fn-k { font-family: var(--mono); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-tertiary); }
+.finis .gmeter { max-width: 700px; margin: clamp(26px, 3.6vw, 36px) auto 0; text-align: left; }
+.fn-arg { max-width: 60ch; margin: clamp(26px, 3.4vw, 34px) auto 0; font-size: clamp(16.5px, 2.1vw, 18.5px); line-height: 1.62; color: var(--text-secondary); }
+.fn-end {
+  max-width: 20ch; margin: clamp(30px, 4.4vw, 46px) auto 0;
+  font-family: var(--serif); font-weight: 400; font-size: clamp(29px, 5.4vw, 46px);
+  line-height: 1.14; letter-spacing: -0.024em; color: var(--paper); text-wrap: balance;
+}
+.finis .fsrc { max-width: 76ch; margin-inline: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  .th-c, .rc-v { opacity: 1 !important; transform: none !important; }
+  .gm-gap { opacity: 1 !important; }
+}
