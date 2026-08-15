@@ -416,6 +416,9 @@ html.past-hero .hero-logo { transform: scale(.5); }
   backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
   opacity: 0; transition: opacity 260ms var(--ease-state);
 }
+/* the viewer sets display:grid, which beats the UA rule for [hidden]: without
+   this it stays laid out full screen at opacity 0 and eats every click */
+.pv[hidden] { display: none; }
 .pv.on { opacity: 1; }
 .pv-fig { margin: 0; display: grid; justify-items: center; gap: 14px; max-width: 100%; }
 .pv-fig img {
