@@ -108,16 +108,18 @@ window.__LSM_DATA__ = { "geo": { "w": 620, "h": 849, "zones": { "Barisal": { "d"
 
   var tip = elh('div', 'lsm-tip'); tip.hidden = true;
   stage.appendChild(tip);
-  host.appendChild(stage);
 
-  /* -------------------------------------------------------------- foot */
-  var foot = elh('div', 'lsm-foot');
+  /* colour key, pinned to the top-right corner of the map */
   var grad = heat(0) + ' 0%,' + heat(120) + ' 32%,' + heat(300) + ' 64%,' + heat(650) + ' 100%';
-  foot.appendChild(elh('div', 'lsm-legend',
+  stage.appendChild(elh('div', 'lsm-legend',
     '<span class="lsm-legend-cap">Load shed</span>' +
     '<span class="lsm-legend-lo">none</span>' +
     '<span class="lsm-legend-bar" style="background:linear-gradient(90deg,' + grad + ')"></span>' +
     '<span class="lsm-legend-hi">650&nbsp;MW+</span>'));
+  host.appendChild(stage);
+
+  /* -------------------------------------------------------------- foot */
+  var foot = elh('div', 'lsm-foot');
   foot.appendChild(elh('div', 'lsm-source',
     'Source: Bangladesh Power Development Board Miscellaneous Portal. Data through 12 August 2026. Data from 5 August missing'));
   host.appendChild(foot);
@@ -153,8 +155,9 @@ window.__LSM_DATA__ = { "geo": { "w": 620, "h": 849, "zones": { "Barisal": { "d"
 
   function setBtn(state) {
     var label = state === 'replay' ? 'Replay' : playing ? 'Pause' : 'Play';
-    btn.innerHTML = (playing ? PAUSE_ICON : PLAY_ICON) + '<span>' + label + '</span>';
+    btn.innerHTML = (playing ? PAUSE_ICON : PLAY_ICON);
     btn.setAttribute('aria-label', label + ' the animation');
+    btn.setAttribute('title', label);
     btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
   }
 

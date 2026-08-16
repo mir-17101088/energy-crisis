@@ -1554,6 +1554,21 @@
     });
   })();
 
+  /* ------------------------------------------- verdict: relight on each view */
+
+  /* the closing slab flickers like a failing tube every time it re-enters view.
+     one IntersectionObserver toggles the class; removing it on exit lets the
+     pure-CSS, opacity-only animation replay from the top on the next entry.
+     no scroll listener, no rAF. reduced motion leaves it simply lit. */
+  (function () {
+    var v = q('.verdict');
+    if (!v || REDUCED) return;
+    var io = new IntersectionObserver(function (es) {
+      v.classList.toggle('vd-lit', es[0].isIntersecting);
+    }, { rootMargin: '0px 0px -30% 0px', threshold: 0 });
+    io.observe(v);
+  })();
+
   /* ------------------------------------------------------- back to top */
 
   (function () {

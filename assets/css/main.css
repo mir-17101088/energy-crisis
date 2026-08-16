@@ -615,6 +615,27 @@ html.past-hero .hero-logo { transform: scale(.5); }
 .bg-band > h2, .bg-band > h3 { color: #FFFDF8; }
 .bg-band.scene-tight { padding-block: calc(var(--rh) * .82); }
 
+/* two chapter openers lean on their photograph as the point, so the band is
+   tall enough to show most of the frame rather than a thin sliver of it */
+.chapter-open.solo.band-pressure {
+  min-height: clamp(560px, 84vh, 780px);
+}
+.chapter-open.band-toll {
+  min-height: clamp(560px, 84vh, 780px);
+  display: grid; align-content: center;
+}
+
+/* On phones a wide photo under `cover` crops to a thin centre strip, which cuts
+   the people out of the frame. Below 650px, the pressure and toll bands fit the
+   whole frame to the column width instead (the band tracks a 3:2 height so the
+   fitted image nearly fills it). The other bands keep cover. */
+@media (max-width: 649.98px) {
+  .band-pressure::before,
+  .band-toll::before { background-size: auto, auto, contain; }
+  .chapter-open.solo.band-pressure,
+  .chapter-open.band-toll { min-height: 67vw; }
+}
+
 /* ---------- album ------------------------------------------------------- */
 
 .album-bleed { position: relative; width: 100%; padding-block: clamp(26px, 4.5vh, 56px); }
@@ -639,10 +660,16 @@ html.past-hero .hero-logo { transform: scale(.5); }
 .al-f:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
 .al-f.wide { grid-column: span 4; }
 .al-f.tall { grid-column: span 2; }
+/* three-photo set with a lead image: toll-6 leads full-width, the pair beneath */
+.album.album-trio { grid-template-columns: 1fr 1fr; grid-auto-rows: auto; }
+.album.album-trio .al-f { grid-column: auto; aspect-ratio: 3 / 2; }
+.album.album-trio .al-f:first-child { grid-column: 1 / -1; aspect-ratio: 5 / 2; }
 @media (max-width: 640px) {
   .album { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: clamp(140px, 40vw, 240px); }
   .al-f.wide { grid-column: span 2; }
   .al-f.tall { grid-column: span 1; }
+  .album.album-trio .al-f:first-child { aspect-ratio: 16 / 10; }
+  .album.album-trio .al-f:not(:first-child) { aspect-ratio: 1 / 1; }
 }
 
 /* the frame opens full screen, with the credit under it */
@@ -2000,10 +2027,19 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
   letter-spacing: -0.014em; color: var(--text-primary); text-wrap: pretty;
 }
 .standfirst .sf-lede::after { content: ""; display: block; clear: both; }
-.standfirst .sf-lede::first-letter {
+/* the drop cap belongs to the opening paragraph only, never to every split */
+.standfirst .sf-lede:first-of-type::first-letter {
   float: left; font-weight: 400; font-size: 3.05em; line-height: .78;
   color: var(--accent-lift); margin: .04em .07em -.04em 0;
 }
+
+/* opening standfirst: a wider column at a smaller measure reads as a calm
+   intro rather than one tall wall of type, on desktop and phone alike */
+.hero-lede.standfirst { max-width: calc(820px + var(--pad) * 2); }
+.hero-lede.standfirst .sf-lede {
+  font-size: clamp(16.5px, 1.9vw, 20px); line-height: 1.62; letter-spacing: -0.006em;
+}
+.hero-lede.standfirst .sf-lede + .sf-lede { margin-top: clamp(14px, 1.7vh, 22px); }
 .sf-tail {
   margin-top: clamp(20px, 3vh, 30px); padding-top: clamp(15px, 2.4vh, 22px);
   border-top: 1px solid var(--cove-500);
@@ -2244,15 +2280,63 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
     radial-gradient(120% 150% at 50% 0%, color-mix(in srgb, var(--accent) 13%, transparent) 0%, transparent 62%),
     color-mix(in srgb, var(--cove-850) 92%, transparent);
 }
-.vd-r { position: absolute; top: 0; left: 50%; width: 0; height: 3px; background: var(--accent); transform: translateX(-50%); transition: width 720ms var(--ease-entrance) 120ms; }
-.verdict.in .vd-r { width: min(180px, 42%); }
+/* the accent line and the glow behind the slab start dark; on entry they strike
+   like a failing tube, flickering a few times before they settle lit. Only
+   opacity animates, so it stays cheap and off the main thread. */
+.vd-r {
+  position: absolute; top: 0; left: 50%; width: min(180px, 42%); height: 3px;
+  background: var(--accent); transform: translateX(-50%); opacity: 0;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 65%, transparent);
+}
+.verdict.vd-lit .vd-r { animation: vd-bulb-line 1900ms linear both; }
 .vd-g {
   position: absolute; z-index: -1; left: 50%; top: -46%; width: 84%; aspect-ratio: 1;
   transform: translateX(-50%); border-radius: 50%; opacity: 0;
   background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 66%);
-  filter: blur(30px); transition: opacity 1100ms var(--ease-state) 200ms;
+  filter: blur(30px);
 }
-.verdict.in .vd-g { opacity: .85; }
+.verdict.vd-lit .vd-g { animation: vd-bulb-glow 1900ms linear both; }
+
+@keyframes vd-bulb-line {
+  0%,4%   { opacity: 0; }
+  6%      { opacity: .85; }
+  8%      { opacity: 0; }
+  12%     { opacity: 0; }
+  14%     { opacity: 1; }
+  16%     { opacity: .1; }
+  19%     { opacity: .75; }
+  22%     { opacity: 0; }
+  30%     { opacity: 0; }
+  33%     { opacity: 1; }
+  36%     { opacity: .2; }
+  40%     { opacity: .9; }
+  44%     { opacity: .35; }
+  48%     { opacity: 1; }
+  53%     { opacity: .5; }
+  58%     { opacity: 1; }
+  64%     { opacity: .72; }
+  70%,100%{ opacity: 1; }
+}
+@keyframes vd-bulb-glow {
+  0%,4%   { opacity: 0; }
+  6%      { opacity: .55; }
+  8%      { opacity: 0; }
+  12%     { opacity: 0; }
+  14%     { opacity: .85; }
+  16%     { opacity: .06; }
+  19%     { opacity: .5; }
+  22%     { opacity: 0; }
+  30%     { opacity: 0; }
+  33%     { opacity: .85; }
+  36%     { opacity: .12; }
+  40%     { opacity: .72; }
+  44%     { opacity: .25; }
+  48%     { opacity: .85; }
+  53%     { opacity: .4; }
+  58%     { opacity: .85; }
+  64%     { opacity: .6; }
+  70%,100%{ opacity: .85; }
+}
 .verdict .fn-end {
   max-width: 22ch; margin: 0 auto;
   font-size: clamp(34px, 6.6vw, 62px); line-height: 1.06; letter-spacing: -0.03em;
@@ -2269,8 +2353,8 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
   margin: 0 14px 2px;
 }
 @media (prefers-reduced-motion: reduce) {
-  .vd-g { opacity: .85 !important; }
-  .vd-r { width: min(180px, 42%) !important; }
+  .vd-g { opacity: .85 !important; animation: none !important; }
+  .vd-r { opacity: 1 !important; animation: none !important; }
 }
 
 /* ===================================================================
@@ -2285,15 +2369,15 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
   padding-bottom: 22px; border-bottom: 1px solid var(--cove-700);
 }
 .lsm-play {
-  flex: none; display: inline-flex; align-items: center; gap: 9px;
-  font-family: var(--sans); font-size: 14px; font-weight: 500; letter-spacing: .01em;
+  flex: none; display: inline-flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; padding: 0;
   color: var(--paper); background: var(--accent); border: 0; border-radius: 999px;
-  padding: 10px 20px 10px 17px; cursor: pointer;
+  cursor: pointer;
   transition: transform 160ms var(--ease-state), background 200ms var(--ease-state);
 }
 .lsm-play:hover { background: var(--accent-lift); }
 .lsm-play:active { transform: scale(.97); }
-.lsm-play svg { width: 12px; height: 12px; fill: currentColor; }
+.lsm-play svg { width: 13px; height: 13px; fill: currentColor; }
 .lsm-play:focus-visible { outline: 2px solid var(--accent-lift); outline-offset: 3px; }
 
 .lsm-scrub { flex: 1 1 220px; min-width: 180px; }
@@ -2328,8 +2412,9 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
 .lsm-sub { margin-top: 6px; font-family: var(--mono); font-size: 12px; letter-spacing: .03em; color: var(--text-secondary); }
 .lsm-sub b { color: var(--accent-lift); font-weight: 500; }
 
-.lsm-stage { position: relative; margin-top: 26px; display: flex; justify-content: center; }
-.lsm-map { width: 100%; max-width: 500px; height: auto; overflow: visible; }
+/* the stage is sized to the map so an overlay can pin to the map's own corner */
+.lsm-stage { position: relative; margin: 26px auto 0; width: 100%; max-width: 500px; }
+.lsm-map { display: block; width: 100%; max-width: 500px; height: auto; overflow: visible; }
 .lsm-zone {
   stroke: rgba(245,242,234,.16); stroke-width: 1; stroke-linejoin: round;
   transition: fill 480ms var(--ease-state), stroke 180ms var(--ease-state), filter 180ms var(--ease-state);
@@ -2361,22 +2446,30 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
 .lsm-tip-grid b.zero { color: var(--text-tertiary); }
 
 .lsm-foot {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-  gap: 14px 24px; margin-top: 26px;
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 14px 24px; margin-top: 22px;
 }
+/* colour key: a compact card pinned to the top-right corner of the map */
 .lsm-legend {
-  display: flex; align-items: center; gap: 10px; font-family: var(--mono);
-  font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-tertiary);
+  position: absolute; top: 8px; right: 8px; z-index: 4;
+  display: grid; grid-template-columns: auto auto auto; align-items: center;
+  gap: 5px 7px; margin: 0; padding: 8px 10px 9px; border-radius: 10px;
+  background: rgba(16,14,11,.72); border: 1px solid var(--cove-620);
+  -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+  box-shadow: 0 8px 24px rgba(0,0,0,.32);
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-tertiary); pointer-events: none;
 }
-.lsm-legend-cap { color: var(--text-secondary); }
-.lsm-legend-bar { width: 150px; height: 8px; border-radius: 4px; }
-.lsm-source { font-size: 12px; line-height: 1.45; color: var(--text-tertiary); max-width: 42ch; text-align: right; }
+.lsm-legend-cap { grid-column: 1 / -1; color: var(--text-secondary); }
+.lsm-legend-lo { justify-self: start; }
+.lsm-legend-hi { justify-self: end; white-space: nowrap; }
+.lsm-legend-bar { width: 76px; height: 8px; border-radius: 4px; }
+.lsm-source { font-size: 12px; line-height: 1.45; color: var(--text-tertiary); max-width: 62ch; }
 
 @media (max-width: 640px) {
   .lsm-readout { margin-left: 0; text-align: left; }
-  .lsm-foot { flex-direction: column; align-items: flex-start; }
-  .lsm-source { text-align: left; }
-  .lsm-legend-bar { width: 120px; }
+  .lsm-legend { top: 6px; right: 6px; padding: 6px 8px 7px; gap: 4px 5px; font-size: 9px; }
+  .lsm-legend-bar { width: 58px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lsm-zone { transition: fill 0ms; }
