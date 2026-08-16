@@ -498,15 +498,18 @@ h3.sh {
   padding-block: calc(var(--rh) * .85) var(--rh);
 }
 .hero-lede .sf-lede, .hero-lede .sf-tail { text-shadow: 0 2px 18px rgba(10,9,8,.7), 0 0 46px rgba(10,9,8,.55); }
-.hero-media { position: absolute; inset: 0; z-index: 0; }
-/* the picture is a 2:3 portrait, taller than the landscape frame: cover crops it
-   to a horizontal band, and the reader pans down through the whole image (via
-   object-position) as they scroll from the title into the standfirst */
+.hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+/* the picture is a tall crop sized to 140% of the frame height and cover-cropped,
+   so there is real vertical travel to pan through on EVERY screen - wide desktop
+   and narrow phone alike. The reader scrolls the image down with a GPU transform
+   (not object-position, which has no travel on a portrait phone and is not
+   composited) as the title gives way to the standfirst. */
 .hero-media img {
   position: absolute; top: 0; left: 0; display: block;
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: 50% 42%;
+  width: 100%; height: 140%;
+  object-fit: cover; object-position: 50% 8%;
   filter: brightness(1.06) saturate(1.04) contrast(1.02);
+  transform: translateZ(0); backface-visibility: hidden;
 }
 .hero-out {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
@@ -577,7 +580,7 @@ html.past-hero .hero-logo { transform: scale(.5); }
 .band-disruption { --bg: url(../img/bg-disruption.jpg); }
 .band-pressure   { --bg: url(../img/bg-pressure.jpg); }
 .band-crossroads { --bg: url(../img/bg-crossroads.jpg); }
-.band-coda       { --bg: url(../img/bg-coda.jpg); --scrim: .5; }
+.band-coda       { --bg: url(../img/bg-coda.jpg); --scrim: .22; }
 .band-toll       { --bg: url(../img/bg-toll.jpg); --scrim: .28; }
 /* WebP swap for the decorative backgrounds. The @supports guard means only a
    browser that actually renders image-set/type() here ever requests the webp;
@@ -627,11 +630,6 @@ html.past-hero .hero-logo { transform: scale(.5); }
 .al-f:nth-child(2) { --dl: 90ms; }
 .al-f:nth-child(3) { --dl: 180ms; }
 .al-f:nth-child(4) { --dl: 270ms; }
-/* second wave (rows 3-4) restarts the cascade so the delay never runs long */
-.al-f:nth-child(5) { --dl: 0ms; }
-.al-f:nth-child(6) { --dl: 90ms; }
-.al-f:nth-child(7) { --dl: 180ms; }
-.al-f:nth-child(8) { --dl: 270ms; }
 .al-f img {
   display: block; width: 100%; height: 100%; object-fit: cover;
   filter: saturate(.96) contrast(1.03);
@@ -1513,9 +1511,18 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
   padding: 40px var(--pad) 44px; position: relative; z-index: 3;
 }
 .foot-top { display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between; max-width: var(--w-split); margin: 0 auto; }
-.foot-brand { display: grid; gap: 14px; justify-items: start; flex: 1 1 auto; }
-.foot-copy { font-family: var(--mono); font-size: 11.5px; line-height: 1.5; letter-spacing: .03em; color: var(--text-tertiary); margin: 0; white-space: nowrap; }
-@media (max-width: 420px) { .foot-copy { white-space: normal; } }
+.foot-brand { display: grid; gap: 12px; justify-items: start; flex: 1 1 340px; min-width: 0; }
+.foot-copy { font-family: var(--mono); font-size: 11.5px; line-height: 1.5; letter-spacing: .03em; color: var(--text-tertiary); margin: 0; }
+/* the photographer + producer credits: one flowing, wrapping list per line, held
+   to a tidy measure so they never run off a narrow screen or a wide one */
+.foot-credits {
+  font-family: var(--mono); font-size: 11.5px; line-height: 1.7; letter-spacing: .03em;
+  color: var(--text-tertiary); margin: 0; max-width: 52ch; overflow-wrap: break-word; text-wrap: pretty;
+}
+.foot-lbl {
+  display: inline-block; margin-right: .9ch;
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-secondary);
+}
 .foot-mark { border-bottom: 0; }
 .foot-mark img { width: clamp(150px, 22vw, 220px); height: auto; display: block; filter: invert(1) brightness(1.35); }
 .socials { display: flex; gap: 12px; align-items: center; }
@@ -1564,7 +1571,7 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
     transition-duration: 1ms !important; transition-delay: 0ms !important;
   }
   .rv, .rv-f { opacity: 1 !important; transform: none !important; }
-  .hero-media { transform: none !important; opacity: 1 !important; }
+  .hero-media, .hero-media img { transform: none !important; opacity: 1 !important; }
   .ag-ev, .ag-int, .ag-r, .wy-c { opacity: 1 !important; transform: none !important; }
   .wy-rail i { transform: none !important; }
   .cg-card { transition-duration: 1ms !important; }
@@ -1609,11 +1616,13 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
       animation: heroPan linear both;
       animation-timeline: scroll(root block);
       animation-range: 0px 100vh;
-      will-change: object-position;
+      will-change: transform;
     }
+    /* -28.57% of the element (which is 140% of the frame) = 40% of frame height
+       of travel: a gentle, buttery pan that reads on any aspect ratio */
     @keyframes heroPan {
-      from { object-position: 50% 6%; }
-      to   { object-position: 50% 94%; }
+      from { transform: translateY(0); }
+      to   { transform: translateY(-28.57%); }
     }
     .hero-body {
       animation: heroType linear both;

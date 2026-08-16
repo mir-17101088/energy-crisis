@@ -69,7 +69,10 @@
     <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
   </noscript>
   <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="preload" as="image" type="image/webp" href="assets/img/hero.webp" fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero.webp" media="(max-width: 1023.98px)"
+    fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero-lg.webp" media="(min-width: 1024px)"
+    fetchpriority="high">
 
   <script type="application/ld+json">
 {
@@ -115,8 +118,9 @@
         <div class="hero-frame">
           <div class="hero-media">
             <picture>
-              <source type="image/webp" srcset="assets/img/hero.webp" sizes="100vw">
-              <img src="assets/img/hero.jpg" width="1024" height="1536" fetchpriority="high" decoding="async"
+              <source type="image/webp" media="(min-width: 1024px)" srcset="assets/img/hero-lg.webp">
+              <source type="image/webp" srcset="assets/img/hero.webp">
+              <img src="assets/img/hero.jpg" width="1400" height="1512" fetchpriority="high" decoding="async"
                 alt="Aerial night view looking straight down on a busy Dhaka intersection, its streets outlined in strings of light with dense traffic radiating out from the crossing.">
             </picture>
           </div>
@@ -853,27 +857,6 @@
         <!-- 4.1 album -------------------------------------------------------- -->
         <div class="album-bleed">
           <div class="album rv" id="album">
-            <button class="al-f wide" type="button" data-cap="FILE PHOTO: REUTERS">
-              <picture>
-                <source type="image/webp" srcset="assets/img/toll-2.webp"><img style="object-position:44% 56%"
-                  src="assets/img/toll-2.jpg" width="1330" height="797" loading="lazy" decoding="async"
-                  alt="Shopkeepers and customers in a hardware shop lit by two candles during a blackout.">
-              </picture>
-            </button>
-            <button class="al-f tall" type="button" data-cap="Star File Photo">
-              <picture>
-                <source type="image/webp" srcset="assets/img/toll-1.webp"><img style="object-position:52% 46%"
-                  src="assets/img/toll-1.jpg" width="742" height="523" loading="lazy" decoding="async"
-                  alt="Three children reading schoolbooks on the floor by the light of a single candle.">
-              </picture>
-            </button>
-            <button class="al-f tall" type="button" data-cap="Star File Photo">
-              <picture>
-                <source type="image/webp" srcset="assets/img/toll-3.webp"><img style="object-position:46% 50%"
-                  src="assets/img/toll-3.jpg" width="449" height="292" loading="lazy" decoding="async"
-                  alt="A boy reading a book by candlelight.">
-              </picture>
-            </button>
             <button class="al-f wide" type="button" data-cap="Photo: Orchid Chakma">
               <picture>
                 <source type="image/webp" srcset="assets/img/toll-4.webp"><img style="object-position:50% 44%"
@@ -881,9 +864,9 @@
                   alt="A student reading a textbook by the torch on his phone.">
               </picture>
             </button>
-            <button class="al-f wide" type="button" data-cap="Photo: Palash Khan">
+            <button class="al-f tall" type="button" data-cap="Photo: Palash Khan">
               <picture>
-                <source type="image/webp" srcset="assets/img/toll-5.webp"><img style="object-position:36% 64%"
+                <source type="image/webp" srcset="assets/img/toll-5.webp"><img style="object-position:40% 62%"
                   src="assets/img/toll-5.jpg" width="1500" height="1000" loading="lazy" decoding="async"
                   alt="Three women in bright saris sit idle on the floor beside a long row of stopped spinning machines in a textile mill.">
               </picture>
@@ -895,18 +878,11 @@
                   alt="A pot steams over an open wood fire on a clay stove because the gas has run out, an unused gas burner behind it.">
               </picture>
             </button>
-            <button class="al-f tall" type="button" data-cap="Photo: Rashed Sumon">
+            <button class="al-f wide" type="button" data-cap="Photo: Rashed Sumon">
               <picture>
-                <source type="image/webp" srcset="assets/img/toll-7.webp"><img style="object-position:54% 46%"
+                <source type="image/webp" srcset="assets/img/toll-7.webp"><img style="object-position:54% 42%"
                   src="assets/img/toll-7.jpg" width="1500" height="1000" loading="lazy" decoding="async"
                   alt="A worker balances on a bamboo ladder to reach a dense tangle of electrical and cable wires strung above a Dhaka street.">
-              </picture>
-            </button>
-            <button class="al-f wide" type="button" data-cap="Photo: Prabir Das">
-              <picture>
-                <source type="image/webp" srcset="assets/img/toll-8.webp"><img style="object-position:50% 58%"
-                  src="assets/img/toll-8.jpg" width="1500" height="1000" loading="lazy" decoding="async"
-                  alt="A roadside CNG filling station stands idle behind a sign reading CNG gas nai, meaning no gas is available.">
               </picture>
             </button>
           </div>
@@ -1225,7 +1201,7 @@
 
       <!-- ============================ CODA ============================ -->
       <section class="chapter" id="coda" aria-labelledby="codah">
-        <div class="wrap chart coda chapter-open bg-band band-coda" style="--scrim:.32">
+        <div class="wrap chart coda chapter-open bg-band band-coda" style="--scrim:.22">
           <div class="rule rv" aria-hidden="true"></div>
           <p class="sub rv">13 to 19 August 2026</p>
           <h2 id="codah" class="big rv">The Trough and the Timetable</h2>
@@ -1491,10 +1467,9 @@
           <a class="foot-mark" href="https://www.thedailystar.net" aria-label="The Daily Star"><img
               src="assets/img/logo.svg" alt="The Daily Star" width="220" height="44"></a>
           <p class="foot-copy">&copy; 2026 The Daily Star. All rights reserved.</p>
-          <p class="foot-copy">Photo Credit: Niloy Biswas | Rajib Raihan</p>
-          <p class="foot-copy">Mehedi Hasan | Palash Khan</p>
-          <p class="foot-copy">Prabir Das | Orchid Chakma | Rashed Sumon</p>
-          <p class="foot-copy">Product by Mir Rownak | The Daily Star</p>
+          <p class="foot-credits"><span class="foot-lbl">Photographs</span>Niloy Biswas, Rajib Raihan, Mehedi
+            Hasan, Palash Khan, Prabir Das, Orchid Chakma, Rashed Sumon</p>
+          <p class="foot-credits"><span class="foot-lbl">Produced by</span>Mir Rownak, The Daily Star</p>
         </div>
         <nav class="socials" aria-label="The Daily Star on social platforms">
           <a href="https://www.facebook.com/dailystarnews" aria-label="Facebook"><svg viewBox="0 0 24 24"
