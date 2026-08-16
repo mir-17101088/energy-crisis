@@ -89,24 +89,6 @@
      means the source hedged it ('about', 'over'), which the charts hatch. */
   var DATA = {
 
-    /* national power shortfall, MW, by day. C-112 to C-117, C-001.
-       The 28 June 3,000 MW figure is deliberately absent: it is capacity lost
-       from the grid, a different metric with a different cause. */
-    shortfall: [
-      { d: '2026-08-01', v: 2174, s: 'reported' },
-      { d: '2026-08-02', v: 2353, s: 'reported' },
-      { d: '2026-08-03', v: 2700, s: 'reported' },
-      { d: '2026-08-04', v: 2052, s: 'reported' },
-      { d: '2026-08-05', v: 826,  s: 'reported' },
-      { d: '2026-08-06', v: 335,  s: 'reported' },
-      { d: '2026-08-07', v: 740,  s: 'reported' },
-      { d: '2026-08-08', v: 2167, s: 'reported' },
-      { d: '2026-08-09', v: 2968, s: 'reported' },
-      { d: '2026-08-10', v: 2860, s: 'reported' },
-      { d: '2026-08-11', v: 2399, s: 'reported' },
-      { d: '2026-08-12', v: 2745, s: 'reported' }
-    ],
-
     /* administered prices, March to August 2026. C-053 to C-060.
        Liquid fuel lanes open at the rate in force before 18 April. */
     lanes: [
@@ -365,81 +347,6 @@
         qa('[data-fade]', s).forEach(function (n) { n.setAttribute('opacity', 1); });
       });
     }, { threshold: 0.25 });
-    io.observe(host);
-
-  })();
-
-  /* --------------------------------------- chart: reported daily shortfall */
-
-  (function () {
-    var host = q('#chart-grid');
-    if (!host) return;
-    var W = 880, H = 430;
-    var K = scaleK(host, W, H), F = function (v) { return Math.round(v * K * 10) / 10; };
-    /* the axis labels grow with the type, so the left gutter has to as well */
-    var m = { t: 46, r: 16, b: 54, l: K > 1.35 ? 96 : 58 };
-    var s = svg(W, H);
-    s.setAttribute('aria-label', 'Bar chart of average load shedding per hour, in megawatts, for each day from 1 to 12 August 2026. 2,174 then 2,353, 2,700, 2,052, 826, 335, 740, 2,167, 2,968, 2,860, 2,399 and 2,745. Every figure is a reported one.');
-
-    var DAY = 864e5, d0 = Date.parse('2026-08-01'), d1 = Date.parse('2026-08-12');
-    var SF = DATA.shortfall.filter(function (d) { return Date.parse(d.d) >= d0; });
-    var n = Math.round((d1 - d0) / DAY) + 1;
-    var slot = (W - m.l - m.r) / n;
-    var idx = function (d) { return Math.round((Date.parse(d) - d0) / DAY); };
-    var cx = function (i) { return m.l + i * slot + slot / 2; };
-    var y = function (v) { return H - m.b - v / 3200 * (H - m.t - m.b); };
-    var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var EASE = 'cubic-bezier(.22,1,.36,1)';
-
-    var defs = el('defs');
-    var pat = el('pattern', { id: 'appxhatch', width: 6, height: 6, patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
-    pat.appendChild(el('rect', { width: 6, height: 6, fill: 'rgba(229,121,63,.14)' }));
-    pat.appendChild(el('line', { x1: 0, y1: 0, x2: 0, y2: 6, stroke: '#E5793F', 'stroke-width': 2, opacity: 0.55 }));
-    defs.appendChild(pat);
-    s.appendChild(defs);
-
-    [0, 1000, 2000, 3000].forEach(function (v) {
-      s.appendChild(el('line', { x1: m.l, y1: y(v), x2: W - m.r, y2: y(v), stroke: v ? '#2C2620' : '#4A4137', 'stroke-width': 1 }));
-      s.appendChild(el('text', { x: m.l - 10, y: y(v) + F(3.6), 'text-anchor': 'end', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, group(v)));
-    });
-    s.appendChild(el('text', { x: m.l - 10, y: m.t - 22, 'text-anchor': 'end', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10) }, 'MW'));
-
-    var have = {};
-    SF.forEach(function (d) { have[idx(d.d)] = 1; });
-    for (var i = 0; i < n; i++) {
-      var dt = new Date(d0 + i * DAY);
-      if (!have[i]) s.appendChild(el('line', { x1: cx(i), y1: H - m.b, x2: cx(i), y2: H - m.b - 7, stroke: '#4A4137', 'stroke-width': 1.5 }));
-      if (i % 2 === 0) s.appendChild(el('text', { x: cx(i), y: H - m.b + F(19), 'text-anchor': 'middle', fill: '#918878', 'font-family': 'Geist Mono, monospace', 'font-size': F(10.5) }, dt.getUTCDate() + ' ' + MON[dt.getUTCMonth()]));
-    }
-
-    var bw = Math.min(slot * 0.5, 40);
-    /* twelve bars in one viewBox: the value type is capped to its own slot so
-       it can never collide with its neighbour on a phone */
-    var vfs = Math.min(F(11.5), slot * 0.94 / 3);
-    SF.forEach(function (d, k) {
-      var i2 = idx(d.d), top = y(d.v), appx = d.s !== 'reported', g = el('g');
-      g.appendChild(el('rect', {
-        x: cx(i2) - bw / 2, y: top, width: bw, height: (H - m.b) - top,
-        fill: appx ? 'url(#appxhatch)' : '#E5793F', stroke: appx ? '#E5793F' : 'none', 'stroke-width': appx ? 1.2 : 0
-      }));
-      g.appendChild(el('text', { x: cx(i2), y: top - F(10), 'text-anchor': 'middle', fill: '#F5F2EA', 'font-family': 'Geist Mono, monospace', 'font-size': vfs }, group(d.v)));
-      if (!REDUCED) {
-        g.style.opacity = 0;
-        g.style.transform = 'translateY(14px)';
-        g.style.transition = 'opacity 400ms ' + EASE + ' ' + (k * 55) + 'ms, transform 520ms ' + EASE + ' ' + (k * 55) + 'ms';
-        g.setAttribute('data-pop', '1');
-      }
-      s.appendChild(g);
-    });
-
-    host.appendChild(s);
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        io.disconnect();
-        qa('[data-pop]', s).forEach(function (g) { g.style.opacity = 1; g.style.transform = 'none'; });
-      });
-    }, { threshold: 0.2 });
     io.observe(host);
 
   })();

@@ -84,16 +84,6 @@
       ]
     },
 
-    /* Chapter 2, after the early August shortfall chart */
-    shortfall: {
-      items: [
-        { t: 'Lingering LNG crisis may drag power cut woes',
-          s: 'Worried over public outrage, Palli Bidyut Association asks for protection for its offices, grid',
-          img: 'assets/img/news/article_51.jpg',
-          href: 'https://www.thedailystar.net/news/environment/natural-resources/energy/news/lingering-lng-crisis-may-drag-power-cut-woes-4246531' }
-      ]
-    },
-
     /* Coda, after the 15 August update */
     latest: {
       label: 'The latest',

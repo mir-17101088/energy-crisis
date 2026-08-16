@@ -69,9 +69,7 @@
     <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
   </noscript>
   <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="preload" as="image" type="image/webp"
-    imagesrcset="assets/img/hero-tall-1200.webp 1200w, assets/img/hero-tall.webp 1800w" imagesizes="100vw"
-    fetchpriority="high">
+  <link rel="preload" as="image" type="image/webp" href="assets/img/hero.webp" fetchpriority="high">
 
   <script type="application/ld+json">
 {
@@ -117,10 +115,9 @@
         <div class="hero-frame">
           <div class="hero-media">
             <picture>
-              <source type="image/webp" srcset="assets/img/hero-tall-1200.webp 1200w, assets/img/hero-tall.webp 1800w"
-                sizes="100vw">
-              <img src="assets/img/hero-tall.jpg" width="1800" height="2700" fetchpriority="high" decoding="async"
-                alt="Two liquefied natural gas carriers moored at a jetty at dusk, a gas flare burning from a tower on the deck, storm cloud above and a sunset over distant hills.">
+              <source type="image/webp" srcset="assets/img/hero.webp" sizes="100vw">
+              <img src="assets/img/hero.jpg" width="1024" height="1536" fetchpriority="high" decoding="async"
+                alt="Aerial night view looking straight down on a busy Dhaka intersection, its streets outlined in strings of light with dense traffic radiating out from the crossing.">
             </picture>
           </div>
 
@@ -132,7 +129,8 @@
         <div class="hero-body">
           <span class="hero-chip">Visual Report</span>
           <h1 id="h1">The Grid That Ran Out of Everything at Once</h1>
-          <p class="stand">A war closed a strait. Then a fire on a moored ship took the lights out. How it connected.
+          <p class="stand">A war closed a strait. Then a fire broke out on a moored ship. How just these two events took
+            the lights out and dried up gas supplies nationwide
           </p>
         </div>
       </section>
@@ -598,25 +596,6 @@
           <div class="reads" data-reads="fsru"></div>
         </div>
 
-        <!-- shortfall chart -------------------------------------------------- -->
-        <div class="scene wrap chart">
-          <h3 class="sh rv">Average load shedding, 1 to 12 August</h3>
-          <p class="lede rv">Each bar is the average load shedding for that day, in megawatts an hour, as reported by
-            the grid operator.</p>
-          <div class="frame rv" style="margin-top:30px">
-            <div class="plot" id="chart-grid" style="aspect-ratio:88/43"></div>
-            <p class="fsrc">Average load shedding per hour, megawatts. Power Grid Company of Bangladesh data</p>
-          </div>
-          <p class="note rv" style="margin-top:22px">Held out of the chart: the roughly 3,000 MW lost on 28 June. That
-            was capacity off the grid from a boiler tube leak and a coal ship that could not unload in rough seas, three
-            weeks before the terminal failed.</p>
-        </div>
-
-        <!-- related coverage: shortfall -->
-        <div class="wrap chart reads-blk">
-          <div class="reads" data-reads="shortfall"></div>
-        </div>
-
         <!-- 2.7 recurrence ---------------------------------------------------- -->
         <div class="scene wrap chart">
           <h3 class="sh rv">This keeps happening</h3>
@@ -865,7 +844,7 @@
 
       <!-- ============================ CHAPTER 4 ============================ -->
       <section class="chapter" id="ch4" aria-labelledby="ch4h">
-        <div class="wrap split chapter-open toll bg-band band-toll">
+        <div class="wrap split chapter-open bg-band band-toll">
           <h2 id="ch4h" class="rv">The Human Toll</h2>
           <p class="opener rv">Load shedding is a scheduling word. What it means is a five year old who cannot sleep.
           </p>
@@ -900,6 +879,34 @@
                 <source type="image/webp" srcset="assets/img/toll-4.webp"><img style="object-position:50% 44%"
                   src="assets/img/toll-4.jpg" width="1160" height="765" loading="lazy" decoding="async"
                   alt="A student reading a textbook by the torch on his phone.">
+              </picture>
+            </button>
+            <button class="al-f wide" type="button" data-cap="Photo: Palash Khan">
+              <picture>
+                <source type="image/webp" srcset="assets/img/toll-5.webp"><img style="object-position:36% 64%"
+                  src="assets/img/toll-5.jpg" width="1500" height="1000" loading="lazy" decoding="async"
+                  alt="Three women in bright saris sit idle on the floor beside a long row of stopped spinning machines in a textile mill.">
+              </picture>
+            </button>
+            <button class="al-f tall" type="button">
+              <picture>
+                <source type="image/webp" srcset="assets/img/toll-6.webp"><img style="object-position:50% 56%"
+                  src="assets/img/toll-6.jpg" width="1500" height="999" loading="lazy" decoding="async"
+                  alt="A pot steams over an open wood fire on a clay stove because the gas has run out, an unused gas burner behind it.">
+              </picture>
+            </button>
+            <button class="al-f tall" type="button" data-cap="Photo: Rashed Sumon">
+              <picture>
+                <source type="image/webp" srcset="assets/img/toll-7.webp"><img style="object-position:54% 46%"
+                  src="assets/img/toll-7.jpg" width="1500" height="1000" loading="lazy" decoding="async"
+                  alt="A worker balances on a bamboo ladder to reach a dense tangle of electrical and cable wires strung above a Dhaka street.">
+              </picture>
+            </button>
+            <button class="al-f wide" type="button" data-cap="Photo: Prabir Das">
+              <picture>
+                <source type="image/webp" srcset="assets/img/toll-8.webp"><img style="object-position:50% 58%"
+                  src="assets/img/toll-8.jpg" width="1500" height="1000" loading="lazy" decoding="async"
+                  alt="A roadside CNG filling station stands idle behind a sign reading CNG gas nai, meaning no gas is available.">
               </picture>
             </button>
           </div>
@@ -1484,6 +1491,9 @@
           <a class="foot-mark" href="https://www.thedailystar.net" aria-label="The Daily Star"><img
               src="assets/img/logo.svg" alt="The Daily Star" width="220" height="44"></a>
           <p class="foot-copy">&copy; 2026 The Daily Star. All rights reserved.</p>
+          <p class="foot-copy">Photo Credit: Niloy Biswas | Rajib Raihan</p>
+          <p class="foot-copy">Mehedi Hasan | Palash Khan</p>
+          <p class="foot-copy">Prabir Das | Orchid Chakma | Rashed Sumon</p>
           <p class="foot-copy">Product by Mir Rownak | The Daily Star</p>
         </div>
         <nav class="socials" aria-label="The Daily Star on social platforms">
