@@ -2276,3 +2276,113 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
   .vd-g { opacity: .85 !important; }
   .vd-r { width: min(180px, 42%) !important; }
 }
+
+/* ===================================================================
+   Load-shedding zone heat map  (assets/js/loadshed-map.js)
+   A choropleth of the nine PGCB grid zones. Autoplays into view,
+   scrub the date, hover a zone for demand and shortfall.
+   =================================================================== */
+.lsm { margin-top: 34px; }
+
+.lsm-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 18px 24px;
+  padding-bottom: 22px; border-bottom: 1px solid var(--cove-700);
+}
+.lsm-play {
+  flex: none; display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--sans); font-size: 14px; font-weight: 500; letter-spacing: .01em;
+  color: var(--paper); background: var(--accent); border: 0; border-radius: 999px;
+  padding: 10px 20px 10px 17px; cursor: pointer;
+  transition: transform 160ms var(--ease-state), background 200ms var(--ease-state);
+}
+.lsm-play:hover { background: var(--accent-lift); }
+.lsm-play:active { transform: scale(.97); }
+.lsm-play svg { width: 12px; height: 12px; fill: currentColor; }
+.lsm-play:focus-visible { outline: 2px solid var(--accent-lift); outline-offset: 3px; }
+
+.lsm-scrub { flex: 1 1 220px; min-width: 180px; }
+.lsm-range {
+  width: 100%; height: 22px; margin: 0; background: transparent; cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.lsm-range::-webkit-slider-runnable-track { height: 4px; border-radius: 3px; background: var(--cove-620); }
+.lsm-range::-moz-range-track { height: 4px; border-radius: 3px; background: var(--cove-620); }
+.lsm-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 16px; height: 16px; margin-top: -6px;
+  border-radius: 50%; background: var(--paper); border: 3px solid var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,.4); transition: transform 140ms var(--ease-state);
+}
+.lsm-range::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%; background: var(--paper);
+  border: 3px solid var(--accent); box-shadow: 0 1px 4px rgba(0,0,0,.4);
+}
+.lsm-range:active::-webkit-slider-thumb { transform: scale(1.12); }
+.lsm-range:focus-visible::-webkit-slider-thumb { outline: 2px solid var(--accent-lift); outline-offset: 2px; }
+.lsm-ticks {
+  display: flex; justify-content: space-between; margin-top: 6px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-tertiary);
+}
+
+.lsm-readout { flex: none; margin-left: auto; text-align: right; }
+.lsm-date {
+  font-family: var(--serif); font-weight: 500; font-size: clamp(26px, 4.6vw, 40px);
+  line-height: 1; color: var(--paper);
+}
+.lsm-sub { margin-top: 6px; font-family: var(--mono); font-size: 12px; letter-spacing: .03em; color: var(--text-secondary); }
+.lsm-sub b { color: var(--accent-lift); font-weight: 500; }
+
+.lsm-stage { position: relative; margin-top: 26px; display: flex; justify-content: center; }
+.lsm-map { width: 100%; max-width: 500px; height: auto; overflow: visible; }
+.lsm-zone {
+  stroke: rgba(245,242,234,.16); stroke-width: 1; stroke-linejoin: round;
+  transition: fill 480ms var(--ease-state), stroke 180ms var(--ease-state), filter 180ms var(--ease-state);
+}
+.lsm-zone.on { stroke: var(--paper); stroke-width: 1.4; filter: brightness(1.12); }
+.lsm-lbl {
+  font-family: var(--sans); font-size: 15px; font-weight: 500; letter-spacing: .01em;
+  fill: var(--paper); stroke: rgba(10,9,8,.55); stroke-width: 3px; paint-order: stroke;
+  pointer-events: none; transition: opacity 180ms var(--ease-state);
+}
+.lsm-lbl.dim { opacity: .32; }
+
+.lsm-tip {
+  position: absolute; top: 0; left: 0; z-index: 5; pointer-events: none;
+  min-width: 154px; padding: 12px 14px; border-radius: 12px;
+  background: rgba(16,14,11,.94); border: 1px solid var(--cove-620);
+  box-shadow: 0 12px 34px rgba(0,0,0,.5); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; transition: opacity 140ms var(--ease-state);
+}
+.lsm-tip.show { opacity: 1; }
+.lsm-tip-name { font-family: var(--serif); font-size: 17px; color: var(--paper); margin-bottom: 9px; }
+.lsm-tip-grid { display: grid; grid-template-columns: auto auto; gap: 5px 18px; align-items: baseline; }
+.lsm-tip-grid span {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-tertiary);
+}
+.lsm-tip-grid b { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text-secondary); text-align: right; }
+.lsm-tip-grid b.hot { color: var(--accent-lift); }
+.lsm-tip-grid b.zero { color: var(--text-tertiary); }
+
+.lsm-foot {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 14px 24px; margin-top: 26px;
+}
+.lsm-legend {
+  display: flex; align-items: center; gap: 10px; font-family: var(--mono);
+  font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--text-tertiary);
+}
+.lsm-legend-cap { color: var(--text-secondary); }
+.lsm-legend-bar { width: 150px; height: 8px; border-radius: 4px; }
+.lsm-source { font-size: 12px; line-height: 1.45; color: var(--text-tertiary); max-width: 42ch; text-align: right; }
+
+@media (max-width: 640px) {
+  .lsm-readout { margin-left: 0; text-align: left; }
+  .lsm-foot { flex-direction: column; align-items: flex-start; }
+  .lsm-source { text-align: left; }
+  .lsm-legend-bar { width: 120px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lsm-zone { transition: fill 0ms; }
+  .lsm-tip { transition: none; }
+}

@@ -905,14 +905,13 @@
           </div>
         </div>
 
-        <!-- 4.2 outage hours + map ------------------------------------------- -->
+        <!-- 4.2 load-shedding heat map --------------------------------------- -->
         <div class="scene wrap chart">
-          <h3 class="sh rv">The outages were not shared evenly</h3>
-          <p class="lede rv">Dhaka got the largest total shortfall. Rural districts got the longest hours. In parts of
-            Bagmara, electricity was gone for about sixteen hours a day.</p>
-          <div class="strip rv" id="strip" style="margin-top:32px"></div>
-          <p class="note rv" style="margin-top:18px">Only locations with a reported figure are shown. Gaps are gaps, not
-            zeroes. Hatched bars are a different measure: share of demand met, not hours lost.</p>
+          <h3 class="sh rv">The dark was not shared evenly</h3>
+          <p class="lede rv">Daily load shedding by grid zone, in megawatts. Through August the national shortfall
+            climbed past 3,000 MW, and no two zones went dark the same way.</p>
+          <div class="lsm rv" id="lsm"
+            aria-label="Interactive map: daily load shedding by grid zone, 21 July to 12 August 2026"></div>
 
           <div class="places rv">
             <article class="place" data-screen-label="Gandaria">
@@ -1586,6 +1585,7 @@
   <script src="assets/vendor/leaflet/leaflet.js" defer></script>
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/articles.js" defer></script>
+  <script src="assets/js/loadshed-map.js" defer></script>
 </body>
 
 </html>
