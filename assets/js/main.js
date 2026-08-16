@@ -918,6 +918,40 @@
     window.addEventListener('resize', function () { measure(); onScroll(); }, { passive: true });
   })();
 
+  /* -------------------------------------- hero pan fallback (older Safari) */
+
+  /* The hero image pan, and the title fade over it, are authored as CSS
+     scroll-driven animations (animation-timeline: scroll()). Safari only
+     shipped those in Safari 26, so on older iOS - an iPhone 8 tops out at
+     iOS 16 - the @supports block is skipped and the hero sits still. Drive the
+     same two transforms from a rAF-throttled scroll handler when scroll
+     timelines are missing. Supported browsers and reduced-motion users fall
+     through to the CSS above and never run this. */
+  (function () {
+    var supported = window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()');
+    if (supported || REDUCED) return;
+    var img = q('.hero-media img'), body = q('.hero-body');
+    if (!img) return;
+    var vh = window.innerHeight || 1, queued = false;
+    function paint() {
+      queued = false;
+      var y = window.pageYOffset;
+      /* heroPan: translateY 0 -> -28.57% across the first viewport of scroll */
+      var p = y / vh; p = p < 0 ? 0 : p > 1 ? 1 : p;
+      img.style.transform = 'translateY(' + (-28.57 * p).toFixed(3) + '%) translateZ(0)';
+      /* heroType: the title fades and lifts across 4vh -> 64vh of scroll */
+      if (body) {
+        var t = (y - vh * 0.04) / (vh * 0.6); t = t < 0 ? 0 : t > 1 ? 1 : t;
+        body.style.opacity = (1 - t).toFixed(3);
+        body.style.transform = 'translateY(' + (-18 * t).toFixed(2) + 'px)';
+      }
+    }
+    function onScroll() { if (!queued) { queued = true; requestAnimationFrame(paint); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', function () { vh = window.innerHeight || 1; onScroll(); }, { passive: true });
+    paint();
+  })();
+
   /* ------------------------------------------------------------------ maps */
 
   var TILE = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
