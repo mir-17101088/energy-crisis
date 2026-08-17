@@ -1064,10 +1064,14 @@
        the card's own height or the route lands underneath it */
     function fit(b, cardEl) {
       var v = 24, o = { duration: REDUCED ? 0 : 0.7 };
-      var hgt = cardEl ? Math.round(cardEl.getBoundingClientRect().height) : 0;
-      if (window.matchMedia('(max-width: 720px)').matches && hgt) {
+      if (window.matchMedia('(max-width: 720px)').matches && cardEl) {
+        /* reserve everything below the card's top edge, so the route stays above
+           the card wherever it sits - it is lifted clear of the corner dock on
+           phones, so a fixed card-height reserve is no longer enough */
+        var r = cardEl.getBoundingClientRect();
+        var reserve = Math.max(0, Math.round(window.innerHeight - r.top)) + 20;
         o.paddingTopLeft = L.point(v, v);
-        o.paddingBottomRight = L.point(v, hgt + 34);
+        o.paddingBottomRight = L.point(v, reserve);
       } else {
         o.padding = L.point(v, v);
       }

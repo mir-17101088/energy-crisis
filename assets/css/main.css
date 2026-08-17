@@ -541,22 +541,54 @@ h3.sh {
 html.past-hero .hero-logo { transform: scale(.5); }
 
 .hero-body { align-self: center; max-width: 1080px; margin-inline: auto; margin-top: 7vh; text-align: center; }
+/* the report label reads over the brightest, busiest part of the photograph, so
+   the pill carries its own dark glass scrim: the tinted base and inner highlight
+   hold the type against the noise while the frosted blur keeps it feeling light */
 .hero-chip {
-  display: inline-block; margin-bottom: 40px;
-  font-family: var(--mono); font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase;
-  color: var(--paper); padding: 9px 20px 8px; border-radius: 999px;
-  background: rgba(245,242,234,.10); border: 1px solid rgba(245,242,234,.26);
-  backdrop-filter: blur(16px) saturate(150%); -webkit-backdrop-filter: blur(16px) saturate(150%);
-  box-shadow: 0 8px 30px rgba(10,9,8,.35), inset 0 1px 0 rgba(245,242,234,.16);
+  display: inline-flex; align-items: center; gap: 9px; margin-bottom: 38px;
+  font-family: var(--mono); font-size: 12px; font-weight: 500;
+  letter-spacing: .24em; text-transform: uppercase;
+  color: var(--paper); padding: 10px 19px 9px; border-radius: 999px;
+  background: linear-gradient(rgba(10,9,8,.5), rgba(10,9,8,.34));
+  border: 1px solid rgba(245,242,234,.34);
+  backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow:
+    0 12px 36px rgba(10,9,8,.5),
+    inset 0 1px 0 rgba(245,242,234,.24),
+    inset 0 0 0 1px rgba(10,9,8,.18);
+  text-shadow: 0 1px 10px rgba(10,9,8,.65);
 }
+.hero-chip::before,
+.hero-chip::after {
+  content: ""; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 10px rgba(242,102,95,.85);
+  flex: none;
+}
+/* the title is short, so it can carry the hero on its own: it is sized off both
+   viewport width AND height (vw + vh) so it stays commanding on a wide desktop
+   and never overruns a short laptop or a tall phone. The soft halo behind the
+   text lifts it off the busy, lit intersection underneath without a hard box. */
 .hero h1 {
   font-family: var(--serif); font-weight: 400;
-  font-size: clamp(36px, 7.6vw, 64px); line-height: 1.06; letter-spacing: -0.026em;
-  max-width: 19ch; margin-inline: auto; text-shadow: 0 2px 30px rgba(10,9,8,.6);
+  font-size: clamp(2.75rem, 4vh + 4.4vw, 5.75rem);
+  line-height: 1.02; letter-spacing: -0.03em;
+  max-width: 22ch; margin-inline: auto; text-wrap: balance;
+  color: var(--paper);
+  text-shadow:
+    0 1px 1px rgba(10,9,8,.5),
+    0 3px 18px rgba(10,9,8,.62),
+    0 12px 52px rgba(10,9,8,.5);
 }
 .hero .stand {
-  font-family: var(--serif); font-size: clamp(18px, 3vw, 23px); line-height: 1.45;
-  color: var(--text-primary); max-width: 40ch; margin: 20px auto 0;
+  font-family: var(--serif); font-size: clamp(18px, 1.1vh + 2vw, 23px); line-height: 1.45;
+  color: var(--text-primary); max-width: 40ch; margin: 18px auto 0;
+  text-shadow: 0 1px 2px rgba(10,9,8,.55), 0 2px 22px rgba(10,9,8,.5);
+}
+.hero-body::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(118%, 860px); height: 150%;
+  background: radial-gradient(58% 52% at 50% 50%, rgba(10,9,8,.5) 0%, rgba(10,9,8,.28) 46%, rgba(10,9,8,0) 78%);
 }
 .hero-eyebrow { display: none; }
 
@@ -565,8 +597,8 @@ html.past-hero .hero-logo { transform: scale(.5); }
 }
 
 @media (max-height: 620px) {
-  .hero h1 { font-size: clamp(28px, 6vw, 40px); }
-  .hero .stand { font-size: 16px; margin-top: 12px; }
+  .hero h1 { font-size: clamp(30px, 3.4vh + 3.4vw, 46px); }
+  .hero .stand { font-size: clamp(15px, 2.6vw, 18px); margin-top: 12px; }
   .hero-body { margin-top: 6vh; }
   .hero-chip { margin-bottom: 22px; }
 }
@@ -925,7 +957,12 @@ a.leaflet-popup-close-button:hover { color: var(--paper) !important; background:
 .ms-track { position: relative; z-index: 1; margin-top: -52vh; padding-bottom: 42vh; }
 .ms-step { height: 44vh; }
 @media (max-width: 720px) {
-  .ms-cards { left: 14px; right: 14px; bottom: 26px; width: auto; }
+  /* the floating dock (Chapters + back to top) lives bottom-right and is 120px
+     tall from the viewport floor; the reading card sits full width, so on a
+     phone it is lifted clear of the dock instead of running underneath it. The
+     map fit reserves the space above the card's top edge (see main.js), so the
+     route never lands behind the lifted card. */
+  .ms-cards { left: 14px; right: 14px; bottom: 132px; width: auto; }
   .map-step { padding: 13px 15px 15px; }
   .map-step .b { font-size: 13.5px; line-height: 1.5; }
   .ms-track { margin-top: -54vh; padding-bottom: 40vh; }
