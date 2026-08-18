@@ -94,35 +94,62 @@
       nodes.forEach(function (n) { n.classList.add('in'); });
       return;
     }
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.classList.add('in');
-        io.unobserve(e.target);
-      });
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.06 });
-    nodes.forEach(function (n) { io.observe(n); });
+
+    /* Two observers, because the opening is read differently from the rest of
+       the page. A chart in chapter 3 can afford to arrive as the reader gets
+       to it; the standfirst cannot, because it is the first prose they read
+       and they are already moving toward it. Measured on the old single
+       observer, each intro paragraph began its fade only once it was 90% of
+       the way down the viewport and took 620ms, so it resolved across roughly
+       520px of scrolling - the reader watched the intro assemble itself. The
+       opening's reveals now fire a full screen before they arrive. */
+    var opening = [], rest = [];
+    nodes.forEach(function (n) {
+      (n.closest && n.closest('.hero-lede') ? opening : rest).push(n);
+    });
+
+    var ios = [];
+    function observe(list, margin, threshold) {
+      if (!list.length) return null;
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        });
+      }, { rootMargin: margin, threshold: threshold });
+      list.forEach(function (n) { io.observe(n); });
+      ios.push(io);
+      return io;
+    }
+
+    /* 160% of the viewport reaches past the end of the standfirst, so every
+       paragraph of the intro has finished arriving before the reader has
+       scrolled a single pixel. Revealing prose early costs nothing - it is an
+       opacity change on text that is already laid out - and it is the whole
+       point: the reader should meet the intro, not watch it assemble. */
+    observe(opening, '0px 0px 160% 0px', 0);
+    observe(rest, '0px 0px -10% 0px', 0.06);
+
+    function unobserveAll(n) {
+      for (var i = 0; i < ios.length; i++) ios[i].unobserve(n);
+    }
 
     /* Safety net for the reveal.
 
        A reveal target sitting inside a content-visibility:auto block has no
-       layout box at all while that block is skipped, so the observer above has
-       nothing to measure. If the reader scrolls fast enough that the block is
-       rendered and left behind between two observer deliveries, the paragraph
+       layout box at all while that block is skipped, so the observers above
+       have nothing to measure. If the reader scrolls fast enough that the
+       block is rendered and left behind between two deliveries, the paragraph
        stays at opacity 0 and the text is simply never seen. That is a content
        bug, not a cosmetic one, so it gets a floor.
 
-       This sweep only rescues elements the reader has already carried halfway
-       up the viewport - by which point the observer has normally fired long
-       ago, so in ordinary scrolling it never does anything and the staggered
-       entrance is untouched. It is rAF-throttled, it only ever walks the nodes
-       that are still hidden, and it unhooks itself once none are left. */
+       It reads every rect first and applies every class afterwards: doing both
+       in one loop invalidates layout on each write and forces the next read to
+       re-run it, which measured 607 forced reflows across one pass down the
+       page. It runs on a slow timer rather than on scroll for the same reason,
+       and clears itself once nothing is left to rescue. */
     var pending = nodes.slice();
-    /* Read every rect first, then apply every class. Interleaving them - read a
-       rect, add a class, read the next rect - invalidates layout on each write
-       and forces the next read to synchronously re-run it, which is the classic
-       layout thrash: this loop measured 607 forced reflows across one pass down
-       the page. Split into a read phase and a write phase it forces none. */
     function sweep() {
       var h = window.innerHeight || 0;
       var left = [];
@@ -141,21 +168,12 @@
       /* phase 2: write only - nothing here may read geometry */
       for (var k = 0; k < reveal.length; k++) {
         reveal[k].classList.add('in');
-        io.unobserve(reveal[k]);
+        unobserveAll(reveal[k]);
       }
 
       pending = left;
       if (!pending.length && timer) { clearInterval(timer); timer = 0; }
     }
-
-    /* The net runs on a slow timer rather than on scroll. Reading a rect for
-       every element still waiting is a layout read, and on the scroll path it
-       lands in the same frame as other components' class writes, which turns it
-       into a forced reflow - 607 of them across one pass down the page when
-       this was rAF-driven on scroll. Four times a second is far more often than
-       a rescue needs to happen, costs nothing measurable, and keeps geometry
-       reads off the frames that have to stay smooth. The interval clears itself
-       as soon as every element has been revealed. */
     var timer = setInterval(sweep, 250);
     sweep();
   }

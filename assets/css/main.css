@@ -2113,6 +2113,21 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
   font-size: clamp(18px, 2.6vw, 22px); line-height: 1.35; color: var(--accent-lift);
 }
 
+/* The standfirst is the first thing the reader actually reads, not decoration,
+   so it does not get the same slow entrance as a chart further down.
+
+   Measured before this: each paragraph sat at opacity 0 until it was already
+   90% of the way down the viewport, then took 620ms to arrive - so it faded in
+   across about 520px of scrolling and the reader watched the intro materialise
+   underneath them. The reveal is kept, because the opening is meant to settle
+   rather than snap, but it is shorter, travels less, and is triggered a full
+   screen early (see watchReveals) so the type is solid by the time it reaches
+   a comfortable reading position. */
+.hero-lede .rv {
+  transform: translateY(9px);
+  transition-duration: 300ms, 300ms;
+}
+
 /* ---------- centred section head, opening chapter ---------------------- */
 
 .fhead { text-align: center; }
