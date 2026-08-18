@@ -92,33 +92,46 @@
        entrance is untouched. It is rAF-throttled, it only ever walks the nodes
        that are still hidden, and it unhooks itself once none are left. */
     var pending = nodes.slice();
-    var tick = 0;
+    /* Read every rect first, then apply every class. Interleaving them - read a
+       rect, add a class, read the next rect - invalidates layout on each write
+       and forces the next read to synchronously re-run it, which is the classic
+       layout thrash: this loop measured 607 forced reflows across one pass down
+       the page. Split into a read phase and a write phase it forces none. */
     function sweep() {
-      tick = 0;
       var h = window.innerHeight || 0;
       var left = [];
+      var reveal = [];
+
+      /* phase 1: read only - nothing here may touch the DOM */
       for (var i = 0; i < pending.length; i++) {
         var n = pending[i];
         if (n.classList.contains('in')) continue;
         var r = n.getBoundingClientRect();
         /* a zero-height box means the container is still skipped: not near yet */
-        if (r.height && r.top < h * 0.5) {
-          n.classList.add('in');
-          io.unobserve(n);
-        } else {
-          left.push(n);
-        }
+        if (r.height && r.top < h * 0.5) reveal.push(n);
+        else left.push(n);
       }
+
+      /* phase 2: write only - nothing here may read geometry */
+      for (var k = 0; k < reveal.length; k++) {
+        reveal[k].classList.add('in');
+        io.unobserve(reveal[k]);
+      }
+
       pending = left;
-      if (!pending.length) {
-        window.removeEventListener('scroll', queue);
-        window.removeEventListener('resize', queue);
-      }
+      if (!pending.length && timer) { clearInterval(timer); timer = 0; }
     }
-    function queue() { if (!tick) tick = requestAnimationFrame(sweep); }
-    window.addEventListener('scroll', queue, { passive: true });
-    window.addEventListener('resize', queue, { passive: true });
-    queue();
+
+    /* The net runs on a slow timer rather than on scroll. Reading a rect for
+       every element still waiting is a layout read, and on the scroll path it
+       lands in the same frame as other components' class writes, which turns it
+       into a forced reflow - 607 of them across one pass down the page when
+       this was rAF-driven on scroll. Four times a second is far more often than
+       a rescue needs to happen, costs nothing measurable, and keeps geometry
+       reads off the frames that have to stay smooth. The interval clears itself
+       as soon as every element has been revealed. */
+    var timer = setInterval(sweep, 250);
+    sweep();
   }
 
   /* --------------------------------------------------------------- data */

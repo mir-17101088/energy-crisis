@@ -109,10 +109,21 @@
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
+  /* The thumbnail slot is 88 CSS px on a phone and 150 on a wide screen, but
+     the source photographs are ~800px wide: 389KB of image for slots that need
+     about 40KB. tools/build_images.py emits a 240w and a 480w variant of each;
+     the width-described srcset lets the browser take the 240 on an ordinary
+     phone and the 480 only where the pixel density actually calls for it. */
+  function thumbSource(img) {
+    var base = img.replace(/\.(jpe?g|png)$/i, '');
+    return '<source type="image/webp" sizes="(max-width: 719px) 88px, 150px" srcset="' +
+      esc(base + '-240w.webp') + ' 240w, ' + esc(base + '-480w.webp') + ' 480w">';
+  }
+
   function card(a, i) {
     return '<a class="rd" href="' + esc(a.href) + '" target="_blank" rel="noopener noreferrer" style="--i:' + i + '">'
       +   '<span class="rd-im">'
-      +     '<picture><source type="image/webp" srcset="' + esc(a.img.replace(/\.(jpe?g|png)$/i, '.webp')) + '"><img src="' + esc(a.img) + '" alt="" loading="lazy" decoding="async"></picture>'
+      +     '<picture>' + thumbSource(a.img) + '<img src="' + esc(a.img) + '" alt="" loading="lazy" decoding="async"></picture>'
       +   '</span>'
       +   '<span class="rd-tx">'
       +     '<span class="rd-k">' + SOURCE + '</span>'

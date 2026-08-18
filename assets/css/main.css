@@ -579,8 +579,13 @@ html.past-hero .hero-logo { transform: scale(.5); }
     0 3px 18px rgba(10,9,8,.62),
     0 12px 52px rgba(10,9,8,.5);
 }
+/* Sized off both viewport height AND width, like the title above it, so the
+   pair keeps its relationship on a wide desktop and a tall phone alike. The
+   old 18-23px range was pinned to one of its two bounds on almost every real
+   screen, so it never actually scaled; this range does its work between about
+   a 375x812 phone and a tablet, and caps before it can crowd the title. */
 .hero .stand {
-  font-family: var(--serif); font-size: clamp(18px, 1.1vh + 2vw, 23px); line-height: 1.45;
+  font-family: var(--serif); font-size: clamp(19px, 1.5vh + 1.9vw, 26px); line-height: 1.45;
   color: var(--text-primary); max-width: 40ch; margin: 18px auto 0;
   text-shadow: 0 1px 2px rgba(10,9,8,.55), 0 2px 22px rgba(10,9,8,.5);
 }
@@ -598,7 +603,8 @@ html.past-hero .hero-logo { transform: scale(.5); }
 
 @media (max-height: 620px) {
   .hero h1 { font-size: clamp(30px, 3.4vh + 3.4vw, 46px); }
-  .hero .stand { font-size: clamp(15px, 2.6vw, 18px); margin-top: 12px; }
+  /* short screens (landscape phones): still both axes, just a tighter range */
+  .hero .stand { font-size: clamp(16px, 1.2vh + 2.2vw, 21px); margin-top: 12px; }
   .hero-body { margin-top: 6vh; }
   .hero-chip { margin-bottom: 22px; }
 }
