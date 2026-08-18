@@ -61,6 +61,32 @@
     return Math.max(1, Math.min(2.1, W / w));
   }
 
+  /* Build a below-the-fold graphic only once it is within reach.
+
+     The chart and diagram builders below all ran at script-execution time,
+     which meant the opening paid for graphics thousands of pixels further
+     down: measured on a cold mobile load, the tariff-lanes chart cost 30ms
+     and the FSRU stepper 35ms of the ~90ms main.js spends executing, and
+     that lands squarely in the reader's first scroll.
+
+     Wrapping a builder in lazyBuild defers it until its host is about a
+     screen and a half away, which on any real reading speed is long before
+     it is looked at. If the host is missing the builder never runs, which is
+     the same thing the builders already did with their own early return. */
+  function lazyBuild(sel, fn) {
+    var host = q(sel);
+    if (!host) return;
+    if (!('IntersectionObserver' in window)) { fn(); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        fn();
+      });
+    }, { rootMargin: '1400px 0px 1400px 0px', threshold: 0 });
+    io.observe(host);
+  }
+
   function watchReveals(root) {
     var nodes = qa('.rv, .rv-f', root);
     if (!nodes.length) return;
@@ -300,7 +326,7 @@
 
   /* Two states rather than a time series: where the gas came from then, and
      where it comes from now. Ribbons carry each source across the shift. */
-  (function () {
+  lazyBuild('#chart-prod', function () {
     var host = q('#chart-prod');
     if (!host) return;
     var W = 680, H = 382;
@@ -405,11 +431,11 @@
     }, { threshold: 0.25 });
     io.observe(host);
 
-  })();
+  });
 
   /* ------------------------------------------------- chart: tariff lanes */
 
-  (function () {
+  lazyBuild('#chart-lanes', function () {
     var host = q('#chart-lanes');
     if (!host) return;
     var lanes = DATA.lanes;
@@ -504,11 +530,11 @@
 
     var rows = [];
     lanes.forEach(function (l) { l.pts.forEach(function (p) { rows.push([l.name, p[0], p[1]]); }); });
-  })();
+  });
 
   /* --------------------------------------------------- pressure ladder */
 
-  (function () {
+  lazyBuild('#psi', function () {
     var host = q('#psi');
     if (!host) return;
     var MAX = 36;
@@ -551,11 +577,11 @@
       io.observe(row);
     });
 
-  })();
+  });
 
   /* ---------------------------------------------------- plant glyphs */
 
-  (function () {
+  lazyBuild('#plants', function () {
     var host = q('#plants');
     if (!host) return;
     var off = [true, true, true, true, true, false, false];
@@ -584,11 +610,11 @@
     cap.style.flexBasis = '100%';
     cap.textContent = 'Five of seven state fertiliser plants shut between 4 March and 28 June.';
     host.appendChild(cap);
-  })();
+  });
 
   /* --------------------------------------------------- outage hours strip */
 
-  (function () {
+  lazyBuild('#strip', function () {
     var host = q('#strip');
     if (!host) return;
     function row(d) {
@@ -608,11 +634,11 @@
     hdr.innerHTML = '<span class="loc mono" style="font-size:11px;letter-spacing:.1em;color:var(--text-tertiary);text-transform:uppercase">Share of demand met</span><span class="v mono" style="font-size:11px;color:var(--text-tertiary)">a different measure, not on the hours scale</span>';
     host.appendChild(hdr);
     DATA.strip.filter(function (d) { return d.pct != null; }).forEach(function (d) { host.appendChild(row(d)); });
-  })();
+  });
 
   /* ------------------------------------------------------- causal chain */
 
-  (function () {
+  lazyBuild('#chain', function () {
     var host = q('#chain');
     if (!host) return;
     var wrap = q('#chain-wrap');
@@ -794,11 +820,11 @@
       clearTimeout(rt);
       rt = setTimeout(render, 200);
     }, { passive: true });
-  })();
+  });
 
   /* ------------------------------------------------------- FSRU stepper */
 
-  (function () {
+  lazyBuild('#fsru', function () {
     var steps = qa('#fsru-steps .ss-step');
     var fsru = q('#fsru');
     if (!steps.length || !fsru) return;
@@ -843,7 +869,7 @@
     }
     apply('berth');
     trackSteps(steps, function (el) { apply(el.getAttribute('data-state')); });
-  })();
+  });
 
   /* -------------------------------------- generic sticky split observer */
 
@@ -1484,7 +1510,7 @@
        top that this margin already covers it at scroll 0, so the fetch is put
        behind an idle callback - otherwise "preloading" would simply put the
        144KB back into the boot window that this change exists to clear. */
-    whenNear(block, '1400px 0px 1400px 0px', function () {
+    whenNear(block, '800px 0px 800px 0px', function () {
       idle(function () { withLeaflet(null); });
     });
     whenNear(block, '300px 0px 300px 0px', function () {
@@ -1494,19 +1520,51 @@
     });
   }
 
-  function startMaps() {
-    lazyMap('fields-block', mapFields);
-    lazyMap('map1-block', mapHormuz);
-    lazyMap('map2-block', mapMoheshkhali);
-    lazyMap('map4-block', mapChattogram);
-    /* the load-shedding choropleth builds itself on execute, so simply
-       fetching the file late is enough to keep it out of the boot window */
-    var lsm = q('#lsm');
-    if (lsm) {
-      whenNear(lsm, '1200px 0px 1200px 0px', function () {
-        idle(function () { loadScript('assets/js/loadshed-map.js', function () {}); });
+  /* Run fn once the reader has actually left the opening, then on idle.
+
+     Everything map-related is expensive: Leaflet is 144KB to parse and the
+     first map builds thirty-odd markers and pulls sixteen tiles. Registering
+     the map observers at the load event put all of that inside the reader's
+     very first scroll - measured on a cold mobile load, leaflet.js landed at
+     1403ms and the fields map built at 2199ms, while the reader was still
+     moving from the title to the standfirst, and the scroll delivered 21 of
+     the 120 frames it should have.
+
+     The opening (title screen + standfirst) is one element, so the moment it
+     has scrolled off the top is a precise signal that the reader is past the
+     part that has to be smooth. If the page is loaded already scrolled past
+     it - a deep link, or a restored position - fn runs straight away. */
+  function afterOpening(fn) {
+    var opening = q('.opening');
+    if (!opening || !('IntersectionObserver' in window)) { idle(fn, 1200); return; }
+    if (opening.getBoundingClientRect().bottom <= 0) { idle(fn, 1200); return; }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) return;
+        /* only when it leaves upward, not when it is still below */
+        if (e.boundingClientRect.bottom > 0) return;
+        io.disconnect();
+        idle(fn, 1200);
       });
-    }
+    }, { threshold: 0 });
+    io.observe(opening);
+  }
+
+  function startMaps() {
+    afterOpening(function () {
+      lazyMap('fields-block', mapFields);
+      lazyMap('map1-block', mapHormuz);
+      lazyMap('map2-block', mapMoheshkhali);
+      lazyMap('map4-block', mapChattogram);
+      /* the load-shedding choropleth builds itself on execute, so simply
+         fetching the file late is enough to keep it out of the boot window */
+      var lsm = q('#lsm');
+      if (lsm) {
+        whenNear(lsm, '1200px 0px 1200px 0px', function () {
+          idle(function () { loadScript('assets/js/loadshed-map.js', function () {}); });
+        });
+      }
+    });
   }
 
   /* ------------------------------------------------- persistent wordmark */
@@ -1524,7 +1582,7 @@
 
   /* ------------------------------------------------ cargo tally, pinned */
 
-  (function () {
+  lazyBuild('#cargo', function () {
     var root = q('#cargo'), field = q('#cgField');
     if (!root || !field) return;
     var QATAR = 19, SPOT = 35;
@@ -1543,11 +1601,11 @@
     trackSteps(qa('.cg-step', root), function (el, i) {
       root.setAttribute('data-stage', i + 1);
     }, function () { return 0.5; });
-  })();
+  });
 
   /* ------------------------------------------ the four day policy clock */
 
-  (function () {
+  lazyBuild('#fdpRail', function () {
     var rail = q('#fdpRail');
     if (!rail) return;
     var prog = q('#fdpProg'), dayN = q('#fdpDay'), dateN = q('#fdpDate'), noteN = q('#fdpNote');
@@ -1611,7 +1669,7 @@
       if (best) set(best);
     }, { rootMargin: '-49.8% 0px -49.8% 0px', threshold: 0 });
     nodes.forEach(function (n) { io.observe(n); });
-  })();
+  });
 
   /* -------------------------------------------------------- chapters menu */
 
@@ -1689,7 +1747,7 @@
 
   /* ------------------------------------------------------------- album */
 
-  (function () {
+  lazyBuild('#album', function () {
     var frames = qa('#album .al-f'), lb = q('#lb');
     if (!frames.length || !lb) return;
     var img = q('#lbImg'), cap = q('#lbCap'), x = q('#lbX'), last = null;
@@ -1719,7 +1777,7 @@
       if (e.key === 'Escape') { close(); return; }
       if (e.key === 'Tab') { e.preventDefault(); x.focus(); }
     });
-  })();
+  });
 
   /* ------------------------------------------- verdict: relight on each view */
 
@@ -1760,7 +1818,7 @@
 
   /* the hint is a fact about the current viewport, not a caption: it exists
      only while the diagram is actually wider than its scroller */
-  (function () {
+  lazyBuild('#chain-wrap', function () {
     var box = q('.chain-box'), sc = q('#chain-wrap');
     if (!box || !sc) return;
     function sync() { box.classList.toggle('can-scroll', sc.scrollWidth - sc.clientWidth > 8); }
@@ -1768,7 +1826,7 @@
     window.addEventListener('resize', sync, { passive: true });
     if ('ResizeObserver' in window) { new ResizeObserver(sync).observe(sc); }
     setTimeout(sync, 400);
-  })();
+  });
 
   /* --------------------------------------------- chapter band photographs */
 
@@ -1792,7 +1850,7 @@
         io.unobserve(e.target);
         e.target.classList.add('bg-on');
       });
-    }, { rootMargin: '150% 0px 150% 0px', threshold: 0 });
+    }, { rootMargin: '100% 0px 100% 0px', threshold: 0 });
     bands.forEach(function (b) { io.observe(b); });
   }
 
@@ -1815,3 +1873,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
+
+

@@ -373,6 +373,19 @@ picture { display: contents; }
   background-size: 64px 64px;
   opacity: .05;
 }
+
+/* The WebP swap for the canvas texture lives here, in the same section as the
+   rule it overrides, because this section is inlined as critical CSS. When the
+   swap sat further down the file the inline copy only had the JPG, so the
+   opening fetched canvas-texture.jpg (74KB) and then main.css fetched
+   canvas-texture.webp (37KB) on top of it - both downloaded, and the fixed
+   full-viewport layer repainted when the second one landed. */
+@supports (background-image: image-set(url("x.webp") type("image/webp"))) {
+  .texture {
+    background-image: image-set(url("../img/canvas-texture.webp") type("image/webp"),
+                                url("../img/canvas-texture.jpg") type("image/jpeg"));
+  }
+}
 .bloom {
   position: fixed; left: 50%; top: 24vh; width: min(1500px, 132vw); height: 62vh;
   transform: translateX(-50%);
@@ -632,7 +645,6 @@ html.past-hero .hero-logo { transform: scale(.5); }
    browser that actually renders image-set/type() here ever requests the webp;
    every other browser keeps the JPG declared above, so nothing regresses. */
 @supports (background-image: image-set(url("x.webp") type("image/webp"))) {
-  .texture         { background-image: image-set(url("../img/canvas-texture.webp") type("image/webp"), url("../img/canvas-texture.jpg") type("image/jpeg")); }
   .band-shockwave.bg-on  { --bg: image-set(url(../img/bg-shockwave.webp) type("image/webp"),  url(../img/bg-shockwave.jpg) type("image/jpeg")); }
   .band-disruption.bg-on { --bg: image-set(url(../img/bg-disruption.webp) type("image/webp"), url(../img/bg-disruption.jpg) type("image/jpeg")); }
   .band-pressure.bg-on   { --bg: image-set(url(../img/bg-pressure.webp) type("image/webp"),   url(../img/bg-pressure.jpg) type("image/jpeg")); }
@@ -2615,6 +2627,27 @@ body:has(.fsheet.open) .dock { opacity: 0; transform: translateY(10px); pointer-
   .page .reads-blk {
     contain-intrinsic-size: auto 200px;
   }
+
+  /* The four pinned scrollytelling sections were left out of the rule above
+     because containment changes the containing block, and breaking a pinned
+     scene is a worse outcome than a slow one. Tested directly: with
+     content-visibility applied, all four still pin their graphic to the top of
+     the viewport exactly as before.
+
+     They are worth containing because they are the biggest boxes on the page -
+     the FSRU stepper alone is 5,400px - and they dominate layout cost. A full
+     forced layout of the document measured 43.5ms with no containment, 23.0ms
+     with the rule above, and 11.2ms once these four are included. main.js runs
+     a dozen builders that each write DOM and then read geometry, so that cost
+     is paid many times over during the opening. */
+  #ss-prod, #ss-fsru, #cargo, #map1-block {
+    content-visibility: auto;
+  }
+  #ss-prod    { contain-intrinsic-size: auto 3300px; }
+  #ss-fsru    { contain-intrinsic-size: auto 5400px; }
+  #cargo      { contain-intrinsic-size: auto 1900px; }
+  #map1-block { contain-intrinsic-size: auto 1900px; }
+
   @media (min-width: 720px) {
     .page .scene:not(.sticky-split):not(:has(.ms-stick, .cg-stick, .ss-graphic, .ck-side, .claims, .verdict, table)),
     .page .album-bleed {
