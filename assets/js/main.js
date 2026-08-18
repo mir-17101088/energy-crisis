@@ -76,6 +76,49 @@
       });
     }, { rootMargin: '0px 0px -10% 0px', threshold: 0.06 });
     nodes.forEach(function (n) { io.observe(n); });
+
+    /* Safety net for the reveal.
+
+       A reveal target sitting inside a content-visibility:auto block has no
+       layout box at all while that block is skipped, so the observer above has
+       nothing to measure. If the reader scrolls fast enough that the block is
+       rendered and left behind between two observer deliveries, the paragraph
+       stays at opacity 0 and the text is simply never seen. That is a content
+       bug, not a cosmetic one, so it gets a floor.
+
+       This sweep only rescues elements the reader has already carried halfway
+       up the viewport - by which point the observer has normally fired long
+       ago, so in ordinary scrolling it never does anything and the staggered
+       entrance is untouched. It is rAF-throttled, it only ever walks the nodes
+       that are still hidden, and it unhooks itself once none are left. */
+    var pending = nodes.slice();
+    var tick = 0;
+    function sweep() {
+      tick = 0;
+      var h = window.innerHeight || 0;
+      var left = [];
+      for (var i = 0; i < pending.length; i++) {
+        var n = pending[i];
+        if (n.classList.contains('in')) continue;
+        var r = n.getBoundingClientRect();
+        /* a zero-height box means the container is still skipped: not near yet */
+        if (r.height && r.top < h * 0.5) {
+          n.classList.add('in');
+          io.unobserve(n);
+        } else {
+          left.push(n);
+        }
+      }
+      pending = left;
+      if (!pending.length) {
+        window.removeEventListener('scroll', queue);
+        window.removeEventListener('resize', queue);
+      }
+    }
+    function queue() { if (!tick) tick = requestAnimationFrame(sweep); }
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue, { passive: true });
+    queue();
   }
 
   /* --------------------------------------------------------------- data */
@@ -1359,25 +1402,98 @@
     q('#fields-block').appendChild(alt);
   }
 
-  function lazyMap(blockId, fn) {
-    var block = q('#' + blockId);
-    if (!block) return;
+  /* ------------------------------------------------- on-demand libraries */
+
+  /* Leaflet is 144KB and the load-shedding choropleth another 64KB, and both
+     used to be plain deferred <script>s - parsed and executed during the boot
+     window even though the first map is about 5,000px down the page and the
+     choropleth is near the bottom. They are fetched here instead, once the
+     block that needs them comes within range. */
+  function loadScript(src, cb) {
+    var s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = function () { cb(null); };
+    s.onerror = function () {
+      if (window.console) console.warn('failed to load ' + src);
+      cb(new Error(src));
+    };
+    document.head.appendChild(s);
+  }
+
+  /* fires cb as soon as el is within `margin` of the viewport, once */
+  function whenNear(el, margin, cb) {
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) { cb(); return; }
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
         if (!e.isIntersecting) return;
         io.disconnect();
+        cb();
+      });
+    }, { rootMargin: margin, threshold: 0 });
+    io.observe(el);
+  }
+
+  var leafletState = (typeof L !== 'undefined') ? 'ready' : 'idle';
+  var leafletWaiting = [];
+
+  /* run fn when the main thread is next free, with a hard backstop so it still
+     runs on browsers without requestIdleCallback (Safari) */
+  function idle(fn, timeout) {
+    if (window.requestIdleCallback) window.requestIdleCallback(fn, { timeout: timeout || 2500 });
+    else setTimeout(fn, 200);
+  }
+
+  /* cb is optional: startMaps calls this with nothing to begin the download
+     early, and again with the builder once the block is close enough */
+  function withLeaflet(cb) {
+    if (leafletState === 'failed') return;
+    if (leafletState === 'ready') { if (cb) cb(); return; }
+    if (cb) leafletWaiting.push(cb);
+    if (leafletState === 'loading') return;
+    leafletState = 'loading';
+    loadScript('assets/vendor/leaflet/leaflet.js', function (err) {
+      if (err) { leafletState = 'failed'; leafletWaiting.length = 0; return; }
+      leafletState = 'ready';
+      var run = leafletWaiting.splice(0, leafletWaiting.length);
+      run.forEach(function (f) {
+        try { f(); } catch (e) { if (window.console) console.warn('map failed', e); }
+      });
+    });
+  }
+
+  function lazyMap(blockId, fn) {
+    var block = q('#' + blockId);
+    if (!block) return;
+    /* Start the Leaflet download ahead of the block so the library is parsed by
+       the time the map is wanted. The first map block sits close enough to the
+       top that this margin already covers it at scroll 0, so the fetch is put
+       behind an idle callback - otherwise "preloading" would simply put the
+       144KB back into the boot window that this change exists to clear. */
+    whenNear(block, '1400px 0px 1400px 0px', function () {
+      idle(function () { withLeaflet(null); });
+    });
+    whenNear(block, '300px 0px 300px 0px', function () {
+      withLeaflet(function () {
         try { fn(); } catch (err) { if (window.console) console.warn('map failed', blockId, err); }
       });
-    }, { rootMargin: '300px 0px 300px 0px', threshold: 0 });
-    io.observe(block);
+    });
   }
 
   function startMaps() {
-    if (typeof L === 'undefined') return;
     lazyMap('fields-block', mapFields);
     lazyMap('map1-block', mapHormuz);
     lazyMap('map2-block', mapMoheshkhali);
     lazyMap('map4-block', mapChattogram);
+    /* the load-shedding choropleth builds itself on execute, so simply
+       fetching the file late is enough to keep it out of the boot window */
+    var lsm = q('#lsm');
+    if (lsm) {
+      whenNear(lsm, '1200px 0px 1200px 0px', function () {
+        idle(function () { loadScript('assets/js/loadshed-map.js', function () {}); });
+      });
+    }
   }
 
   /* ------------------------------------------------- persistent wordmark */
@@ -1641,9 +1757,36 @@
     setTimeout(sync, 400);
   })();
 
+  /* --------------------------------------------- chapter band photographs */
+
+  /* The six chapter photographs are ~1.6MB together. As plain stylesheet
+     url()s they were all fetched while the reader was still on the title
+     screen, competing with the hero image for bandwidth and with first render
+     for decode time. The --bg custom property is now gated behind .bg-on, so
+     the request is not made until the band is within about a screen and a half
+     of the viewport - far enough ahead that it is always decoded before it is
+     scrolled to, late enough that it never touches the opening. */
+  function armBands() {
+    var bands = qa('.bg-band');
+    if (!bands.length) return;
+    if (!('IntersectionObserver' in window)) {
+      bands.forEach(function (b) { b.classList.add('bg-on'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        e.target.classList.add('bg-on');
+      });
+    }, { rootMargin: '150% 0px 150% 0px', threshold: 0 });
+    bands.forEach(function (b) { io.observe(b); });
+  }
+
   function boot() {
     watchReveals(document);
     buildRibbon();
+    armBands();
     // maps last, and only once the document load event has fired, so tile
     // requests can never hold the page load open
     function later() { setTimeout(startMaps, 120); }

@@ -69,6 +69,40 @@
     <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
   </noscript>
   <link rel="stylesheet" href="assets/css/main.css">
+  <!-- The chapter photographs are armed by an IntersectionObserver (see armBands
+     in main.js) so they never compete with the hero. Without JS there is no
+     observer to arm them, so turn them all on up front. -->
+  <noscript>
+    <style>
+      .band-shockwave {
+        --bg: url(assets/img/bg-shockwave.jpg);
+      }
+
+      .band-disruption {
+        --bg: url(assets/img/bg-disruption.jpg);
+      }
+
+      .band-pressure {
+        --bg: url(assets/img/bg-pressure.jpg);
+      }
+
+      .band-crossroads {
+        --bg: url(assets/img/bg-crossroads.jpg);
+      }
+
+      .band-coda {
+        --bg: url(assets/img/bg-coda.jpg);
+      }
+
+      .band-toll {
+        --bg: url(assets/img/bg-toll.jpg);
+      }
+
+      .bg-band::before {
+        opacity: 1;
+      }
+    </style>
+  </noscript>
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero.webp" media="(max-width: 1023.98px)"
     fetchpriority="high">
   <link rel="preload" as="image" type="image/webp" href="assets/img/hero-lg.webp" media="(min-width: 1024px)"
@@ -394,7 +428,7 @@
               <div class="abs-track"><i></i></div>
             </div>
             <p class="abs-gap">Absorbed by the state. BPC's cumulative loss ran to <b>Tk 17,039 crore</b> between March
-              and 11 June, and by June the sheet was losing <b>Tk 78 crore a day</b>.</p>
+              and 11 June. And by end of June the sheet was losing <b>Tk 78 crore a day</b>.</p>
           </div>
 
           <div class="statrow three rv" style="margin-top:40px">
@@ -677,7 +711,7 @@
           <div class="inference wide rv" style="margin-top:36px">
             <p>A two-node import system has no redundancy by construction. Losing one node removes about half the
               imported supply, every time, whatever the cause. Cyclone, maintenance, or fire, the failure mode is
-              identical. This is a design property, not a run of bad luck.</p>
+              identical. This is a design flaw, not a run of bad luck.</p>
           </div>
         </div>
 
@@ -991,7 +1025,8 @@
           <p class="lede rv" style="max-width:66ch">To solve Bangladesh’s energy crunch, any strategy must confront a
             single stark reality: a daily gas shortfall of 1,630 million cubic feet per day (MMcfd). This is the deficit
             left in the wake of the July 21 terminal fire at Moheshkhali, which dropped national supply to 2,170 MMcfd
-            against a demand of 3,800 MMcfd. Below, we weigh four proposed pathways against the scale of that gap.</p>
+            against a demand of 3,800 MMcfd. Below, Bangladesh Government weigh four proposed pathways against the scale
+            of that gap.</p>
 
           <div class="ways rv" id="ways">
             <div class="wy-grid">
@@ -1573,10 +1608,12 @@
     </figure>
   </div>
 
-  <script src="assets/vendor/leaflet/leaflet.js" defer></script>
+  <!-- Leaflet (144KB) and the load-shedding choropleth (64KB) are no longer
+     loaded here. Both used to execute during the boot window even though the
+     first map sits ~5,000px down the page; main.js now fetches each one as its
+     block comes within range. See lazyMap/startMaps in assets/js/main.js. -->
   <script src="assets/js/main.js" defer></script>
   <script src="assets/js/articles.js" defer></script>
-  <script src="assets/js/loadshed-map.js" defer></script>
 </body>
 
 </html>
